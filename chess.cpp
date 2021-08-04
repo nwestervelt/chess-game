@@ -5,243 +5,6 @@
 #include<string>
 #include<fstream>
 
-//********Function Prototypes**********
-void boardInit(std::string board[8][8]);
-void display(std::string board[8][8]);
-int move(int stRow, int stCol, int edRow, int edCol, int wCheck, int bCheck, bool wKingMv,
-         bool wLeftRookeMv, bool wRightRookeMv, bool bKingMv, bool bLeftRookeMv, bool bRightRookeMv, std::string board[8][8]);
-int topCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]);
-int botCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]);
-int horCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]);
-int verCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]);
-void promote(int edRow, int edCol, std::string board[8][8]);
-void replace(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]);
-bool kingCheck(std::string player, int checkCount, int & wCheck, int & bCheck, std::string board[8][8]);
-int load(int & alternator, int & checkCount, int & turnCount, int & wCheck, int & bCheck, bool & wkingMv, bool & wLeftRookeMv,
-          bool & wRightRookeMv, bool & bKingMv, bool & bLeftRookeMv, bool & bRightRookeMv, std::string board[8][8]);
-int save(int alternator, int checkCount, int turnCount, int wCheck, int bCheck, bool wKingMv, bool wLeftRookeMv,
-          bool wRightRookeMv, bool bKingMv, bool bLeftRookeMv, bool bRightRookeMv, std::string board[8][8]);
-
-int main()
-{
-    //*****Variable Declarations*****
-    std::string board[8][8] = {{""}};
-    std::string player = "";
-    int turnCount = 0;
-    int alternator = 0; //used to alternate between white and black players
-    int error = 0;
-    bool check = false;
-    int checkCount = 0;
-    int wCheck = 0; //counters used for players individually, used for castleing
-    int bCheck = 0;
-    bool wKingMv = false; //used to tell if these pieces have moved
-    bool wLeftRookeMv = false;
-    bool wRightRookeMv = false;
-    bool bKingMv = false;
-    bool bLeftRookeMv = false;
-    bool bRightRookeMv = false;
-    bool checkMate = false;
-    int stRow = 0;
-    int stCol = 0;
-    int edRow = 0;
-    int edCol = 0;
-    std::string tempSt = "";
-    std::string tempEd = "";
-    int ldSv = 0;
-    
-    turnCount = 1;
-    boardInit(board);
-    
-    std::cout << "In this version of chess (all other rules are normal rules) if you get put in check, you get three chances to get out of check." << std::endl;
-    std::cout << "If you're attempt to get out of check fails, the move is reverted and you have one less attempt left. Use up all three attempts, and you're in check mate." << std::endl;
-    
-    std::cout << "Enter 0 to start a new game, or 1 to load the saved game: ";
-    std::cin >> ldSv;
-    std::cout << std::endl << "Entering 100 for both the beginning and ending row and column will save and quit the game." << std::endl;
-    std::cout << "Entering -100 for both the beginning and ending row and column will quit the game without saving." << std::endl;
-    
-    if(ldSv == 1)
-        ldSv = load(alternator, checkCount, turnCount, wCheck, bCheck, wKingMv, wLeftRookeMv, wRightRookeMv, bKingMv, bLeftRookeMv, bRightRookeMv, board);
-    
-    display(board); //display the board after the game starts
-    
-    if(ldSv !=2) //checks if user decided to close the program after loadFile.is_open returned false (file didn't open)
-    {
-        while(checkMate == false) //checks if check mate has been reached before starting the next player's turn
-        {
-            ldSv = -1;
-            if(alternator == 0)
-                player = "W";
-            else
-                player = "B";
-            do //check counter loop
-            {
-                do //outer input error loop
-                {
-                    do //inner input error loop
-                    {
-                        error = 0;
-                        if(player == "W")
-                            std::cout << "White's turn #" << turnCount << "." << std::endl;
-                        if(player == "B")
-                            std::cout << "Black's turn #" << turnCount << "." << std::endl;
-                        std::cout << "Enter the row and column of the piece to move, seperated by a space: ";
-                        std::cin >> stRow;
-                        std::cin >> stCol;
-                        std::cout << "Enter the row and column of the destination, seperated by a space: ";
-                        std::cin >> edRow;
-                        std::cin >> edCol;
-                        
-                        if(stRow == 100 && stCol == 100 && edRow == 100 && edCol == 100)
-                            ldSv = save(alternator, checkCount, turnCount, wCheck, bCheck, wKingMv, wLeftRookeMv, wRightRookeMv, bKingMv, bLeftRookeMv, bRightRookeMv, board);
-                        
-                        if(stRow == -100 && stCol == -100 && edRow == -100 && edCol == -100)
-                            ldSv = 2;
-                        
-                        if(ldSv == 0 || ldSv == 2) //one of a series of breaks to exit the game
-                            break;
-                        
-                        if(stRow > 7 || stRow < 0 || stCol > 7 || stCol < 0 || edRow > 7 || edRow < 0 || edCol > 7 || edCol < 0) //checks if user's input is over 7 or below 0
-                        {
-                            std::cout << std::endl << "Please enter valid values (integers between the values of 0 and 7) for the row and column numbers requested." << std::endl;
-                            std::cout << "If you're trying to save and quit, enter 100 for all of the requested values. Entering -100 will quit without saving." << std::endl << std::endl;
-                            error = -1;
-                        }
-                    } while(error == -1); //end inner input error loop
-                    
-                    if(ldSv == 0 || ldSv == 2) //one of a series of breaks to exit the game
-                        break;
-        
-                    tempSt = board[stRow][stCol];
-                    tempEd = board[edRow][edCol];
-        
-                    error = move(stRow, stCol, edRow, edCol, wCheck, bCheck, wKingMv, wLeftRookeMv, wRightRookeMv, bKingMv, bLeftRookeMv, bRightRookeMv, board); //perform the move
-        
-                    if(error == -1 || std::string(board[edRow][edCol]).find(player) == -1) //checks if player attempted to move the opponent's piece or move was invalid
-                    {
-                        board[stRow][stCol] = tempSt; //reverts the move
-                        board[edRow][edCol] = tempEd;
-                        std::cout << std::endl << "Your move was invalid, please try again with a different move." << std::endl << std::endl;
-                    }
-                } while(error == -1 || tempSt == board[stRow][stCol]); //end outer input error loop
-                
-                if(ldSv == 0 || ldSv == 2) //one of a series of breaks to exit the game
-                    break;
-            
-                check = kingCheck(player, checkCount, wCheck, bCheck, board);
-                if(check == true) //check if block
-                {
-                    checkCount += 1;
-                    board[stRow][stCol] = tempSt; //reverts the move
-                    board[edRow][edCol] = tempEd;
-                    std::cout << std::endl << "You are in check, you're previous move was undone. Get out of check to proceed to the next turn." << std::endl << std::endl;
-                    
-                    //remove created en passant marks--------------------------------------------------
-                    if(player == "W")
-                    {
-                        for(int row = 0; row < 8; row += 1)
-                        {
-                            for(int col = 0; col < 8; col += 1)
-                            {
-                                if(board[row][col] == "!w")
-                                    board[row][col] = "##";
-                            }
-                        }
-                    }
-                    
-                    if(player == "B")
-                    {
-                        for(int row = 0; row < 8; row += 1)
-                        {
-                            for(int col = 0; col < 8; col += 1)
-                            {
-                                if(board[row][col] == "!b")
-                                    board[row][col] = "##";
-                            }
-                        }
-                    } //end remove en passant marks----------------------------------------------------
-                }
-                
-                else
-                {
-                    if(player == "W") //remove opponent's en passant marks-----------------------------
-                    {
-                        for(int row = 0; row < 8; row += 1)
-                        {
-                            for(int col = 0; col < 8; col += 1)
-                            {
-                                if(board[row][col] == "!b")
-                                    board[row][col] = "##";
-                            }
-                        }
-                    }
-                    
-                    if(player == "B")
-                    {
-                        for(int row = 0; row < 8; row += 1)
-                        {
-                            for(int col = 0; col < 8; col += 1)
-                            {
-                                if(board[row][col] == "!w")
-                                    board[row][col] = "##";
-                            }
-                        }
-                    } //end remove opponent's en passant marks-----------------------------------------
-                    
-                    checkCount = 0;
-                    display(board);
-                } //end check if block
-                
-                if(checkCount == 3)
-                    checkMate = true;
-            } while(checkCount > 0 && checkCount < 3); //end check counter loop
-            
-            if(ldSv == 0 || ldSv == 2) //last of a series of breaks to exit the game
-                break;
-            
-            if(board[edRow][edCol] == "Wr" && stRow == 7) //moved status of king and rooke pieces------
-            {
-                if(stCol == 0)
-                    wLeftRookeMv = true;
-                if(stCol == 7)
-                    wRightRookeMv = true;
-            }
-            if(board[edRow][edCol] == "Br" && stRow == 0)
-            {
-                if(stCol == 0)
-                    bLeftRookeMv = true;
-                if(stCol == 7)
-                    bRightRookeMv = true;
-            }
-            if(board[edRow][edCol] == "WK")
-                wKingMv = true;
-            if(board[edRow][edCol] == "BK")
-                bKingMv = true; //end moved status of king and rooke pieces----------------------------
-            
-            if(checkMate == false)
-            {
-                alternator += 1; //update alternator variable
-            
-                if(player == "B") //update the turn counter and reset alternator variable
-                {
-                    turnCount += 1;
-                    alternator = 0;
-                }
-            }
-        } //end checkMate loop
-        
-        if(checkMate == true)
-        {
-            std::cout << "Check Mate, ";
-            if(player == "W")
-                std::cout << "Black Wins." << std::endl;
-            if(player == "B")
-                std::cout << "White Wins." << std::endl;
-        }
-    }
-    return 0;
-} //end main
-
 //******Function Definitions******
 void boardInit(std::string board[8][8]) //function for initializing the board
 {
@@ -1125,3 +888,224 @@ int save(int alternator, int checkCount, int turnCount, int wCheck, int bCheck, 
     saveFile.close();
     return choice;
 }
+
+//******Start Main Function******
+int main()
+{
+    //*****Variable Declarations*****
+    std::string board[8][8] = {{""}};
+    std::string player = "";
+    int turnCount = 0;
+    int alternator = 0; //used to alternate between white and black players
+    int error = 0;
+    bool check = false;
+    int checkCount = 0;
+    int wCheck = 0; //counters used for players individually, used for castleing
+    int bCheck = 0;
+    bool wKingMv = false; //used to tell if these pieces have moved
+    bool wLeftRookeMv = false;
+    bool wRightRookeMv = false;
+    bool bKingMv = false;
+    bool bLeftRookeMv = false;
+    bool bRightRookeMv = false;
+    bool checkMate = false;
+    int stRow = 0;
+    int stCol = 0;
+    int edRow = 0;
+    int edCol = 0;
+    std::string tempSt = "";
+    std::string tempEd = "";
+    int ldSv = 0;
+    
+    turnCount = 1;
+    boardInit(board);
+    
+    std::cout << "In this version of chess (all other rules are normal rules) if you get put in check, you get three chances to get out of check." << std::endl;
+    std::cout << "If you're attempt to get out of check fails, the move is reverted and you have one less attempt left. Use up all three attempts, and you're in check mate." << std::endl;
+    
+    std::cout << "Enter 0 to start a new game, or 1 to load the saved game: ";
+    std::cin >> ldSv;
+    std::cout << std::endl << "Entering 100 for both the beginning and ending row and column will save and quit the game." << std::endl;
+    std::cout << "Entering -100 for both the beginning and ending row and column will quit the game without saving." << std::endl;
+
+    if(ldSv == 1)
+        ldSv = load(alternator, checkCount, turnCount, wCheck, bCheck, wKingMv, wLeftRookeMv, wRightRookeMv, bKingMv, bLeftRookeMv, bRightRookeMv, board);
+    
+    display(board); //display the board after the game starts
+    
+    if(ldSv !=2) //checks if user decided to close the program after loadFile.is_open returned false (file didn't open)
+    {
+        while(checkMate == false) //checks if check mate has been reached before starting the next player's turn
+        {
+            ldSv = -1;
+            if(alternator == 0)
+                player = "W";
+            else
+                player = "B";
+            do //check counter loop
+            {
+                do //outer input error loop
+                {
+                    do //inner input error loop
+                    {
+                        error = 0;
+                        if(player == "W")
+                            std::cout << "White's turn #" << turnCount << "." << std::endl;
+                        if(player == "B")
+                            std::cout << "Black's turn #" << turnCount << "." << std::endl;
+                        std::cout << "Enter the row and column of the piece to move, seperated by a space: ";
+                        std::cin >> stRow;
+                        std::cin >> stCol;
+                        std::cout << "Enter the row and column of the destination, seperated by a space: ";
+                        std::cin >> edRow;
+                        std::cin >> edCol;
+                        
+                        if(stRow == 100 && stCol == 100 && edRow == 100 && edCol == 100)
+                            ldSv = save(alternator, checkCount, turnCount, wCheck, bCheck, wKingMv, wLeftRookeMv, wRightRookeMv, bKingMv, bLeftRookeMv, bRightRookeMv, board);
+                        
+                        if(stRow == -100 && stCol == -100 && edRow == -100 && edCol == -100)
+                            ldSv = 2;
+                        
+                        if(ldSv == 0 || ldSv == 2) //one of a series of breaks to exit the game
+                            break;
+                        
+                        if(stRow > 7 || stRow < 0 || stCol > 7 || stCol < 0 || edRow > 7 || edRow < 0 || edCol > 7 || edCol < 0) //checks if user's input is over 7 or below 0
+                        {
+                            std::cout << std::endl << "Please enter valid values (integers between the values of 0 and 7) for the row and column numbers requested." << std::endl;
+                            std::cout << "If you're trying to save and quit, enter 100 for all of the requested values. Entering -100 will quit without saving." << std::endl << std::endl;
+                            error = -1;
+                        }
+                    } while(error == -1); //end inner input error loop
+                    
+                    if(ldSv == 0 || ldSv == 2) //one of a series of breaks to exit the game
+                        break;
+        
+                    tempSt = board[stRow][stCol];
+                    tempEd = board[edRow][edCol];
+        
+                    error = move(stRow, stCol, edRow, edCol, wCheck, bCheck, wKingMv, wLeftRookeMv, wRightRookeMv, bKingMv, bLeftRookeMv, bRightRookeMv, board); //perform the move
+        
+                    if(error == -1 || std::string(board[edRow][edCol]).find(player) == -1) //checks if player attempted to move the opponent's piece or move was invalid
+                    {
+                        board[stRow][stCol] = tempSt; //reverts the move
+                        board[edRow][edCol] = tempEd;
+                        std::cout << std::endl << "Your move was invalid, please try again with a different move." << std::endl << std::endl;
+                    }
+                } while(error == -1 || tempSt == board[stRow][stCol]); //end outer input error loop
+                
+                if(ldSv == 0 || ldSv == 2) //one of a series of breaks to exit the game
+                    break;
+            
+                check = kingCheck(player, checkCount, wCheck, bCheck, board);
+                if(check == true) //check if block
+                {
+                    checkCount += 1;
+                    board[stRow][stCol] = tempSt; //reverts the move
+                    board[edRow][edCol] = tempEd;
+                    std::cout << std::endl << "You are in check, you're previous move was undone. Get out of check to proceed to the next turn." << std::endl << std::endl;
+                    
+                    //remove created en passant marks--------------------------------------------------
+                    if(player == "W")
+                    {
+                        for(int row = 0; row < 8; row += 1)
+                        {
+                            for(int col = 0; col < 8; col += 1)
+                            {
+                                if(board[row][col] == "!w")
+                                    board[row][col] = "##";
+                            }
+                        }
+                    }
+                    
+                    if(player == "B")
+                    {
+                        for(int row = 0; row < 8; row += 1)
+                        {
+                            for(int col = 0; col < 8; col += 1)
+                            {
+                                if(board[row][col] == "!b")
+                                    board[row][col] = "##";
+                            }
+                        }
+                    } //end remove en passant marks----------------------------------------------------
+                }
+                
+                else
+                {
+                    if(player == "W") //remove opponent's en passant marks-----------------------------
+                    {
+                        for(int row = 0; row < 8; row += 1)
+                        {
+                            for(int col = 0; col < 8; col += 1)
+                            {
+                                if(board[row][col] == "!b")
+                                    board[row][col] = "##";
+                            }
+                        }
+                    }
+                    
+                    if(player == "B")
+                    {
+                        for(int row = 0; row < 8; row += 1)
+                        {
+                            for(int col = 0; col < 8; col += 1)
+                            {
+                                if(board[row][col] == "!w")
+                                    board[row][col] = "##";
+                            }
+                        }
+                    } //end remove opponent's en passant marks-----------------------------------------
+                    
+                    checkCount = 0;
+                    display(board);
+                } //end check if block
+                
+                if(checkCount == 3)
+                    checkMate = true;
+            } while(checkCount > 0 && checkCount < 3); //end check counter loop
+            
+            if(ldSv == 0 || ldSv == 2) //last of a series of breaks to exit the game
+                break;
+            
+            if(board[edRow][edCol] == "Wr" && stRow == 7) //moved status of king and rooke pieces------
+            {
+                if(stCol == 0)
+                    wLeftRookeMv = true;
+                if(stCol == 7)
+                    wRightRookeMv = true;
+            }
+            if(board[edRow][edCol] == "Br" && stRow == 0)
+            {
+                if(stCol == 0)
+                    bLeftRookeMv = true;
+                if(stCol == 7)
+                    bRightRookeMv = true;
+            }
+            if(board[edRow][edCol] == "WK")
+                wKingMv = true;
+            if(board[edRow][edCol] == "BK")
+                bKingMv = true; //end moved status of king and rooke pieces----------------------------
+            
+            if(checkMate == false)
+            {
+                alternator += 1; //update alternator variable
+            
+                if(player == "B") //update the turn counter and reset alternator variable
+                {
+                    turnCount += 1;
+                    alternator = 0;
+                }
+            }
+        } //end checkMate loop
+        
+        if(checkMate == true)
+        {
+            std::cout << "Check Mate, ";
+            if(player == "W")
+                std::cout << "Black Wins." << std::endl;
+            if(player == "B")
+                std::cout << "White Wins." << std::endl;
+        }
+    }
+    return 0;
+} //end main
