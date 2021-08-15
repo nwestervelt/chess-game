@@ -53,14 +53,13 @@ void display(std::string board[8][8]) //function for displaying the board
         std::cout << row << "  ";
         for (int col = 0; col < 8; col += 1)
             std::cout << board[row][col] << "  ";
-    std::cout << std::endl;
+	std::cout << std::endl;
     }
     std::cout << std::endl; //create space between displayed board and next line
 } //end display
 
 int topCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]) //top two move angle checks, returns 0 when no errors found
 {
-    int counter = 0;
     if (stRow > edRow)
     {
         if (stCol > edCol)
@@ -68,24 +67,23 @@ int topCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]
             for (int x = 1; x < abs(stRow - edRow); x += 1)
             {
                 if (board[stRow - x][stCol - x] != "##" && board[stRow - x][stCol - x] != "!b" && board[stRow - x][stCol - x] != "!w")
-                    counter += 1;
-            }
+                    return 1;
+	    }
         }
         if (stCol < edCol)
         {
             for (int x = 1; x < abs(stRow - edRow); x += 1)
             {
                 if (board[stRow - x][stCol + x] != "##" && board[stRow - x][stCol + x] != "!b" && board[stRow - x][stCol + x] != "!w")
-                    counter += 1;
-            }
+                    return 1;
+	    }
         }
     }
-    return counter;
+    return 0;
 } //end topCheck
 
 int botCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]) //bottom two move angle checks, returns 0 when no errors found
 {
-    int counter = 0;
     if (stRow < edRow)
     {
         if (stCol > edCol)
@@ -93,7 +91,7 @@ int botCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]
             for (int x = 1; x < abs(stRow - edRow); x += 1)
             {
                 if (board[stRow + x][stCol - x] != "##" && board[stRow + x][stCol - x] != "!b" && board[stRow + x][stCol - x] != "!w")
-                    counter += 1;
+                    return 1;
             }
         }
         if (stCol < edCol)
@@ -101,16 +99,15 @@ int botCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]
             for (int x = 1; x < abs(stRow - edRow); x += 1)
             {
                 if (board[stRow + x][stCol + x] != "##" && board[stRow + x][stCol + x] != "!b" && board[stRow + x][stCol + x] != "!w")
-                    counter += 1;
+                    return 1;
             }
         }
     }
-    return counter;
+    return 0;
 } //end botCheck
 
 int horCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]) //horizontal move check, returns 0 when no errors found
 {
-    int counter = 0;
     if (stRow == edRow)
     {
         if (stCol > edCol)
@@ -118,7 +115,7 @@ int horCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]
             for (int x = 1; x < stCol - edCol; x += 1)
             {
                 if (board[edRow][stCol - x] != "##" && board[edRow][stCol - x] != "!b" && board[edRow][stCol - x] != "!w")
-                    counter += 1;
+                    return 1;
             }
         }
         if (stCol < edCol)
@@ -126,16 +123,15 @@ int horCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]
             for (int x = 1; x < edCol - stCol; x += 1)
             {
                 if (board[edRow][edCol - x] != "##" && board[edRow][edCol - x] != "!b" && board[edRow][edCol - x] != "!w")
-                    counter += 1;
+                    return 1;
             }
         }
     }
-    return counter;
+    return 0;
 } //end horCheck
 
 int verCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]) //vertical move check, returns 0 when no errors found
 {
-    int counter = 0;
     if (stCol == edCol)
     {
         if (stRow > edRow)
@@ -143,7 +139,7 @@ int verCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]
             for (int x = 1; x < stRow - edRow; x += 1)
             {
                 if (board[stRow - x][edCol] != "##" && board[stRow - x][edCol] != "!b" && board[stRow - x][edCol] != "!w")
-                    counter += 1;
+                    return 1;
             }
         }
         if (stRow < edRow)
@@ -151,11 +147,11 @@ int verCheck(int stRow, int stCol, int edRow, int edCol, std::string board[8][8]
             for (int x = 1; x < edRow - stRow; x += 1)
             {
                 if (board[edRow - x][edCol] != "##" && board[edRow - x][edCol] != "!b" && board[edRow - x][edCol] != "!w")
-                    counter += 1;
+                    return 1;
             }
         }
     }
-    return counter;
+    return 0;
 } //end verCheck
 
 void promote(int edRow, int edCol, std::string board[8][8]) //function for promoting pawns
@@ -294,7 +290,7 @@ int move(int stRow, int stCol, int edRow, int edCol, int wCheck, int bCheck, boo
             if (abs(stRow - edRow) == 1 && abs(stCol - edCol) == 2)
             {
                 replace(stRow, stCol, edRow, edCol, board);
-            }
+           	 }
         } //end White knight
         
         if (board[stRow][stCol] == "Bk") //Black knight
