@@ -20,9 +20,8 @@ void boardInit(std::string board[8][8]) //function for initializing the board
             board[7][col] = "WK";
         if (col == 4)
             board[7][col] = "WQ";
-    }
-    for (int col = 0; col < 8; col += 1)
         board[6][col] = "Wp";
+    }
     
     for (int col = 0; col < 8; col += 1) //initialize the black side
     {
@@ -33,13 +32,11 @@ void boardInit(std::string board[8][8]) //function for initializing the board
         if (col == 2 || col == 5)
             board[0][col] = "Bb";
         if (col == 3)
-    
             board[0][col] = "BK";
         if (col == 4)
             board[0][col] = "BQ";
-    }
-    for (int col = 0; col < 8; col += 1)
         board[1][col] = "Bp";
+    }
     
     for (int row = 2; row < 6; row += 1) //fill empty space with ##
     {
