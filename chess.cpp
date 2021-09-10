@@ -217,7 +217,7 @@ int move(int stRow, int stCol, int edRow, int edCol, int wCheck, int bCheck, boo
     int error = 0;
 
     //check for friendly fire, true = no friendly fire
-    if ((std::string(board[stRow][stCol]).find("W") == 0 && std::string(board[edRow][edCol]).find("W") == -1) || (std::string(board[stRow][stCol]).find("B") == 0 && std::string(board[edRow][edCol]).find("B") == -1))
+    if ((std::string(board[stRow][stCol]).find("W") == 0 && std::string(board[edRow][edCol]).find("W") != 0) || (std::string(board[stRow][stCol]).find("B") == 0 && std::string(board[edRow][edCol]).find("B") != 0))
     {
         if (board[stRow][stCol] == "Wp") //White pawn
         {
@@ -917,21 +917,20 @@ int main()
     std::cout << "In this version of chess (all other rules are normal rules) if you get put in check, you get three chances to get out of check." << std::endl;
     std::cout << "If you're attempt to get out of check fails, the move is reverted and you have one less attempt left. Use up all three attempts, and you're in check mate." << std::endl;
     
-    std::cout << "Enter 0 to start a new game, or 1 to load the saved game: ";
+    std::cout << "Enter 0 to start a new game, 1 to load the saved game, or 2 to quit: ";
     std::cin >> ldSv;
-    std::cout << std::endl << "Entering 100 for both the beginning and ending row and column will save and quit the game." << std::endl;
-    std::cout << "Entering -100 for both the beginning and ending row and column will quit the game without saving." << std::endl;
 
     if(ldSv == 1)
         ldSv = load(alternator, checkCount, turnCount, wCheck, bCheck, wKingMv, wLeftRookeMv, wRightRookeMv, bKingMv, bLeftRookeMv, bRightRookeMv, board);
     
-    display(board); //display the board after the game starts
-    
-    if(ldSv !=2) //checks if user decided to close the program after loadFile.is_open returned false (file didn't open)
+    if(ldSv !=2) //checks if user decided to close the program
     {
+    std::cout << std::endl << "Entering 100 for both the beginning and ending row and column will save and quit the game." << std::endl;
+    std::cout << "Entering -100 for both the beginning and ending row and column will quit the game without saving." << std::endl;
         while(checkMate == false) //checks if check mate has been reached before starting the next player's turn
         {
-            ldSv = -1;
+            display(board);
+	    ldSv = -1;
             if(alternator == 0)
                 player = "W";
             else
@@ -1051,7 +1050,6 @@ int main()
                     } //end remove opponent's en passant marks-----------------------------------------
                     
                     checkCount = 0;
-                    display(board);
                 } //end check if block
                 
                 if(checkCount == 3)
