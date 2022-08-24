@@ -1,4 +1,4 @@
 # chess-game
-A chess game that is played in a terminal.
+A chess game written by me and CalebStadler for our Washburn University Capstone Project.
 
-I created this program to practice writing in C++ and to practice using GIT. This was written in a procedure-oriented-programming style.
+This project features a GUI and online connectivity.
