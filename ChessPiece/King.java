@@ -11,7 +11,7 @@ public class King implements Piece
     private int x, y;
     private boolean moved;
 
-    King()
+    public King()
     {
         player = ' ';
         x = 0;

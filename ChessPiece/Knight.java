@@ -10,7 +10,7 @@ public class Knight implements Piece
     private char player;
     private int x, y;
 
-    Knight()
+    public Knight()
     {
         player = ' ';
         x = 0;

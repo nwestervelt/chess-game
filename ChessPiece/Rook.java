@@ -11,7 +11,7 @@ public class Rook implements Piece
     private int x, y;
     private boolean moved;
 
-    Rook()
+    public Rook()
     {
         player = ' ';
         x = 0;
