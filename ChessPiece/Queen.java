@@ -21,7 +21,7 @@ public class Queen implements Piece
         throws IOException
     {
         BufferedImage image;
-        image = ImageIO.read(new File("images/"+player+"Queen.png"));
+        image = ImageIO.read(new File("ChessPiece/images/"+player+"Queen.png"));
         return image;
     }
     public void setPlayer(char newPlayer)

@@ -23,7 +23,7 @@ public class Pawn implements Piece
         throws IOException
     {
         BufferedImage image;
-        image = ImageIO.read(new File("images/"+player+"Pawn.png"));
+        image = ImageIO.read(new File("ChessPiece/images/"+player+"Pawn.png"));
         return image;
     }
     public void setPlayer(char newPlayer)
