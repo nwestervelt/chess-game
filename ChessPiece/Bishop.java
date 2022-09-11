@@ -10,7 +10,7 @@ public class Bishop implements Piece
     private char player;
     private int x, y;
 
-    Bishop()
+    public Bishop()
     {
         //create another constructor for use in non-default locations
         //in the future

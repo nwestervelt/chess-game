@@ -11,7 +11,7 @@ public class Pawn implements Piece
     private int x, y;
     private boolean moved;
 
-    Pawn()
+    public Pawn()
     {
         player = ' ';
         x = 0;

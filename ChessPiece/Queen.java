@@ -10,7 +10,7 @@ public class Queen implements Piece
     private char player;
     private int x, y;
 
-    Queen()
+    public Queen()
     {
         player = ' ';
         x = 0;
