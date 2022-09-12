@@ -23,7 +23,7 @@ public class King implements Piece
         throws IOException
     {
         BufferedImage image;
-        image = ImageIO.read(new File("images/"+player+"King.png"));
+        image = ImageIO.read(new File("ChessPiece/images/"+player+"King.png"));
         return image;
     }
     public void setPlayer(char newPlayer)
