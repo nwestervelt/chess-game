@@ -3,5 +3,4 @@ import ChessPiece.*;
 
 public class Main
 {
-
 }
