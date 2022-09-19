@@ -10,13 +10,13 @@ import ChessPiece.*;
 public class Board extends JFrame
 {
     //declare constants used to reference piece objects more easily
-    public static final int W_ROOK1 = 0, W_KNIGHT1 = 1, W_BISHOP1 = 2, W_QUEEN = 3, W_KING = 4,
+    public static final int W_ROOK1 = 0, W_KNIGHT1 = 1, W_BISHOP1 = 2, W_KING = 3, W_QUEEN = 4,
          W_BISHOP2 = 5, W_KNIGHT2 = 6, W_ROOK2 = 7;
     public static final int W_PAWN1 = 8, W_PAWN2 = 9, W_PAWN3 = 10, W_PAWN4 = 11, W_PAWN5 = 12,
         W_PAWN6 = 13, W_PAWN7 = 14, W_PAWN8 = 15;
     public static final int B_PAWN1 = 16, B_PAWN2 = 17, B_PAWN3 = 18, B_PAWN4 = 19, B_PAWN5 = 20,
         B_PAWN6 = 21, B_PAWN7 = 22, B_PAWN8 = 23;
-    public static final int B_ROOK1 = 24, B_KNIGHT1 = 25, B_BISHOP1 = 26, B_QUEEN = 27, B_KING = 28,
+    public static final int B_ROOK1 = 24, B_KNIGHT1 = 25, B_BISHOP1 = 26, B_KING = 27, B_QUEEN = 28,
         B_BISHOP2 = 29, B_KNIGHT2 = 30, B_ROOK2 = 31;
 
     private BoardPanel boardPanel;
