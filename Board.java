@@ -24,7 +24,7 @@ public class Board extends JFrame
     private PieceAbstract[] pieces;
 
     //create integers, used for cursor position and the selected piece
-    private int currX, currY, offX, offY, selected = -1;
+    private int currX, currY, selected = -1;
 
     public Board()
     {
@@ -113,7 +113,7 @@ public class Board extends JFrame
                 //only set the new piece position if it is within the board's boundraries
                 if (currX <= 800 || currX >= 0 || currY <= 800 || currY >= 0)
                 {
-                    pieces[selected].move((currX+offX)/100, (currY+offY)/100, pieces);
+                    pieces[selected].move((currX+50)/100, (currY+50)/100, pieces);
                 }
             }
             catch(InvalidMoveException ime)
@@ -132,8 +132,8 @@ public class Board extends JFrame
             if (selected==-1) return;
             {
                 //set current cursor position for drawing piece while in motion
-                currX = e.getX()-offX;
-                currY = e.getY()-offY;
+                currX = e.getX()-50;
+                currY = e.getY()-50;
                 //make sure the cursor is not outside the boundry of the board
                 if (currX > 700) currX = 700;
                 if (currX < 0) currX = 0;
