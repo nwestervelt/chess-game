@@ -65,7 +65,7 @@ public class Rook extends PieceAbstract
             this.y = y;
         }
         else
-            throw new InvalidMoveException("Rooks move horizontally and vertically,"
+            throw new InvalidMoveException("Rooks move horizontally and vertically, "
                 +"and can't pass through other pieces.");
     }
 }
