@@ -113,12 +113,12 @@ public class Board extends JFrame
                 //only set the new piece position if it is within the board's boundraries
                 if (currX <= 800 || currX >= 0 || currY <= 800 || currY >= 0)
                 {
-                    pieces[selected].move((currX+offX)/100, (currY+offY)/100);
+                    pieces[selected].move((currX+offX)/100, (currY+offY)/100, pieces);
                 }
             }
             catch(InvalidMoveException ime)
             {
-
+                System.out.println(ime.getMessage());
             }
             boardPanel.repaint();
             selected = -1;

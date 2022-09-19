@@ -23,7 +23,7 @@ public class Queen extends PieceAbstract
         image = ImageIO.read(new File("ChessPiece/images/"+player+"Queen.png"));
         return image;
     }
-    public void move(int x, int y)
+    public void move(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
         //will use InvalidMoveException to prevent illegal moves in the future
