@@ -1,3 +1,4 @@
+// Class file used for controlling the game's logic and drawing the board.
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
@@ -8,43 +9,22 @@ import ChessPiece.*;
 
 public class Board extends JFrame
 {
+    //declare constants used to reference piece objects more easily
+    public static final int W_ROOK1 = 0, W_KNIGHT1 = 1, W_BISHOP1 = 2, W_QUEEN = 3, W_KING = 4,
+         W_BISHOP2 = 5, W_KNIGHT2 = 6, W_ROOK2 = 7;
+    public static final int W_PAWN1 = 8, W_PAWN2 = 9, W_PAWN3 = 10, W_PAWN4 = 11, W_PAWN5 = 12,
+        W_PAWN6 = 13, W_PAWN7 = 14, W_PAWN8 = 15;
+    public static final int B_PAWN1 = 16, B_PAWN2 = 17, B_PAWN3 = 18, B_PAWN4 = 19, B_PAWN5 = 20,
+        B_PAWN6 = 21, B_PAWN7 = 22, B_PAWN8 = 23;
+    public static final int B_ROOK1 = 24, B_KNIGHT1 = 25, B_BISHOP1 = 26, B_QUEEN = 27, B_KING = 28,
+        B_BISHOP2 = 29, B_KNIGHT2 = 30, B_ROOK2 = 31;
+
     private BoardPanel boardPanel;
     private BufferedImage board;
+    private PieceAbstract[] pieces;
 
-    //array variables
-    private int selected = -1;
-    private int startPX[];
-    private int startPY[];
-    private int pX[];
-    private int pY[];
-
-    //create all white pieces variables
-    private Queen wQueen;
-    private BufferedImage wQueenI;
-    private King wKing;
-    private BufferedImage wKingI;
-    private Rook wRook;
-    private BufferedImage wRookI;
-    private Bishop wBishop;
-    private BufferedImage wBishopI;
-    private Knight wKnight;
-    private BufferedImage wKnightI;
-    private Pawn wPawn;
-    private BufferedImage wPawnI;
-
-    //create all black pieces variables
-    private Queen bQueen;
-    private BufferedImage bQueenI;
-    private King bKing;
-    private BufferedImage bKingI;
-    private Rook bRook;
-    private BufferedImage bRookI;
-    private Bishop bBishop;
-    private BufferedImage bBishopI;
-    private Knight bKnight;
-    private BufferedImage bKnightI;
-    private Pawn bPawn;
-    private BufferedImage bPawnI;
+    //create integers, used for cursor position and the selected piece
+    private int currX, currY, offX, offY, selected = -1;
 
     public Board()
     {
@@ -60,13 +40,21 @@ public class Board extends JFrame
         boardPanel.setPreferredSize(new Dimension(800,800));
         add(boardPanel);
 
-        //initialize coordinate arrays
-        startPX = new int [32];
-        startPY = new int [32];
-        pX = new int [32];
-        pY = new int [32];
+        //create a generic array of ChessPiece objects
+        pieces = new PieceAbstract[32];
 
-        initializeBoard();
+        //get board's background image
+        try
+        {
+            board = ImageIO.read(new File("board.png"));
+        }
+        catch(IOException ioe)
+        {
+            System.out.printf("%s%n%nTerminating.", ioe.getMessage());
+            System.exit(1);
+        }
+
+        initializePieces();
         
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
@@ -80,31 +68,21 @@ public class Board extends JFrame
             super.paintComponent(g);
             g.drawImage(board, 0, 0, null);
 
-            //for loop drawing both sets of pawns
-            for (int i = 0; i < 8; i++)
+            try
             {
-                g.drawImage(wPawnI, pX[i],pY[i], null); 
-                g.drawImage(bPawnI, pX[i+16],pY[i+16], null);   
+                for(int i = 0; i < pieces.length; i++)
+                {
+                    if(i != selected)
+                        g.drawImage(pieces[i].getImage(), pieces[i].getX()*100, pieces[i].getY()*100, null);
+                }
+                if(selected != -1)
+                    g.drawImage(pieces[selected].getImage(), currX, currY, null);
             }
-            //draw white pieces
-            g.drawImage(wRookI, pX[8],pY[8], null);
-            g.drawImage(wKnightI, pX[9],pY[9], null);
-            g.drawImage(wBishopI, pX[10],pY[10], null);
-            g.drawImage(wQueenI, pX[11],pY[11], null);
-            g.drawImage(wKingI, pX[12],pY[12], null);
-            g.drawImage(wBishopI, pX[13],pY[13], null);
-            g.drawImage(wKnightI, pX[14],pY[14], null);
-            g.drawImage(wRookI, pX[15],pY[15], null);
-
-            //draw black pieces
-            g.drawImage(bRookI, pX[24],pY[24], null);
-            g.drawImage(bKnightI, pX[25],pY[25], null);
-            g.drawImage(bBishopI, pX[26],pY[26], null);
-            g.drawImage(bQueenI, pX[27],pY[27], null);
-            g.drawImage(bKingI, pX[28],pY[28], null);
-            g.drawImage(bBishopI, pX[29],pY[29], null);
-            g.drawImage(bKnightI, pX[30],pY[30], null);
-            g.drawImage(bRookI, pX[31],pY[31], null);
+            catch(IOException ioe)
+            {
+                System.out.printf("%s%n%nTerminating.", ioe.getMessage());
+                System.exit(1);
+            }
         }
     }
     
@@ -112,37 +90,35 @@ public class Board extends JFrame
     {
         public void mousePressed (MouseEvent e)
         {
-            int x1=e.getX();
-            int y1=e.getY();
-            //decides which piece was selected and if it was black or white
-            for (int i = 0; i < pX.length;i++)
+            int x=e.getX();
+            int y=e.getY();
+            //determines which piece was selected
+            for (int i = 0; i < pieces.length; i++)
             {
-                if(x1>pX[i]&&x1<pX[i]+100&&y1>pY[i]&&y1<pY[i]+100)
+                if(x-(pieces[i].getX()*100) > 0 && x-(pieces[i].getX()*100) <= 100 &&
+                    y-(pieces[i].getY()*100) > 0 && y-(pieces[i].getY()*100) <= 100)
                 {
                     selected = i;
-                    startPX[selected] = pX[selected];
-                    startPY[selected] = pY[selected];
+                    offX = x-(pieces[i].getX()*100);
+                    offY = y-(pieces[i].getY()*100);
                 }
             }
         }
 
         public void mouseReleased (MouseEvent e)
         {
-            if (selected==-1) return;
-            int x2=e.getX();
-            int y2=e.getY();
-            //checks to see if it is wihtin the boundary of the board
-            //if it isnt it is sent back to where it was picked up
-            if (x2 > 800 || x2 < 0 || y2 > 800 || y2 < 0)
+            try
             {
-                pX[selected] = startPX[selected];
-                pY[selected] = startPY[selected];
+                if (selected==-1) return;
+                //only set the new piece position if it is within the board's boundraries
+                if (currX <= 800 || currX >= 0 || currY <= 800 || currY >= 0)
+                {
+                    pieces[selected].move((currX+offX)/100, (currY+offY)/100);
+                }
             }
-            //if it was than it is placed in the middle of the square it was released in
-            else
+            catch(InvalidMoveException ime)
             {
-                pX[selected] = (x2/100)*100;
-                pY[selected] = (y2/100)*100;
+
             }
             boardPanel.repaint();
             selected = -1;
@@ -154,114 +130,63 @@ public class Board extends JFrame
         public void mouseDragged (MouseEvent e)
         {
             if (selected==-1) return;
-            //checks to see if it was black or white
             {
-                //moves the coordinates to where the mouse is on screen
-                pX[selected] = e.getX()-50;
-                pY[selected] = e.getY()-50;
-                //makes sure the piece being dragged is not outside the boundry of the board
-                if (pX[selected] > 700) pX[selected] = 700;
-                if (pX[selected] < 0) pX[selected] = 0;
-                if (pY[selected] > 700) pY[selected] = 700;
-                if (pY[selected] < 0) pY[selected] = 0;
+                //set current cursor position for drawing piece while in motion
+                currX = e.getX()-offX;
+                currY = e.getY()-offY;
+                //make sure the cursor is not outside the boundry of the board
+                if (currX > 700) currX = 700;
+                if (currX < 0) currX = 0;
+                if (currY > 700) currY = 700;
+                if (currY < 0) currY = 0;
             }
             boardPanel.repaint();
         }
     }
 
-    public void initializeBoard()
+    private void initializePieces()
     {
-        //starting values for pieces coordinates
-        for (int i = 0; i < pX.length; i++)
-        {
-            //white pieces
-            if (i < 16)
-            {
-                if (i < 8)
-                {
-                    pX[i] = i *100;
-                    pY[i] = 600;
-                }
-                else
-                {
-                    pX[i] = (i%8)*100;
-                    pY[i] = 700;
-                }
-            }
-            //black pieces
-            else 
-            {
-                if (i < 24)
-                {
-                    pX[i] = (i-16) *100;
-                    pY[i] = 100;
-                }
-                else
-                {
-                    pX[i] = (i%8)*100;
-                    pY[i] = 0;
-                }
-            }  
-        }
-
-        //create white pieces
-        wKing = new King(); 
-        wQueen = new Queen();
-        wRook = new Rook();
-        wKnight = new Knight();
-        wBishop = new Bishop();
-        wPawn = new Pawn();
-        //create black pieces
-        bKing = new King(); 
-        bQueen = new Queen();
-        bRook = new Rook();
-        bKnight = new Knight();
-        bBishop = new Bishop();
-        bPawn = new Pawn();
-
         try
         {
-            board = ImageIO.read(new File("board.png"));
+            for(int i = 0; i < pieces.length; i++)
+            {
+                // white pieces
+                if(i == W_ROOK1 || i == W_ROOK2)
+                    pieces[i] = new Rook(i%8, 0, 'W');
+                else if(i == W_KNIGHT1 || i == W_KNIGHT2)
+                    pieces[i] = new Knight(i%8, 0, 'W');
+                else if(i == W_BISHOP1 || i == W_BISHOP2)
+                    pieces[i] = new Bishop(i%8, 0, 'W');
+                else if(i == W_QUEEN)
+                    pieces[i] = new Queen(i%8, 0, 'W');
+                else if(i == W_KING)
+                    pieces[i] = new King(i%8, 0, 'W');
+                else if(i >= W_PAWN1 && i <= W_PAWN8)
+                    pieces[i] = new Pawn(i%8, 1, 'W');
 
-            //get white piece images
-            wKing.setPlayer('W');
-            wKingI = wKing.getImage();
-            wQueen.setPlayer('W');
-            wQueenI = wQueen.getImage();
-            wRook.setPlayer('W');
-            wRookI = wRook.getImage();
-            wKnight.setPlayer('W');
-            wKnightI = wKnight.getImage();
-            wBishop.setPlayer('W');
-            wBishopI = wBishop.getImage();
-            wPawn.setPlayer('W');
-            wPawnI = wPawn.getImage();
-
-            //get black piece images
-            bKing.setPlayer('B');
-            bKingI = bKing.getImage();
-            bQueen.setPlayer('B');
-            bQueenI = bQueen.getImage();
-            bRook.setPlayer('B');
-            bRookI = bRook.getImage();
-            bKnight.setPlayer('B');
-            bKnightI = bKnight.getImage();
-            bBishop.setPlayer('B');
-            bBishopI = bBishop.getImage();
-            bPawn.setPlayer('B');
-            bPawnI = bPawn.getImage();
+                // black pieces
+                else if(i >= B_PAWN1 && i <= B_PAWN8)
+                    pieces[i] = new Pawn(i%8, 6, 'B');
+                else if(i == B_ROOK1 || i == B_ROOK2)
+                    pieces[i] = new Rook(i%8, 7, 'B');
+                else if(i == B_KNIGHT1 || i == B_KNIGHT2)
+                    pieces[i] = new Knight(i%8, 7, 'B');
+                else if(i == B_BISHOP1 || i == B_BISHOP2)
+                    pieces[i] = new Bishop(i%8, 7, 'B');
+                else if(i == B_QUEEN)
+                    pieces[i] = new Queen(i%8, 7, 'B');
+                else if(i == B_KING)
+                    pieces[i] = new King(i%8, 7, 'B');
+            }
         }
         catch(NoSuchPlayerException nspe)
         {
-            System.out.println(nspe);
-        }
-        catch(IOException ioe)
-        {
-            System.out.println(ioe);
+            System.out.printf("%s%n%nTerminating.", nspe.getMessage());
+            System.exit(1);
         }
     }
     
-    public static void main (String[] args)
+    public static void main(String[] args)
     {
         new Board();
     }
