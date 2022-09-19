@@ -29,11 +29,13 @@ public class Rook extends PieceAbstract
         throws InvalidMoveException
     {
         boolean notBetween = true;
-        //check horizontally for pieces between
-        if(this.x == x && this.y != y)
+        int occupyingPiece = -1;
+        //check vertically for pieces between
+        if((this.x == x && this.y != y) || (this.x != x && this.y == y))
         {
             for(int i = 0; i < pieces.length; i++)
             {
+                //check vertically for pieces between
                 if(pieces[i].getX() == x)
                 {
                     if((pieces[i].getY() < this.y && pieces[i].getY() > y) ||
@@ -42,14 +44,8 @@ public class Rook extends PieceAbstract
                         notBetween = false;
                     }
                 }
-            }
-        }
-        //check vertically for pieces between
-        else if(this.x != x && this.y == y)
-        {
-            for(int i = 0; i < pieces.length; i++)
-            {
-                if(pieces[i].getY() == y)
+                //check horizontally for pieces between
+                else if(pieces[i].getY() == y)
                 {
                     if((pieces[i].getX() < this.x && pieces[i].getX() > x) ||
                         pieces[i].getX() < x && pieces[i].getX() > this.x)
@@ -57,9 +53,15 @@ public class Rook extends PieceAbstract
                         notBetween = false;
                     }
                 }
+                //check if player is attempting to move ontop of their own piece
+                if(pieces[i].getPlayer() == this.getPlayer() &&
+                    pieces[i].getX() == x && pieces[i].getY() == y)
+                {
+                    occupyingPiece = i;
+                }
             }
         }
-        if(notBetween && (this.x == x || this.y == y))
+        if(notBetween && occupyingPiece < 0 && (this.x == x || this.y == y))
         {
             this.x = x;
             this.y = y;
