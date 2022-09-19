@@ -99,8 +99,6 @@ public class Board extends JFrame
                     y-(pieces[i].getY()*100) > 0 && y-(pieces[i].getY()*100) <= 100)
                 {
                     selected = i;
-                    offX = x-(pieces[i].getX()*100);
-                    offY = y-(pieces[i].getY()*100);
                 }
             }
         }
