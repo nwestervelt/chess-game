@@ -7,6 +7,15 @@ import java.awt.image.*;
 
 public class Pawn extends PieceAbstract
 {
+    public Pawn()
+    {
+        super();
+    }
+    public Pawn(int x, int y, char player)
+        throws NoSuchPlayerException
+    {
+        super(x, y, player);
+    }
     public BufferedImage getImage()
         throws IOException
     {

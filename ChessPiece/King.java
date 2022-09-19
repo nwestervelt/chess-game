@@ -9,6 +9,15 @@ public class King extends PieceAbstract
 {
     private boolean moved = false;
 
+    public King()
+    {
+        super();
+    }
+    public King(int x, int y, char player)
+        throws NoSuchPlayerException
+    {
+        super(x, y, player);
+    }
     public BufferedImage getImage()
         throws IOException
     {

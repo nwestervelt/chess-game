@@ -7,6 +7,15 @@ import java.awt.image.*;
 
 public class Bishop extends PieceAbstract
 {
+    public Bishop()
+    {
+        super();
+    }
+    public Bishop(int x, int y, char player)
+        throws NoSuchPlayerException
+    {
+        super(x, y, player);
+    }
     public BufferedImage getImage()
         throws IOException
     {

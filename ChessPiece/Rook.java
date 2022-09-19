@@ -9,6 +9,15 @@ public class Rook extends PieceAbstract
 {
     private boolean moved;
 
+    public Rook()
+    {
+        super();
+    }
+    public Rook(int x, int y, char player)
+        throws NoSuchPlayerException
+    {
+        super(x, y, player);
+    }
     public BufferedImage getImage()
         throws IOException
     {

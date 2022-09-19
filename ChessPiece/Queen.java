@@ -7,6 +7,15 @@ import java.awt.image.*;
 
 public class Queen extends PieceAbstract
 {
+    public Queen()
+    {
+        super();
+    }
+    public Queen(int x, int y, char player)
+        throws NoSuchPlayerException
+    {
+        super(x, y, player);
+    }
     public BufferedImage getImage()
         throws IOException
     {

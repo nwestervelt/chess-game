@@ -7,6 +7,15 @@ import java.awt.image.*;
 
 public class Knight extends PieceAbstract
 {
+    public Knight()
+    {
+        super();
+    }
+    public Knight(int x, int y, char player)
+        throws NoSuchPlayerException
+    {
+        super(x, y, player);
+    }
     public BufferedImage getImage()
         throws IOException
     {
