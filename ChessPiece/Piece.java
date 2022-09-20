@@ -6,7 +6,7 @@ import java.awt.image.*;
 
 interface Piece
 {
-    public void move(int newX, int newY)
+    public void move(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException;
 
     public void setPlayer(char newPlayer)

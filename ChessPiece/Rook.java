@@ -5,20 +5,19 @@ import java.io.*;
 import javax.imageio.*;
 import java.awt.image.*;
 
-public class Rook implements Piece
+public class Rook extends PieceAbstract
 {
-    private char player;
-    private int x, y;
     private boolean moved;
 
     public Rook()
     {
-        player = ' ';
-        x = 0;
-        y = 0;
-        moved = false;
+        super();
     }
-
+    public Rook(int x, int y, char player)
+        throws NoSuchPlayerException
+    {
+        super(x, y, player);
+    }
     public BufferedImage getImage()
         throws IOException
     {
@@ -26,31 +25,49 @@ public class Rook implements Piece
         image = ImageIO.read(new File("ChessPiece/images/"+player+"Rook.png"));
         return image;
     }
-    public void setPlayer(char newPlayer)
-        throws NoSuchPlayerException
-    {
-        if(newPlayer == 'W' || newPlayer == 'B')
-            player = newPlayer;
-        else
-            throw new NoSuchPlayerException(newPlayer+" is not a valid value for player.");
-    }
-    public char getPlayer()
-    {
-        return player;
-    }
-    public int getX()
-    {
-        return x;
-    }
-    public int getY()
-    {
-        return y;
-    }
-    public void move(int newX, int newY)
+    public void move(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
-        //will use InvalidMoveException to prevent illegal moves in the future
-        x = newX;
-        y = newY;
+        boolean notBetween = true;
+        int occupyingPiece = -1;
+        //check vertically for pieces between
+        if((this.x == x && this.y != y) || (this.x != x && this.y == y))
+        {
+            for(int i = 0; i < pieces.length; i++)
+            {
+                //check vertically for pieces between
+                if(pieces[i].getX() == x)
+                {
+                    if((pieces[i].getY() < this.y && pieces[i].getY() > y) ||
+                        pieces[i].getY() < y && pieces[i].getY() > this.y)
+                    {
+                        notBetween = false;
+                    }
+                }
+                //check horizontally for pieces between
+                else if(pieces[i].getY() == y)
+                {
+                    if((pieces[i].getX() < this.x && pieces[i].getX() > x) ||
+                        pieces[i].getX() < x && pieces[i].getX() > this.x)
+                    {
+                        notBetween = false;
+                    }
+                }
+                //check if player is attempting to move ontop of their own piece
+                if(pieces[i].getPlayer() == this.getPlayer() &&
+                    pieces[i].getX() == x && pieces[i].getY() == y)
+                {
+                    occupyingPiece = i;
+                }
+            }
+        }
+        if(notBetween && occupyingPiece < 0 && (this.x == x || this.y == y))
+        {
+            this.x = x;
+            this.y = y;
+        }
+        else
+            throw new InvalidMoveException("Rooks move horizontally and vertically, "
+                +"and can't pass through other pieces.");
     }
 }
