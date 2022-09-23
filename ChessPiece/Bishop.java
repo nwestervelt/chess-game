@@ -26,8 +26,6 @@ public class Bishop extends PieceAbstract
     public void move(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
-        //will use InvalidMoveException to prevent illegal moves in the future
-        this.x = x;
-        this.y = y;
+        bishopMove(x, y, pieces);
     }
 }
