@@ -27,7 +27,13 @@ public class Queen extends PieceAbstract
         throws InvalidMoveException
     {
         //will use InvalidMoveException to prevent illegal moves in the future
-        this.x = x;
-        this.y = y;
+        if (Math.abs(x - this.x) == Math.abs(y - this.y))
+        {
+            bishopMove(x, y, pieces); 
+        }
+        else 
+        {
+            rookMove(x, y, pieces);
+        }
     }
 }
