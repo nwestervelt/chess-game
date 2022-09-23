@@ -26,7 +26,6 @@ public class Queen extends PieceAbstract
     public void move(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
-        //will use InvalidMoveException to prevent illegal moves in the future
         //if diagonal movement call bishopMove method
         //else call rookMove method
         if (Math.abs(x - this.x) == Math.abs(y - this.y))
