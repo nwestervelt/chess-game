@@ -7,7 +7,7 @@ import java.awt.image.*;
 
 public class King extends PieceAbstract
 {
-    private boolean moved = false;
+    private boolean notMoved = false;
 
     public King()
     {
