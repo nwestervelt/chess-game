@@ -57,46 +57,42 @@ public abstract class PieceAbstract implements Piece
             //iterating through each piece
             for (int i = 0; i < pieces.length; i++)
             {
-                //if in same diagonal and if in between original position and candidate position
                 //if moving up and to the right 
                 if(x - this.x > 0 && y - this.y < 0)
                 {
                     if ((Math.abs(pieces[i].getX() - this.x) == Math.abs(pieces[i].getY() - this.y))&&
-                    (pieces[i].getX() < x && pieces[i].getX() > this.x) &&
-                    (pieces[i].getY() > y && pieces[i].getY() < this.y))
+                        (pieces[i].getX() < x && pieces[i].getX() > this.x) &&
+                        (pieces[i].getY() > y && pieces[i].getY() < this.y))
                     {
                         notBetween = false;
                     }
                 }
-                //if in same diagonal and if in between original position and candidate position
                 //if moving down and to the right
                 else if(x - this.x > 0 && y - this.y > 0)
                 {
                     if ((Math.abs(pieces[i].getX() - this.x) == Math.abs(pieces[i].getY() - this.y))&&
-                    (pieces[i].getX() < x && pieces[i].getX() > this.x) &&
-                    (pieces[i].getY() < y && pieces[i].getY() > this.y))
+                        (pieces[i].getX() < x && pieces[i].getX() > this.x) &&
+                        (pieces[i].getY() < y && pieces[i].getY() > this.y))
                     {
                         notBetween = false;
                     }
                 }
-                //if in same diagonal and if in between original position and candidate position
                 //if moving up and to the left
                 else if(x - this.x < 0 && y - this.y < 0)
                 {
                     if ((Math.abs(pieces[i].getX() - this.x) == Math.abs(pieces[i].getY() - this.y))&&
-                    (pieces[i].getX() > x && pieces[i].getX() < this.x) &&
-                    (pieces[i].getY() > y && pieces[i].getY() < this.y))
+                        (pieces[i].getX() > x && pieces[i].getX() < this.x) &&
+                        (pieces[i].getY() > y && pieces[i].getY() < this.y))
                     {
                         notBetween = false;
                     }
                 }
-                //if in same diagonal and if in between original position and candidate position
                 //if moving down and to the left
                 else if(x - this.x < 0 && y - this.y > 0)
                 {  
                     if ((Math.abs(pieces[i].getX() - this.x) == Math.abs(pieces[i].getY() - this.y))&&
-                    (pieces[i].getX() > x && pieces[i].getX() < this.x) &&
-                    (pieces[i].getY() < y && pieces[i].getY() > this.y))
+                        (pieces[i].getX() > x && pieces[i].getX() < this.x) &&
+                        (pieces[i].getY() < y && pieces[i].getY() > this.y))
                     {
                         notBetween = false;
                     }
