@@ -45,6 +45,6 @@ public class Knight extends PieceAbstract
         }
         else
             throw new InvalidMoveException("Knights move in L shapes, 2 spaces in one direction and 1 space in"+
-                "another direction.");
+                "a perpendicular direction.");
     }
 }
