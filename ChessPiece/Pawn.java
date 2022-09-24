@@ -3,7 +3,6 @@ package ChessPiece;
 
 import java.io.*;
 import javax.imageio.*;
-import javax.lang.model.util.ElementScanner14;
 
 import java.awt.image.*;
 
