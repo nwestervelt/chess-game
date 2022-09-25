@@ -7,7 +7,7 @@ import java.awt.image.*;
 
 public class King extends PieceAbstract
 {
-    private boolean notMoved = false;
+    private boolean notMoved = true;
 
     public King()
     {
@@ -28,9 +28,29 @@ public class King extends PieceAbstract
     public void move(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
-        //will use InvalidMoveException to prevent illegal moves in the future
-        this.x = x;
-        this.y = y;
+        int occupyingPiece = -1;
+
+        //if moving one space
+        if(Math.abs(x - this.x) < 2 && Math.abs(y - this.y) < 2)
+        {
+            for(int i = 0; i < pieces.length; i++)
+            {
+                //check if player is attempting to move ontop of their own piece
+                if(pieces[i].getPlayer() == player &&
+                    pieces[i].getX() == x && pieces[i].getY() == y)
+                {
+                    occupyingPiece = i;
+                }
+            }
+        }
+        if(occupyingPiece < 0 && Math.abs(x - this.x) < 2 && Math.abs(y - this.y) < 2)
+        {
+            this.x = x;
+            this.y = y;
+            notMoved = false;
+        }
+        else
+            throw new InvalidMoveException("Kings can only move one space at a time, in any direction.");
     }
     public void castle(String direction)
     {
