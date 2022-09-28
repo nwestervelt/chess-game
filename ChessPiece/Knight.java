@@ -42,7 +42,9 @@ public class Knight extends PieceAbstract
             this.x = x;
             this.y = y;
         }
-        else if (occupyingPiece >= 0 && pieces[occupyingPiece].getPlayer() != player)
+        else if (occupyingPiece >= 0 && pieces[occupyingPiece].getPlayer() != player &&
+            ((Math.abs(x - this.getX()) == 2 && Math.abs(y - this.getY()) == 1) ||
+            (Math.abs(x - this.getX()) == 1 && Math.abs(y - this.getY()) == 2)))
         {
             this.x = x;
             this.y = y;
