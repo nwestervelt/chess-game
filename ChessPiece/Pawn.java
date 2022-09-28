@@ -46,8 +46,7 @@ public class Pawn extends PieceAbstract
                         notBetween = false;
                 }
                 //check if player is attempting to move ontop of their own piece
-                if(pieces[i].getPlayer() == player &&
-                    pieces[i].getX() == x && pieces[i].getY() == y)
+                if(pieces[i].getX() == x && pieces[i].getY() == y)
                 {
                     occupyingPiece = i;
                 }
@@ -76,8 +75,17 @@ public class Pawn extends PieceAbstract
                enPassant = true; 
             }
         }
+        //if occupied and pawn is moving forward and opposing player is occupying 
+        //and it is 1 space to the diagonal of the pawn
+       else if (occupyingPiece >= 0 && movingForward && pieces[occupyingPiece].getPlayer() != player 
+                && (x == this.x + 1 || x == this.x - 1) && Math.abs(y - this.y) == 1)
+        {
+            this.x = x;
+            this.y = y;
+            capturePiece(occupyingPiece, pieces);
+        }
         //throw exception if didn't move
-        if(x != this.x || y != this.y)
+        else
             throw new InvalidMoveException("Pawns can only move towards the opposing side, and "+
                 "they can only move two spaces forwards if they haven't moved yet.");
     }
