@@ -1,6 +1,7 @@
 // Abstract lass file providing default method implementations.
 package ChessPiece;
-
+import java.awt.image.*;
+import java.io.*;
 public abstract class PieceAbstract
 {
     int x;
@@ -32,6 +33,8 @@ public abstract class PieceAbstract
     {
         return player;
     }
+    public abstract BufferedImage getImage()
+        throws IOException;
     public int getX()
     {
         return x;
@@ -56,6 +59,7 @@ public abstract class PieceAbstract
     }
     protected void capturePiece(int occupyingPiece, PieceAbstract[] pieces)
     {
+        //sets the captured piece offscreen so it is no longer visible
         pieces[occupyingPiece].setX(-100);
         pieces[occupyingPiece].setY(-100);
     }
