@@ -31,8 +31,7 @@ public class Knight extends PieceAbstract
         for(int i = 0; i < pieces.length; i++)
         {
             //check if player is attempting to move ontop of their own piece
-            if(pieces[i].getPlayer() == this.getPlayer() &&
-                pieces[i].getX() == x && pieces[i].getY() == y)
+            if(pieces[i].getX() == x && pieces[i].getY() == y)
             {
                 occupyingPiece = i;
             }
@@ -42,6 +41,12 @@ public class Knight extends PieceAbstract
         {
             this.x = x;
             this.y = y;
+        }
+        else if (pieces[occupyingPiece].getPlayer() != player)
+        {
+            this.x = x;
+            this.y = y;
+            capturePiece(occupyingPiece, pieces);
         }
         else
             throw new InvalidMoveException("Knights move in L shapes, 2 spaces in one direction and 1 space in"+

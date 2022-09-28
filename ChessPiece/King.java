@@ -36,8 +36,7 @@ public class King extends PieceAbstract
             for(int i = 0; i < pieces.length; i++)
             {
                 //check if player is attempting to move ontop of their own piece
-                if(pieces[i].getPlayer() == player &&
-                    pieces[i].getX() == x && pieces[i].getY() == y)
+                if(pieces[i].getX() == x && pieces[i].getY() == y)
                 {
                     occupyingPiece = i;
                 }
@@ -48,6 +47,12 @@ public class King extends PieceAbstract
             this.x = x;
             this.y = y;
             notMoved = false;
+        }
+        else if (pieces[occupyingPiece].getPlayer() != player)
+        {
+            this.x = x;
+            this.y = y;
+            capturePiece(occupyingPiece, pieces);
         }
         else
             throw new InvalidMoveException("Kings can only move one space at a time, in any direction.");
