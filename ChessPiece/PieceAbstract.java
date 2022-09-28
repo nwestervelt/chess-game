@@ -1,7 +1,7 @@
 // Abstract lass file providing default method implementations.
 package ChessPiece;
 
-public abstract class PieceAbstract implements Piece
+public abstract class PieceAbstract
 {
     int x;
     int y;
@@ -40,12 +40,26 @@ public abstract class PieceAbstract implements Piece
     {
         return y;
     }
+    protected void setX(int x)
+    {
+        this.x = x;
+    }
+    protected void setY(int y)
+    {
+        this.y = y;
+    }
     public void move(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
         this.x = x;
         this.y = y;
     }
+    protected void capturePiece(int occupyingPiece, PieceAbstract[] pieces)
+    {
+        pieces[occupyingPiece].setX(-100);
+        pieces[occupyingPiece].setY(-100);
+    }
+
     public void bishopMove(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
@@ -98,8 +112,7 @@ public abstract class PieceAbstract implements Piece
                     }
                 }
                 //check if player is attempting to move ontop of their own piece
-                if(pieces[i].getPlayer() == this.getPlayer() &&
-                    pieces[i].getX() == x && pieces[i].getY() == y)
+                if(pieces[i].getX() == x && pieces[i].getY() == y)
                 {
                     occupyingPiece = i;
                 }
@@ -110,6 +123,12 @@ public abstract class PieceAbstract implements Piece
         {
             this.x = x;
             this.y = y;
+        }
+        else if (notBetween && pieces[occupyingPiece].getPlayer() != player)
+        {
+            this.x = x;
+            this.y = y;
+            capturePiece(occupyingPiece, pieces);
         }
         else
             throw new InvalidMoveException("Bishops move along the diagonal, "
@@ -145,8 +164,7 @@ public abstract class PieceAbstract implements Piece
                     }
                 }
                 //check if player is attempting to move ontop of their own piece
-                if(pieces[i].getPlayer() == this.getPlayer() &&
-                    pieces[i].getX() == x && pieces[i].getY() == y)
+                if(pieces[i].getX() == x && pieces[i].getY() == y)
                 {
                     occupyingPiece = i;
                 }
@@ -156,6 +174,12 @@ public abstract class PieceAbstract implements Piece
         {
             this.x = x;
             this.y = y;
+        }
+        else if (notBetween && pieces[occupyingPiece].getPlayer() != player)
+        {
+            this.x = x;
+            this.y = y;
+            capturePiece(occupyingPiece, pieces);
         }
         else
             throw new InvalidMoveException("Rooks move horizontally and vertically, "
