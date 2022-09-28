@@ -128,7 +128,7 @@ public abstract class PieceAbstract
             this.x = x;
             this.y = y;
         }
-        else if (notBetween && pieces[occupyingPiece].getPlayer() != player)
+        else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player)
         {
             this.x = x;
             this.y = y;
@@ -179,7 +179,7 @@ public abstract class PieceAbstract
             this.x = x;
             this.y = y;
         }
-        else if (notBetween && pieces[occupyingPiece].getPlayer() != player)
+        else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player)
         {
             this.x = x;
             this.y = y;

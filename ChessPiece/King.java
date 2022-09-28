@@ -48,7 +48,7 @@ public class King extends PieceAbstract
             this.y = y;
             notMoved = false;
         }
-        else if (pieces[occupyingPiece].getPlayer() != player)
+        else if (occupyingPiece >= 0 && pieces[occupyingPiece].getPlayer() != player)
         {
             this.x = x;
             this.y = y;
