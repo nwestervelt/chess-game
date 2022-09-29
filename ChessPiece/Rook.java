@@ -7,8 +7,6 @@ import java.awt.image.*;
 
 public class Rook extends PieceAbstract
 {
-    private boolean notMoved = true;
-
     public Rook()
     {
         super();
