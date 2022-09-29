@@ -8,6 +8,8 @@ public abstract class PieceAbstract
     int y;
     char player;
 
+    private boolean notMoved = true;
+    
     public PieceAbstract()
     {
         player = ' ';
@@ -63,7 +65,10 @@ public abstract class PieceAbstract
         pieces[occupyingPiece].setX(-100);
         pieces[occupyingPiece].setY(-100);
     }
-
+    public boolean getNotMoved()
+    {
+        return notMoved;
+    }
     public void bishopMove(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
@@ -178,12 +183,14 @@ public abstract class PieceAbstract
         {
             this.x = x;
             this.y = y;
+            notMoved = false;
         }
         else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player)
         {
             this.x = x;
             this.y = y;
             capturePiece(occupyingPiece, pieces);
+            notMoved = false;
         }
         else
             throw new InvalidMoveException("Rooks move horizontally and vertically, "
