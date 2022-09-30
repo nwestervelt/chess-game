@@ -1,6 +1,4 @@
 // Class file for King chess pieces.
-package ChessPiece;
-
 import java.io.*;
 import javax.imageio.*;
 import java.awt.image.*;

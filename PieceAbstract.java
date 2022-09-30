@@ -1,5 +1,4 @@
 // Abstract lass file providing default method implementations.
-package ChessPiece;
 import java.awt.image.*;
 import java.io.*;
 public abstract class PieceAbstract

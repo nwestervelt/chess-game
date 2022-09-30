@@ -5,7 +5,6 @@ import java.awt.image.*;
 import java.io.*;
 import javax.imageio.*;
 import javax.swing.*;
-import ChessPiece.*;
 
 public class Board extends JFrame
 {

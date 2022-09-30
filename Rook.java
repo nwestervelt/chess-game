@@ -1,17 +1,15 @@
-// Class file for Bishop chess pieces.
-package ChessPiece;
-
+// Class file for Rook chess pieces.
 import java.io.*;
 import javax.imageio.*;
 import java.awt.image.*;
 
-public class Bishop extends PieceAbstract
+public class Rook extends PieceAbstract
 {
-    public Bishop()
+    public Rook()
     {
         super();
     }
-    public Bishop(int x, int y, char player)
+    public Rook(int x, int y, char player)
         throws NoSuchPlayerException
     {
         super(x, y, player);
@@ -20,12 +18,12 @@ public class Bishop extends PieceAbstract
         throws IOException
     {
         BufferedImage image;
-        image = ImageIO.read(new File("ChessPiece/images/"+player+"Bishop.png"));
+        image = ImageIO.read(new File("ChessPiece/images/"+player+"Rook.png"));
         return image;
     }
     public void move(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
-        bishopMove(x, y, pieces);
+        rookMove(x, y, pieces);
     }
 }

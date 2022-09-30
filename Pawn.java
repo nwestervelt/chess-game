@@ -1,6 +1,4 @@
 // Class file for Pawn chess pieces.
-package ChessPiece;
-
 import java.io.*;
 import javax.imageio.*;
 
