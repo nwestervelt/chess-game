@@ -1,5 +1,3 @@
-package ChessPiece;
-
 public class NoSuchPlayerException extends Exception
 {
     public NoSuchPlayerException(String message)

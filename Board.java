@@ -5,7 +5,6 @@ import java.awt.image.*;
 import java.io.*;
 import javax.imageio.*;
 import javax.swing.*;
-import ChessPiece.*;
 
 public class Board extends JFrame
 {
@@ -46,7 +45,7 @@ public class Board extends JFrame
         //get board's background image
         try
         {
-            board = ImageIO.read(new File("board.png"));
+            board = ImageIO.read(new File("images/board.png"));
         }
         catch(IOException ioe)
         {
