@@ -50,7 +50,7 @@ public class King extends PieceAbstract
                 if(pieces[i].getX() == this.x && pieces[i].getY() == this.y)
                 {
                     //if king is moving left and the left rook has not moved
-                    if(x - this.x == -2 && pieces[i - 3].getNotMoved())
+                    if(x - this.x == -2 && ((Rook)(pieces[i - 3])).getNotMoved())
                     {
                         //iterating through array checking if pieces are between rook and king
                         for (int j = 0; j < pieces.length; j++)
@@ -66,11 +66,11 @@ public class King extends PieceAbstract
                         {
                             this.x = x;
                             pieces[i - 3].setX(this.x + 1);
-                            notMoved = false;
+                            this.notMoved = false;
                         }
                     }
                     //if king is moving right and right rook has not moved 
-                    else if(x - this.x == 2 && pieces[i + 4].getNotMoved())
+                    else if(x - this.x == 2 && ((Rook)(pieces[i - 3])).getNotMoved())
                     {
                         //iterating through array checking if pieces are between rook and king
                         for (int j = 0; j < pieces.length; j++)
@@ -86,7 +86,7 @@ public class King extends PieceAbstract
                         {
                             this.x = x;
                             pieces[i + 4].setX(this.x - 1);
-                            notMoved = false;
+                            this.notMoved = false;
                         }
                     }
                 }
@@ -96,7 +96,7 @@ public class King extends PieceAbstract
         {
             this.x = x;
             this.y = y;
-            notMoved = false;
+            this.notMoved = false;
         }
         else if (occupyingPiece >= 0 && pieces[occupyingPiece].getPlayer() != player)
         {
