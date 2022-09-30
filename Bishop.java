@@ -18,7 +18,7 @@ public class Bishop extends PieceAbstract
         throws IOException
     {
         BufferedImage image;
-        image = ImageIO.read(new File("ChessPiece/images/"+player+"Bishop.png"));
+        image = ImageIO.read(new File("images/"+player+"Bishop.png"));
         return image;
     }
     public void move(int x, int y, PieceAbstract[] pieces)

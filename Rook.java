@@ -18,7 +18,7 @@ public class Rook extends PieceAbstract
         throws IOException
     {
         BufferedImage image;
-        image = ImageIO.read(new File("ChessPiece/images/"+player+"Rook.png"));
+        image = ImageIO.read(new File("images/"+player+"Rook.png"));
         return image;
     }
     public void move(int x, int y, PieceAbstract[] pieces)

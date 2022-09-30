@@ -21,7 +21,7 @@ public class Pawn extends PieceAbstract
         throws IOException
     {
         BufferedImage image;
-        image = ImageIO.read(new File("ChessPiece/images/"+player+"Pawn.png"));
+        image = ImageIO.read(new File("images/"+player+"Pawn.png"));
         return image;
     }
     public void move(int x, int y, PieceAbstract[] pieces)
