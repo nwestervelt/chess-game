@@ -66,7 +66,7 @@ public class King extends PieceAbstract
                         {
                             this.x = x;
                             pieces[i - 3].setX(this.x + 1);
-                            this.notMoved = false;
+                            notMoved = false;
                         }
                     }
                     //if king is moving right and right rook has not moved 
@@ -86,7 +86,7 @@ public class King extends PieceAbstract
                         {
                             this.x = x;
                             pieces[i + 4].setX(this.x - 1);
-                            this.notMoved = false;
+                            notMoved = false;
                         }
                     }
                 }
