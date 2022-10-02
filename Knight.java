@@ -28,7 +28,7 @@ public class Knight extends PieceAbstract
 
         for(int i = 0; i < pieces.length; i++)
         {
-            //check if player is attempting to move ontop of their own piece
+            //if space is occupied, store that piece's index
             if(pieces[i].getX() == x && pieces[i].getY() == y)
             {
                 occupyingPiece = i;

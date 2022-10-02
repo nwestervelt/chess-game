@@ -43,7 +43,7 @@ public class Pawn extends PieceAbstract
                     if(pieces[i].getX() == x && pieces[i].getY() == ((this.y + y) / 2))
                         notBetween = false;
                 }
-                //check if player is attempting to move ontop of their own piece
+                //if space is occupied, store that piece's index
                 if(pieces[i].getX() == x && pieces[i].getY() == y)
                 {
                     occupyingPiece = i;

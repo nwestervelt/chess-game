@@ -114,7 +114,7 @@ public abstract class PieceAbstract
                         notBetween = false;
                     }
                 }
-                //check if player is attempting to move ontop of any piece
+                //if space is occupied, store that piece's index
                 if(pieces[i].getX() == x && pieces[i].getY() == y)
                 {
                     occupyingPiece = i;
