@@ -177,8 +177,7 @@ public abstract class PieceAbstract
         {
             this.x = x;
             this.y = y;
-            if(this == pieces[4] || this == pieces[28]) {}
-            else
+            if(!(this == pieces[4] || this == pieces[28]) && this instanceof Rook)
                 ((Rook)this).setNotMoved(false);
         }
         else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player)
@@ -186,8 +185,7 @@ public abstract class PieceAbstract
             this.x = x;
             this.y = y;
             capturePiece(occupyingPiece, pieces);
-            if(this == pieces[4] || this == pieces[28]) {}
-            else
+            if(!(this == pieces[4] || this == pieces[28]) && this instanceof Rook)
                 ((Rook)this).setNotMoved(false);
         }
         else

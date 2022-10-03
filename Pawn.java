@@ -101,8 +101,4 @@ public class Pawn extends PieceAbstract
             throw new InvalidMoveException("Pawns can only move towards the opposing side, and "+
                 "they can only move two spaces forwards if they haven't moved yet.");
     }
-    public void promotion(String piece)
-    {
-
-    }
 }
