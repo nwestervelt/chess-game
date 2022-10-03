@@ -33,35 +33,35 @@ public class King extends PieceAbstract
         {
             for(int i = 0; i < pieces.length; i++)
             {
-                //check if player is attempting to move ontop of their own piece
+                //if space is occupied, store that piece's index
                 if(pieces[i].getX() == x && pieces[i].getY() == y)
                 {
                     occupyingPiece = i;
                 }
             }
         }
-        //if King has not moved and is trying to move two across the same x for castling
-        if(notMoved && (Math.abs(x - this.x) == 2 && y == this.y))
+        //if King has not moved and is moving two spaces horizontally
+        if(notMoved && Math.abs(x - this.x) == 2 && y == this.y)
         {
-            //iterating through the array to find the king piece
+            //searching for king's index
             for(int i = 0; i < pieces.length; i++)
             {
-                //if finding king
-                if(pieces[i].getX() == this.x && pieces[i].getY() == this.y)
+                //if i is this king's index
+                if(pieces[i] == this)
                 {
-                    //if king is moving left and the left rook has not moved
+                    //if king is moving left and left rook has not moved
                     if(x - this.x == -2 && ((Rook)(pieces[i - 3])).getNotMoved())
                     {
-                        //iterating through array checking if pieces are between rook and king
+                        //searching for pieces between king and rook
                         for (int j = 0; j < pieces.length; j++)
                         {
                             if(pieces[j].getX() < this.x && pieces[j].getX() > this.x - 3 &&
-                            pieces[j].getY() == this.y)
+                                pieces[j].getY() == this.y)
                             {
                                 notBetween = false;
                             }
                         }
-                        //if nothing is between move king over 2 spaces and rook next to it on the opposite side
+                        //if nothing between king and rook, move king and rook
                         if (notBetween)
                         {
                             this.x = x;
@@ -72,7 +72,7 @@ public class King extends PieceAbstract
                     //if king is moving right and right rook has not moved 
                     else if(x - this.x == 2 && ((Rook)(pieces[i - 3])).getNotMoved())
                     {
-                        //iterating through array checking if pieces are between rook and king
+                        //searching for pieces between king and rook
                         for (int j = 0; j < pieces.length; j++)
                         {
                             if(pieces[j].getX() > this.x && pieces[j].getX() < this.x + 4 &&
@@ -81,7 +81,7 @@ public class King extends PieceAbstract
                                 notBetween = false;
                             }
                         }
-                        //if nothing is between move king over 2 spaces and rook next to it on the opposite side
+                        //if nothing between king and rook, move king and rook
                         if (notBetween)
                         {
                             this.x = x;

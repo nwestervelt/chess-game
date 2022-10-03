@@ -8,7 +8,7 @@ import javax.swing.*;
 
 public class Board extends JFrame
 {
-    //declare constants used to reference piece objects more easily
+    //declare static constants for pieces indexes
     public static final int W_ROOK1 = 0, W_KNIGHT1 = 1, W_BISHOP1 = 2, W_KING = 3, W_QUEEN = 4,
          W_BISHOP2 = 5, W_KNIGHT2 = 6, W_ROOK2 = 7;
     public static final int W_PAWN1 = 8, W_PAWN2 = 9, W_PAWN3 = 10, W_PAWN4 = 11, W_PAWN5 = 12,
@@ -107,10 +107,49 @@ public class Board extends JFrame
             try
             {
                 if (selected==-1) return;
-                //only set the new piece position if it is within the board's boundraries
+                //if new coordinates are inside the board's boundraries
                 if (currX <= 800 || currX >= 0 || currY <= 800 || currY >= 0)
                 {
                     pieces[selected].move((currX+50)/100, (currY+50)/100, pieces);
+                    //if a pawn is moved to the other side of the board
+                    if(pieces[selected] instanceof Pawn &&
+                        ((pieces[selected].getY() == 0 && pieces[selected].getPlayer() == 'B') ||
+                        (pieces[selected].getY() == 7 && pieces[selected].getPlayer() == 'W')))
+                    {
+                        //create and make promotion dialog visible
+                        PromotionDialog pd = new PromotionDialog(Board.this);
+                        pd.setVisible(true);
+                        PieceAbstract newPiece;
+                        try
+                        {
+                            //replace currently selected piece with selected piece type
+                            if(pd.getSelectedButton() == PromotionDialog.QUEEN)
+                            {
+                                newPiece = new Queen(pieces[selected].getX(), pieces[selected].getY(), pieces[selected].getPlayer());
+                                pieces[selected] = newPiece;
+                            }
+                            else if(pd.getSelectedButton() == PromotionDialog.KNIGHT)
+                            {
+                                newPiece = new Knight(pieces[selected].getX(), pieces[selected].getY(), pieces[selected].getPlayer());
+                                pieces[selected] = newPiece;
+                            }
+                            else if(pd.getSelectedButton() == PromotionDialog.BISHOP)
+                            {
+                                newPiece = new Bishop(pieces[selected].getX(), pieces[selected].getY(), pieces[selected].getPlayer());
+                                pieces[selected] = newPiece;
+                            }
+                            else if(pd.getSelectedButton() == PromotionDialog.ROOK)
+                            {
+                                newPiece = new Rook(pieces[selected].getX(), pieces[selected].getY(), pieces[selected].getPlayer());
+                                pieces[selected] = newPiece;
+                            }
+                        }
+                        catch(NoSuchPlayerException nspe)
+                        {
+                            System.out.printf("%s%n%nTerminating.", nspe.getMessage());
+                            System.exit(1);
+                        }
+                    }
                 }
             }
             catch(InvalidMoveException ime)
@@ -138,6 +177,69 @@ public class Board extends JFrame
                 if (currY < 0) currY = 0;
             }
             boardPanel.repaint();
+        }
+    }
+
+    private class PromotionDialog extends JDialog
+    {
+        private JRadioButton queenRButton, knightRButton, bishopRButton, rookRButton;
+        private int selectedButton;
+        //static constants for selectedButton
+        public static final int QUEEN = 1, KNIGHT = 2, BISHOP = 3, ROOK = 4;
+
+        public PromotionDialog(JFrame parent)
+        {
+            super(parent, true);
+
+            JPanel radioPanel = new JPanel();
+            add(radioPanel, BorderLayout.CENTER);
+
+            //create group for radio buttons
+            ButtonGroup radioGroup = new ButtonGroup();
+
+            //create radio buttons for each piece type
+            queenRButton = new JRadioButton("Queen");
+            queenRButton.setSelected(true);
+            radioPanel.add(queenRButton);
+            radioGroup.add(queenRButton);
+
+            knightRButton = new JRadioButton("Knight");
+            radioPanel.add(knightRButton);
+            radioGroup.add(knightRButton);
+
+            bishopRButton = new JRadioButton("Bishop");
+            radioPanel.add(bishopRButton);
+            radioGroup.add(bishopRButton);
+
+            rookRButton = new JRadioButton("Rook");
+            radioPanel.add(rookRButton);
+            radioGroup.add(rookRButton);
+
+            //create okay button
+            JButton okayButton = new JButton("Okay");
+            okayButton.addActionListener(new ActionHandler());
+            add(okayButton, BorderLayout.SOUTH);
+
+            setSize(300, 200);
+            setTitle("Promotion");
+            setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        }
+        private class ActionHandler implements ActionListener
+        {
+            //action fired when "Okay" button clicked
+            public void actionPerformed(ActionEvent e)
+            {
+                if(queenRButton.isSelected()) selectedButton = QUEEN;
+                else if(knightRButton.isSelected()) selectedButton = KNIGHT;
+                else if(bishopRButton.isSelected()) selectedButton = BISHOP;
+                else if(rookRButton.isSelected()) selectedButton = ROOK;
+
+                setVisible(false);
+            }
+        }
+        public int getSelectedButton()
+        {
+            return selectedButton;
         }
     }
 
