@@ -107,6 +107,7 @@ public class King extends PieceAbstract
             this.x = x;
             this.y = y;
             capturePiece(occupyingPiece, pieces);
+            this.notMoved = false;
         }
         else
             throw new InvalidMoveException("Kings can only move one space at a time, in any direction.");
