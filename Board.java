@@ -110,7 +110,10 @@ public class Board extends JFrame
                 //if new coordinates are inside the board's boundraries
                 if (currX <= 800 || currX >= 0 || currY <= 800 || currY >= 0)
                 {
-                    pieces[selected].move((currX+50)/100, (currY+50)/100, pieces);
+                    if (selected == B_KING || selected == W_KING)
+                        pieces[selected].move((currX+50)/100, (currY+50)/100, pieces, W_KING, B_KING);
+                    else    
+                        pieces[selected].move((currX+50)/100, (currY+50)/100, pieces);
                     //if a pawn is moved to the other side of the board
                     if(pieces[selected] instanceof Pawn &&
                         ((pieces[selected].getY() == 0 && pieces[selected].getPlayer() == 'B') ||

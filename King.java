@@ -23,7 +23,7 @@ public class King extends PieceAbstract
         image = ImageIO.read(new File("images/"+player+"King.png"));
         return image;
     }
-    public void move(int x, int y, PieceAbstract[] pieces)
+    public void move(int x, int y, PieceAbstract[] pieces, int W_KING, int B_KING)
         throws InvalidMoveException
     {
         int occupyingPiece = -1;
@@ -43,56 +43,60 @@ public class King extends PieceAbstract
         //if King has not moved and is moving two spaces horizontally
         if(notMoved && Math.abs(x - this.x) == 2 && y == this.y)
         {
-            //searching for king's index
-            for(int i = 0; i < pieces.length; i++)
+            //get the King's index
+            int index = 0;
+            if (this.player == 'W')
             {
-                //if i is this king's index
-                if(pieces[i] == this)
+                index = W_KING;
+            }
+            else  
+            {
+                index = B_KING;
+            }   
+            //if king is moving left and left rook has not moved
+            if(x - this.x == -2 && ((Rook)pieces[index - 3]).getNotMoved())
+            {
+                //searching for pieces between king and rook
+                for (int j = 0; j < pieces.length; j++)
                 {
-                    //if king is moving left and left rook has not moved
-                    if(x - this.x == -2 && ((Rook)(pieces[i - 3])).getNotMoved())
+                    if(pieces[j].getX() < this.x && pieces[j].getX() > this.x - 3 &&
+                        pieces[j].getY() == this.y)
                     {
-                        //searching for pieces between king and rook
-                        for (int j = 0; j < pieces.length; j++)
-                        {
-                            if(pieces[j].getX() < this.x && pieces[j].getX() > this.x - 3 &&
-                                pieces[j].getY() == this.y)
-                            {
-                                notBetween = false;
-                            }
-                        }
-                        //if nothing between king and rook, move king and rook
-                        if (notBetween)
-                        {
-                            this.x = x;
-                            pieces[i - 3].setX(this.x + 1);
-                            notMoved = false;
-                        }
+                        notBetween = false;
                     }
-                    //if king is moving right and right rook has not moved 
-                    else if(x - this.x == 2 && ((Rook)(pieces[i - 3])).getNotMoved())
+                }
+                //if nothing between king and rook, move king and rook
+                if (notBetween)
+                {
+                    this.x = x;
+                    pieces[index - 3].setX(this.x + 1);
+                    notMoved = false;
+                    ((Rook)pieces[index - 3]).setNotMoved(false);
+                }
+            }
+            //if king is moving right and right rook has not moved 
+            else if(x - this.x == 2 && ((Rook)pieces[index + 4]).getNotMoved())
+            {
+                //searching for pieces between king and rook
+                for (int j = 0; j < pieces.length; j++)
+                {
+                    if(pieces[j].getX() > this.x && pieces[j].getX() < this.x + 4 &&
+                        pieces[j].getY() == this.y)
                     {
-                        //searching for pieces between king and rook
-                        for (int j = 0; j < pieces.length; j++)
-                        {
-                            if(pieces[j].getX() > this.x && pieces[j].getX() < this.x + 4 &&
-                                pieces[j].getY() == this.y)
-                            {
-                                notBetween = false;
-                            }
-                        }
-                        //if nothing between king and rook, move king and rook
-                        if (notBetween)
-                        {
-                            this.x = x;
-                            pieces[i + 4].setX(this.x - 1);
-                            notMoved = false;
-                        }
+                        notBetween = false;
                     }
+                }
+                //if nothing between king and rook, move king and rook
+                if (notBetween)
+                {
+                    this.x = x;
+                    pieces[index + 4].setX(this.x - 1);
+                    notMoved = false;
+                    ((Rook)pieces[index + 4]).setNotMoved(false);
                 }
             }
         }
-        else if(occupyingPiece < 0 && Math.abs(x - this.x) < 2 && Math.abs(y - this.y) < 2)
+        if(occupyingPiece < 0 && Math.abs(x - this.x) < 2 && Math.abs(y - this.y) < 2)
         {
             this.x = x;
             this.y = y;
