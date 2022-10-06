@@ -27,6 +27,7 @@ public class Rook extends PieceAbstract
         throws InvalidMoveException
     {
         rookMove(x, y, pieces);
+        notMoved = false;
     }
     public boolean getNotMoved()
     {
