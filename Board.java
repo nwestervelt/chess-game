@@ -19,8 +19,13 @@ public class Board extends JFrame
         B_BISHOP2 = 29, B_KNIGHT2 = 30, B_ROOK2 = 31;
 
     private BoardPanel boardPanel;
+    private CapturedPanelN capturedPanelN;
+    private CapturedPanelS capturedPanelS;
+    
     private BufferedImage board;
     private PieceAbstract[] pieces;
+
+    private Boolean[] captured;
 
     //create integers, used for cursor position and the selected piece
     private int currX, currY, selected = -1;
@@ -37,10 +42,19 @@ public class Board extends JFrame
         boardPanel.addMouseListener(mh);
         boardPanel.addMouseMotionListener(mmh);
         boardPanel.setPreferredSize(new Dimension(800,800));
-        add(boardPanel);
+        add(boardPanel,BorderLayout.CENTER);
+
+        capturedPanelN = new CapturedPanelN();
+        capturedPanelN.setPreferredSize(new Dimension(800,100));
+        add(capturedPanelN, BorderLayout.NORTH);
+
+        capturedPanelS = new CapturedPanelS();
+        capturedPanelS.setPreferredSize(new Dimension(800,100));
+        add(capturedPanelS, BorderLayout.SOUTH);
 
         //create a generic array of ChessPiece objects
         pieces = new PieceAbstract[32];
+        captured = new Boolean[32];
 
         //get board's background image
         try
@@ -54,7 +68,8 @@ public class Board extends JFrame
         }
 
         initializePieces();
-        
+        checkCaptured();    
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
         setVisible(true);
@@ -71,11 +86,60 @@ public class Board extends JFrame
             {
                 for(int i = 0; i < pieces.length; i++)
                 {
-                    if(i != selected)
+                    if(i != selected && !captured[i])
                         g.drawImage(pieces[i].getImage(), pieces[i].getX()*100, pieces[i].getY()*100, null);
                 }
                 if(selected != -1)
                     g.drawImage(pieces[selected].getImage(), currX, currY, null);
+            }
+            catch(IOException ioe)
+            {
+                System.out.printf("%s%n%nTerminating.", ioe.getMessage());
+                System.exit(1);
+            }
+        }
+    }
+
+    private class CapturedPanelN extends JPanel
+    {
+        public void paintComponent(Graphics g)
+        {
+            super.paintComponent(g);
+            try
+            {
+                int offSet = 0;
+                for(int i = 0; i < pieces.length; i++)
+                {
+                    if(captured[i] && pieces[i].getPlayer() == 'B')
+                    {
+                        g.drawImage(pieces[i].getImage(), offSet * 50, 0, null);
+                        offSet++;
+                    }
+                }
+            }
+            catch(IOException ioe)
+            {
+                System.out.printf("%s%n%nTerminating.", ioe.getMessage());
+                System.exit(1);
+            }
+        }
+    }
+    private class CapturedPanelS extends JPanel
+    {
+        public void paintComponent(Graphics g)
+        {
+            super.paintComponent(g);
+            try
+            {
+                int offSet = 0;
+                for(int i = 0; i < pieces.length; i++)
+                {
+                    if(captured[i] && pieces[i].getPlayer() == 'W')
+                    {
+                        g.drawImage(pieces[i].getImage(), offSet * 50, 0, null);
+                        offSet++;
+                    }
+                }
             }
             catch(IOException ioe)
             {
@@ -111,9 +175,15 @@ public class Board extends JFrame
                 if (currX <= 800 || currX >= 0 || currY <= 800 || currY >= 0)
                 {
                     if (selected == B_KING || selected == W_KING)
+                    {
                         pieces[selected].move((currX+50)/100, (currY+50)/100, pieces, W_KING, B_KING);
+                        checkCaptured();
+                    }
                     else    
+                    {
                         pieces[selected].move((currX+50)/100, (currY+50)/100, pieces);
+                        checkCaptured();
+                    }
                     //if a pawn is moved to the other side of the board
                     if(pieces[selected] instanceof Pawn &&
                         ((pieces[selected].getY() == 0 && pieces[selected].getPlayer() == 'B') ||
@@ -160,6 +230,8 @@ public class Board extends JFrame
                 System.out.println(ime.getMessage());
             }
             boardPanel.repaint();
+            capturedPanelN.repaint();
+            capturedPanelS.repaint();
             selected = -1;
         }
     }
@@ -285,6 +357,17 @@ public class Board extends JFrame
         {
             System.out.printf("%s%n%nTerminating.", nspe.getMessage());
             System.exit(1);
+        }
+    }
+    
+    private void checkCaptured()
+    {
+        for(int i = 0; i < captured.length; i++)
+        {
+            if(pieces[i].getX() == -100 || pieces[i].getY() == -100)
+                captured[i] = true;
+            else 
+                captured[i] = false;    
         }
     }
     
