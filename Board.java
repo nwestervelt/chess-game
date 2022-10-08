@@ -19,11 +19,15 @@ public class Board extends JFrame
         B_BISHOP2 = 29, B_KNIGHT2 = 30, B_ROOK2 = 31;
 
     private BoardPanel boardPanel;
-    private CapturedPanelN capturedPanelN;
-    private CapturedPanelS capturedPanelS;
-    
     private BufferedImage board;
     private PieceAbstract[] pieces;
+
+    private JButton newGameButton;
+    private JButton forfeitButton;
+    private JLabel whiteLabel;
+    private JTextArea whiteCaptured;
+    private JLabel blackLabel;
+    private JTextArea blackCaptured;
 
     private Boolean[] captured;
 
@@ -44,13 +48,49 @@ public class Board extends JFrame
         boardPanel.setPreferredSize(new Dimension(800,800));
         add(boardPanel,BorderLayout.CENTER);
 
-        capturedPanelN = new CapturedPanelN();
-        capturedPanelN.setPreferredSize(new Dimension(800,100));
-        add(capturedPanelN, BorderLayout.NORTH);
+        //create menu panel to the west
+        JPanel menuPanel = new JPanel();
+        menuPanel.setPreferredSize(new Dimension (200,800));
+        menuPanel.setBackground(Color.WHITE);
+        add(menuPanel,BorderLayout.WEST);
 
-        capturedPanelS = new CapturedPanelS();
-        capturedPanelS.setPreferredSize(new Dimension(800,100));
-        add(capturedPanelS, BorderLayout.SOUTH);
+        //new game button 
+        newGameButton = new JButton("New Game");
+        menuPanel.add(newGameButton);
+
+        //forfeit button
+        forfeitButton = new JButton("Forfeit");
+        menuPanel.add(forfeitButton);
+
+        //Label for white captured pieces
+        whiteLabel = new JLabel("Whites Captured Pieces");
+        whiteLabel.setPreferredSize(new Dimension (200,100));
+        whiteLabel.setHorizontalAlignment(JLabel.CENTER);
+        whiteLabel.setVerticalAlignment(JLabel.BOTTOM);
+        menuPanel.add(whiteLabel);
+
+        //Text area showing white captured pieces
+        whiteCaptured = new JTextArea();
+        whiteCaptured.setPreferredSize(new Dimension (200,250));
+        whiteCaptured.setLineWrap(true);
+        whiteCaptured.setWrapStyleWord(true);
+        whiteCaptured.setEditable(false);
+        menuPanel.add(whiteCaptured);
+
+        //Label for black captured pieces
+        blackLabel = new JLabel("Blacks Captured Pieces");
+        blackLabel.setPreferredSize(new Dimension (200,100));
+        blackLabel.setHorizontalAlignment(JLabel.CENTER);
+        blackLabel.setVerticalAlignment(JLabel.BOTTOM);
+        menuPanel.add(blackLabel);
+
+        //Text area showing black captured pieces
+        blackCaptured = new JTextArea();
+        blackCaptured.setPreferredSize(new Dimension (200,250));
+        blackCaptured.setLineWrap(true);
+        blackCaptured.setWrapStyleWord(true);
+        blackCaptured.setEditable(false);
+        menuPanel.add(blackCaptured);
 
         //create a generic array of ChessPiece objects
         pieces = new PieceAbstract[32];
@@ -70,6 +110,7 @@ public class Board extends JFrame
         initializePieces();
         checkCaptured();    
 
+        setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
         setVisible(true);
@@ -100,55 +141,6 @@ public class Board extends JFrame
         }
     }
 
-    private class CapturedPanelN extends JPanel
-    {
-        public void paintComponent(Graphics g)
-        {
-            super.paintComponent(g);
-            try
-            {
-                int offSet = 0;
-                for(int i = 0; i < pieces.length; i++)
-                {
-                    if(captured[i] && pieces[i].getPlayer() == 'B')
-                    {
-                        g.drawImage(pieces[i].getImage(), offSet * 50, 0, null);
-                        offSet++;
-                    }
-                }
-            }
-            catch(IOException ioe)
-            {
-                System.out.printf("%s%n%nTerminating.", ioe.getMessage());
-                System.exit(1);
-            }
-        }
-    }
-    private class CapturedPanelS extends JPanel
-    {
-        public void paintComponent(Graphics g)
-        {
-            super.paintComponent(g);
-            try
-            {
-                int offSet = 0;
-                for(int i = 0; i < pieces.length; i++)
-                {
-                    if(captured[i] && pieces[i].getPlayer() == 'W')
-                    {
-                        g.drawImage(pieces[i].getImage(), offSet * 50, 0, null);
-                        offSet++;
-                    }
-                }
-            }
-            catch(IOException ioe)
-            {
-                System.out.printf("%s%n%nTerminating.", ioe.getMessage());
-                System.exit(1);
-            }
-        }
-    }
-    
     private class MouseHandler extends MouseAdapter
     {
         public void mousePressed (MouseEvent e)
@@ -230,8 +222,6 @@ public class Board extends JFrame
                 System.out.println(ime.getMessage());
             }
             boardPanel.repaint();
-            capturedPanelN.repaint();
-            capturedPanelS.repaint();
             selected = -1;
         }
     }
@@ -362,10 +352,32 @@ public class Board extends JFrame
     
     private void checkCaptured()
     {
+        //iterate through piece array and a boolean array for captured pieces
         for(int i = 0; i < captured.length; i++)
         {
+            //if piece is captured 
             if(pieces[i].getX() == -100 || pieces[i].getY() == -100)
+            {
+                //if already done continue
+                if (captured[i] == true)
+                    continue;
                 captured[i] = true;
+                //if white piece captured print out the piece in the captured section
+                if(i < 16)
+                {
+                    String temp = String.valueOf(pieces[i].getClass());
+                    temp = temp.substring(5);
+                    whiteCaptured.append(temp + ", ");
+                }
+                //else black
+                else
+                {
+                    String temp = String.valueOf(pieces[i].getClass());
+                    temp = temp.substring(5);
+                    blackCaptured.append(temp + ", ");
+                }
+            }
+            //else set it false
             else 
                 captured[i] = false;    
         }
