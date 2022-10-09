@@ -8,7 +8,7 @@ import javax.swing.*;
 
 public class Board extends JFrame
 {
-    //declare static constants for pieces indexes
+    //Static constants for piece indexes
     public static final int W_ROOK1 = 0, W_KNIGHT1 = 1, W_BISHOP1 = 2, W_KING = 3, W_QUEEN = 4,
          W_BISHOP2 = 5, W_KNIGHT2 = 6, W_ROOK2 = 7;
     public static final int W_PAWN1 = 8, W_PAWN2 = 9, W_PAWN3 = 10, W_PAWN4 = 11, W_PAWN5 = 12,
@@ -19,12 +19,13 @@ public class Board extends JFrame
         B_BISHOP2 = 29, B_KNIGHT2 = 30, B_ROOK2 = 31;
     
     //Static constants for piece values
-    public static final int PAWN = 1, BISHOP = 3, KNIGHT = 3, ROOK = 5, QUEEN = 8;
+    public static final int PAWN_VALUE = 1, BISHOP_VALUE = 3, KNIGHT_VALUE = 3, ROOK_VALUE = 5, QUEEN_VALUE = 8;
 
-    private int queenW = 0, rookW = 0, bishopW = 0, knightW = 0, pawnW = 0;
-    private int queenB = 0, rookB = 0, bishopB = 0, knightB = 0, pawnB = 0;   
+    //Variables used to count captured pieces
+    private int queenWCap = 0, rookWCap = 0, bishopWCap = 0, knightWCap = 0, pawnWCap = 0;
+    private int queenBCap = 0, rookBCap = 0, bishopBCap = 0, knightBCap = 0, pawnBCap = 0;   
 
-    //main board and piece array
+    //Main board and piece array
     private BoardPanel boardPanel;
     private BufferedImage board;
     private PieceAbstract[] pieces;
@@ -37,9 +38,10 @@ public class Board extends JFrame
     private JLabel blackLabel;
     private JTextArea blackCaptured;
 
+    //Boolean array used to tell if a piece is captured
     private Boolean[] captured;
 
-    //create integers, used for cursor position and the selected piece
+    //Integers used for cursor position and the selected piece
     private int currX, currY, selected = -1;
 
     public Board()
@@ -71,7 +73,7 @@ public class Board extends JFrame
         menuPanel.add(forfeitButton);
 
         //Label for white captured pieces
-        whiteLabel = new JLabel("Whites Captured Pieces");
+        whiteLabel = new JLabel("White Pieces Lost");
         whiteLabel.setPreferredSize(new Dimension (200,100));
         whiteLabel.setHorizontalAlignment(JLabel.CENTER);
         whiteLabel.setVerticalAlignment(JLabel.BOTTOM);
@@ -86,7 +88,7 @@ public class Board extends JFrame
         menuPanel.add(whiteCaptured);
 
         //Label for black captured pieces
-        blackLabel = new JLabel("Blacks Captured Pieces");
+        blackLabel = new JLabel("Black Pieces Lost");
         blackLabel.setPreferredSize(new Dimension (200,100));
         blackLabel.setHorizontalAlignment(JLabel.CENTER);
         blackLabel.setVerticalAlignment(JLabel.BOTTOM);
@@ -373,55 +375,51 @@ public class Board extends JFrame
                 //if white piece captured print out the piece in the captured section
                 if(i < 16)
                 {
-                    String temp = String.valueOf(pieces[i].getClass());
-                    temp = temp.substring(5).trim();
-                    if (temp.equals("Pawn"))
-                        pawnW++;
-                    else if (temp.equals("Queen"))
-                        queenW++;    
-                    else if (temp.equals("Rook"))
-                        rookW++;
-                    else if (temp.equals("Bishop"))
-                        bishopW++;
-                    else if (temp.equals("Knight"))
-                        knightW++;
+                    if (pieces[i] instanceof Pawn)
+                        pawnWCap++;
+                    else if (pieces[i] instanceof Queen)
+                        queenWCap++;    
+                    else if (pieces[i] instanceof Rook)
+                        rookWCap++;
+                    else if (pieces[i] instanceof Bishop)
+                        bishopWCap++;
+                    else if (pieces[i] instanceof Knight)
+                        knightWCap++;
                 }
                 //else black
                 else
                 {
-                    String temp = String.valueOf(pieces[i].getClass());
-                    temp = temp.substring(5).trim();
-                    if (temp.equals("Pawn"))
-                        pawnB++;
-                    else if (temp.equals("Queen"))
-                        queenB++;    
-                    else if (temp.equals("Rook"))
-                        rookB++;
-                    else if (temp.equals("Bishop"))
-                        bishopB++;
-                    else if (temp.equals("Knight"))
-                        knightB++;
+                    if (pieces[i] instanceof Pawn)
+                        pawnBCap++;
+                    else if (pieces[i] instanceof Queen)
+                        queenBCap++;    
+                    else if (pieces[i] instanceof Rook)
+                        rookBCap++;
+                    else if (pieces[i] instanceof Bishop)
+                        bishopBCap++;
+                    else if (pieces[i] instanceof Knight)
+                        knightBCap++;
                 }
             }
             //else set it false
             else 
                 captured[i] = false;    
         }
-        int whiteValue = (queenW * QUEEN) + (rookW * ROOK) + (bishopW * BISHOP) + (knightW * KNIGHT) + (pawnW * PAWN);
-        int blackValue = (queenB * QUEEN) + (rookB * ROOK) + (bishopB * BISHOP) + (knightB * KNIGHT) + (pawnB * PAWN);
+        int whiteValue = (queenWCap * QUEEN_VALUE) + (rookWCap * ROOK_VALUE) + (bishopWCap * BISHOP_VALUE) + (knightWCap * KNIGHT_VALUE) + (pawnWCap * PAWN_VALUE);
+        int blackValue = (queenBCap * QUEEN_VALUE) + (rookBCap * ROOK_VALUE) + (bishopBCap * BISHOP_VALUE) + (knightBCap * KNIGHT_VALUE) + (pawnBCap * PAWN_VALUE);
         //Show white captured pieces and value
-        whiteCaptured.setText("Queens, " + queenW + " " +
-                        "Rooks, " + rookW + " " +
-                        "Bishops, " + bishopW + " " +
-                        "Knights, " + knightW + " " +
-                        "Pawns, " + pawnW + "  " + 
+        whiteCaptured.setText("Queens, " + queenWCap + " " +
+                        "Rooks, " + rookWCap + " " +
+                        "Bishops, " + bishopWCap + " " +
+                        "Knights, " + knightWCap + " " +
+                        "Pawns, " + pawnWCap + "  " + 
                         "Value: " + (blackValue - whiteValue));
         //Show black captured pieces and value
-        blackCaptured.setText("Queens, " + queenB + " " +
-                        "Rooks, " + rookB + " " +
-                        "Bishops, " + bishopB + " " +
-                        "Knights, " + knightB + " " +
-                        "Pawns, " + pawnB + "  " +
+        blackCaptured.setText("Queens, " + queenBCap + " " +
+                        "Rooks, " + rookBCap + " " +
+                        "Bishops, " + bishopBCap + " " +
+                        "Knights, " + knightBCap + " " +
+                        "Pawns, " + pawnBCap + "  " +
                         "Value: " + (whiteValue - blackValue));
     }
     
