@@ -8,7 +8,7 @@ import javax.swing.*;
 
 public class Board extends JFrame
 {
-    //declare static constants for pieces indexes
+    //Static constants for piece indexes
     public static final int W_ROOK1 = 0, W_KNIGHT1 = 1, W_BISHOP1 = 2, W_KING = 3, W_QUEEN = 4,
          W_BISHOP2 = 5, W_KNIGHT2 = 6, W_ROOK2 = 7;
     public static final int W_PAWN1 = 8, W_PAWN2 = 9, W_PAWN3 = 10, W_PAWN4 = 11, W_PAWN5 = 12,
@@ -17,12 +17,31 @@ public class Board extends JFrame
         B_PAWN6 = 21, B_PAWN7 = 22, B_PAWN8 = 23;
     public static final int B_ROOK1 = 24, B_KNIGHT1 = 25, B_BISHOP1 = 26, B_KING = 27, B_QUEEN = 28,
         B_BISHOP2 = 29, B_KNIGHT2 = 30, B_ROOK2 = 31;
+    
+    //Static constants for piece values
+    public static final int PAWN_VALUE = 1, BISHOP_VALUE = 3, KNIGHT_VALUE = 3, ROOK_VALUE = 5, QUEEN_VALUE = 8;
 
+    //Variables used to count captured pieces
+    private int queenWCap = 0, rookWCap = 0, bishopWCap = 0, knightWCap = 0, pawnWCap = 0;
+    private int queenBCap = 0, rookBCap = 0, bishopBCap = 0, knightBCap = 0, pawnBCap = 0;   
+
+    //Main board and piece array
     private BoardPanel boardPanel;
     private BufferedImage board;
     private PieceAbstract[] pieces;
 
-    //create integers, used for cursor position and the selected piece
+    //Components for the menu
+    private JButton newGameButton;
+    private JButton forfeitButton;
+    private JLabel whiteLabel;
+    private JTextArea whiteCaptured;
+    private JLabel blackLabel;
+    private JTextArea blackCaptured;
+
+    //Boolean array used to tell if a piece is captured
+    private Boolean[] captured;
+
+    //Integers used for cursor position and the selected piece
     private int currX, currY, selected = -1;
 
     public Board()
@@ -37,10 +56,55 @@ public class Board extends JFrame
         boardPanel.addMouseListener(mh);
         boardPanel.addMouseMotionListener(mmh);
         boardPanel.setPreferredSize(new Dimension(800,800));
-        add(boardPanel);
+        add(boardPanel,BorderLayout.CENTER);
+
+        //create menu panel to the west
+        JPanel menuPanel = new JPanel();
+        menuPanel.setPreferredSize(new Dimension (200,800));
+        menuPanel.setBackground(Color.WHITE);
+        add(menuPanel,BorderLayout.WEST);
+
+        //new game button 
+        newGameButton = new JButton("New Game");
+        menuPanel.add(newGameButton);
+
+        //forfeit button
+        forfeitButton = new JButton("Forfeit");
+        menuPanel.add(forfeitButton);
+
+        //Label for white captured pieces
+        whiteLabel = new JLabel("White Pieces Lost");
+        whiteLabel.setPreferredSize(new Dimension (200,100));
+        whiteLabel.setHorizontalAlignment(JLabel.CENTER);
+        whiteLabel.setVerticalAlignment(JLabel.BOTTOM);
+        menuPanel.add(whiteLabel);
+
+        //Text area showing white captured pieces
+        whiteCaptured = new JTextArea();
+        whiteCaptured.setPreferredSize(new Dimension (90,250));
+        whiteCaptured.setLineWrap(true);
+        whiteCaptured.setWrapStyleWord(true);
+        whiteCaptured.setEditable(false);
+        menuPanel.add(whiteCaptured);
+
+        //Label for black captured pieces
+        blackLabel = new JLabel("Black Pieces Lost");
+        blackLabel.setPreferredSize(new Dimension (200,100));
+        blackLabel.setHorizontalAlignment(JLabel.CENTER);
+        blackLabel.setVerticalAlignment(JLabel.BOTTOM);
+        menuPanel.add(blackLabel);
+
+        //Text area showing black captured pieces
+        blackCaptured = new JTextArea();
+        blackCaptured.setPreferredSize(new Dimension (90,250));
+        blackCaptured.setLineWrap(true);
+        blackCaptured.setWrapStyleWord(true);
+        blackCaptured.setEditable(false);
+        menuPanel.add(blackCaptured);
 
         //create a generic array of ChessPiece objects
         pieces = new PieceAbstract[32];
+        captured = new Boolean[32];
 
         //get board's background image
         try
@@ -54,7 +118,9 @@ public class Board extends JFrame
         }
 
         initializePieces();
-        
+        checkCaptured();    
+
+        setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
         setVisible(true);
@@ -71,7 +137,7 @@ public class Board extends JFrame
             {
                 for(int i = 0; i < pieces.length; i++)
                 {
-                    if(i != selected)
+                    if(i != selected && !captured[i])
                         g.drawImage(pieces[i].getImage(), pieces[i].getX()*100, pieces[i].getY()*100, null);
                 }
                 if(selected != -1)
@@ -84,7 +150,7 @@ public class Board extends JFrame
             }
         }
     }
-    
+
     private class MouseHandler extends MouseAdapter
     {
         public void mousePressed (MouseEvent e)
@@ -110,7 +176,16 @@ public class Board extends JFrame
                 //if new coordinates are inside the board's boundraries
                 if (currX <= 800 || currX >= 0 || currY <= 800 || currY >= 0)
                 {
-                    pieces[selected].move((currX+50)/100, (currY+50)/100, pieces);
+                    if (selected == B_KING || selected == W_KING)
+                    {
+                        pieces[selected].move((currX+50)/100, (currY+50)/100, pieces, W_KING, B_KING);
+                        checkCaptured();
+                    }
+                    else    
+                    {
+                        pieces[selected].move((currX+50)/100, (currY+50)/100, pieces);
+                        checkCaptured();
+                    }
                     //if a pawn is moved to the other side of the board
                     if(pieces[selected] instanceof Pawn &&
                         ((pieces[selected].getY() == 0 && pieces[selected].getPlayer() == 'B') ||
@@ -283,6 +358,69 @@ public class Board extends JFrame
             System.out.printf("%s%n%nTerminating.", nspe.getMessage());
             System.exit(1);
         }
+    }
+    
+    private void checkCaptured()
+    {
+        //iterate through piece array and a boolean array for captured pieces
+        for(int i = 0; i < captured.length; i++)
+        {
+            //if piece is captured 
+            if(pieces[i].getX() == -100 || pieces[i].getY() == -100)
+            {
+                //if already done continue
+                if (captured[i] == true)
+                    continue;
+                captured[i] = true;
+                //if white piece captured print out the piece in the captured section
+                if(i < 16)
+                {
+                    if (pieces[i] instanceof Pawn)
+                        pawnWCap++;
+                    else if (pieces[i] instanceof Queen)
+                        queenWCap++;    
+                    else if (pieces[i] instanceof Rook)
+                        rookWCap++;
+                    else if (pieces[i] instanceof Bishop)
+                        bishopWCap++;
+                    else if (pieces[i] instanceof Knight)
+                        knightWCap++;
+                }
+                //else black
+                else
+                {
+                    if (pieces[i] instanceof Pawn)
+                        pawnBCap++;
+                    else if (pieces[i] instanceof Queen)
+                        queenBCap++;    
+                    else if (pieces[i] instanceof Rook)
+                        rookBCap++;
+                    else if (pieces[i] instanceof Bishop)
+                        bishopBCap++;
+                    else if (pieces[i] instanceof Knight)
+                        knightBCap++;
+                }
+            }
+            //else set it false
+            else 
+                captured[i] = false;    
+        }
+        int whiteValue = (queenWCap * QUEEN_VALUE) + (rookWCap * ROOK_VALUE) + (bishopWCap * BISHOP_VALUE) + (knightWCap * KNIGHT_VALUE) + (pawnWCap * PAWN_VALUE);
+        int blackValue = (queenBCap * QUEEN_VALUE) + (rookBCap * ROOK_VALUE) + (bishopBCap * BISHOP_VALUE) + (knightBCap * KNIGHT_VALUE) + (pawnBCap * PAWN_VALUE);
+        //Show white captured pieces and value
+        whiteCaptured.setText("Queens, " + queenWCap + " " +
+                        "Rooks, " + rookWCap + " " +
+                        "Bishops, " + bishopWCap + " " +
+                        "Knights, " + knightWCap + " " +
+                        "Pawns, " + pawnWCap + "  " + 
+                        "Value: " + (blackValue - whiteValue));
+        //Show black captured pieces and value
+        blackCaptured.setText("Queens, " + queenBCap + " " +
+                        "Rooks, " + rookBCap + " " +
+                        "Bishops, " + bishopBCap + " " +
+                        "Knights, " + knightBCap + " " +
+                        "Pawns, " + pawnBCap + "  " +
+                        "Value: " + (whiteValue - blackValue));
     }
     
     public static void main(String[] args)

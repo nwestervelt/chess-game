@@ -56,6 +56,12 @@ public abstract class PieceAbstract
         this.x = x;
         this.y = y;
     }
+    public void move(int x, int y, PieceAbstract[] pieces, int W_KING, int B_KING)
+        throws InvalidMoveException
+    {
+        this.x = x;
+        this.y = y;
+    }
     protected void capturePiece(int occupyingPiece, PieceAbstract[] pieces)
     {
         //sets the captured piece offscreen so it is no longer visible
@@ -177,16 +183,12 @@ public abstract class PieceAbstract
         {
             this.x = x;
             this.y = y;
-            if(!(this == pieces[4] || this == pieces[28]) && this instanceof Rook)
-                ((Rook)this).setNotMoved(false);
         }
         else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player)
         {
             this.x = x;
             this.y = y;
             capturePiece(occupyingPiece, pieces);
-            if(!(this == pieces[4] || this == pieces[28]) && this instanceof Rook)
-                ((Rook)this).setNotMoved(false);
         }
         else
             throw new InvalidMoveException("Rooks move horizontally and vertically, "
