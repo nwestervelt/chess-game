@@ -17,11 +17,19 @@ public class Board extends JFrame
         B_PAWN6 = 21, B_PAWN7 = 22, B_PAWN8 = 23;
     public static final int B_ROOK1 = 24, B_KNIGHT1 = 25, B_BISHOP1 = 26, B_KING = 27, B_QUEEN = 28,
         B_BISHOP2 = 29, B_KNIGHT2 = 30, B_ROOK2 = 31;
+    
+    //Static constants for piece values
+    public static final int PAWN = 1, BISHOP = 3, KNIGHT = 3, ROOK = 5, QUEEN = 8;
 
+    private int queenW = 0, rookW = 0, bishopW = 0, knightW = 0, pawnW = 0;
+    private int queenB = 0, rookB = 0, bishopB = 0, knightB = 0, pawnB = 0;   
+
+    //main board and piece array
     private BoardPanel boardPanel;
     private BufferedImage board;
     private PieceAbstract[] pieces;
 
+    //Components for the menu
     private JButton newGameButton;
     private JButton forfeitButton;
     private JLabel whiteLabel;
@@ -71,7 +79,7 @@ public class Board extends JFrame
 
         //Text area showing white captured pieces
         whiteCaptured = new JTextArea();
-        whiteCaptured.setPreferredSize(new Dimension (200,250));
+        whiteCaptured.setPreferredSize(new Dimension (90,250));
         whiteCaptured.setLineWrap(true);
         whiteCaptured.setWrapStyleWord(true);
         whiteCaptured.setEditable(false);
@@ -86,7 +94,7 @@ public class Board extends JFrame
 
         //Text area showing black captured pieces
         blackCaptured = new JTextArea();
-        blackCaptured.setPreferredSize(new Dimension (200,250));
+        blackCaptured.setPreferredSize(new Dimension (90,250));
         blackCaptured.setLineWrap(true);
         blackCaptured.setWrapStyleWord(true);
         blackCaptured.setEditable(false);
@@ -366,21 +374,55 @@ public class Board extends JFrame
                 if(i < 16)
                 {
                     String temp = String.valueOf(pieces[i].getClass());
-                    temp = temp.substring(5);
-                    whiteCaptured.append(temp + ", ");
+                    temp = temp.substring(5).trim();
+                    if (temp.equals("Pawn"))
+                        pawnW++;
+                    else if (temp.equals("Queen"))
+                        queenW++;    
+                    else if (temp.equals("Rook"))
+                        rookW++;
+                    else if (temp.equals("Bishop"))
+                        bishopW++;
+                    else if (temp.equals("Knight"))
+                        knightW++;
                 }
                 //else black
                 else
                 {
                     String temp = String.valueOf(pieces[i].getClass());
-                    temp = temp.substring(5);
-                    blackCaptured.append(temp + ", ");
+                    temp = temp.substring(5).trim();
+                    if (temp.equals("Pawn"))
+                        pawnB++;
+                    else if (temp.equals("Queen"))
+                        queenB++;    
+                    else if (temp.equals("Rook"))
+                        rookB++;
+                    else if (temp.equals("Bishop"))
+                        bishopB++;
+                    else if (temp.equals("Knight"))
+                        knightB++;
                 }
             }
             //else set it false
             else 
                 captured[i] = false;    
         }
+        int whiteValue = (queenW * QUEEN) + (rookW * ROOK) + (bishopW * BISHOP) + (knightW * KNIGHT) + (pawnW * PAWN);
+        int blackValue = (queenB * QUEEN) + (rookB * ROOK) + (bishopB * BISHOP) + (knightB * KNIGHT) + (pawnB * PAWN);
+        //Show white captured pieces and value
+        whiteCaptured.setText("Queens, " + queenW + " " +
+                        "Rooks, " + rookW + " " +
+                        "Bishops, " + bishopW + " " +
+                        "Knights, " + knightW + " " +
+                        "Pawns, " + pawnW + "  " + 
+                        "Value: " + (blackValue - whiteValue));
+        //Show black captured pieces and value
+        blackCaptured.setText("Queens, " + queenB + " " +
+                        "Rooks, " + rookB + " " +
+                        "Bishops, " + bishopB + " " +
+                        "Knights, " + knightB + " " +
+                        "Pawns, " + pawnB + "  " +
+                        "Value: " + (whiteValue - blackValue));
     }
     
     public static void main(String[] args)
