@@ -10,44 +10,48 @@ public class Board extends JFrame
 {
     //Static constants for piece indexes
     public static final int W_ROOK1 = 0, W_KNIGHT1 = 1, W_BISHOP1 = 2, W_KING = 3, W_QUEEN = 4,
-         W_BISHOP2 = 5, W_KNIGHT2 = 6, W_ROOK2 = 7;
-    public static final int W_PAWN1 = 8, W_PAWN2 = 9, W_PAWN3 = 10, W_PAWN4 = 11, W_PAWN5 = 12,
-        W_PAWN6 = 13, W_PAWN7 = 14, W_PAWN8 = 15;
-    public static final int B_PAWN1 = 16, B_PAWN2 = 17, B_PAWN3 = 18, B_PAWN4 = 19, B_PAWN5 = 20,
-        B_PAWN6 = 21, B_PAWN7 = 22, B_PAWN8 = 23;
+         W_BISHOP2 = 5, W_KNIGHT2 = 6, W_ROOK2 = 7, W_PAWN_MIN = 8, W_PAWN_MAX = 15;
     public static final int B_ROOK1 = 24, B_KNIGHT1 = 25, B_BISHOP1 = 26, B_KING = 27, B_QUEEN = 28,
-        B_BISHOP2 = 29, B_KNIGHT2 = 30, B_ROOK2 = 31;
+        B_BISHOP2 = 29, B_KNIGHT2 = 30, B_ROOK2 = 31, B_PAWN_MIN = 16, B_PAWN_MAX = 23;
     
     //Static constants for piece values
     public static final int PAWN_VALUE = 1, BISHOP_VALUE = 3, KNIGHT_VALUE = 3, ROOK_VALUE = 5, QUEEN_VALUE = 8;
 
     //Variables used to count captured pieces
     private int queenWCap = 0, rookWCap = 0, bishopWCap = 0, knightWCap = 0, pawnWCap = 0;
-    private int queenBCap = 0, rookBCap = 0, bishopBCap = 0, knightBCap = 0, pawnBCap = 0;   
+    private int queenBCap = 0, rookBCap = 0, bishopBCap = 0, knightBCap = 0, pawnBCap = 0;
 
-    //Main board and piece array
+    //Array of all Pieces
+    private PieceAbstract[] pieces;
+
+    //Boolean array used to tell if a piece is captured
+    private Boolean[] captured;
+
+    //Variable containing char identifying who's turn it is
+    private char turn;
+
+    //Integers used for cursor position and the selected piece
+    private int currX, currY, selected = -1;
+
+    //Main board
     private BoardPanel boardPanel;
     private BufferedImage board;
-    private PieceAbstract[] pieces;
 
     //Components for the menu
     private JButton newGameButton;
     private JButton forfeitButton;
+    private JLabel turnLabel;
     private JLabel whiteLabel;
     private JTextArea whiteCaptured;
     private JLabel blackLabel;
     private JTextArea blackCaptured;
 
-    //Boolean array used to tell if a piece is captured
-    private Boolean[] captured;
-
-    //Integers used for cursor position and the selected piece
-    private int currX, currY, selected = -1;
-
     public Board()
     {
+        //call super class's constructor and set title
         super("Chess Board");
         
+        //create mouse event handlers
         MouseHandler mh = new MouseHandler();
         MouseMotionHandler mmh = new MouseMotionHandler();
 
@@ -71,6 +75,10 @@ public class Board extends JFrame
         //forfeit button
         forfeitButton = new JButton("Forfeit");
         menuPanel.add(forfeitButton);
+
+        //Label for turn
+        turnLabel = new JLabel("White's Turn");
+        menuPanel.add(turnLabel);
 
         //Label for white captured pieces
         whiteLabel = new JLabel("White Pieces Lost");
@@ -104,6 +112,8 @@ public class Board extends JFrame
 
         //create a generic array of ChessPiece objects
         pieces = new PieceAbstract[32];
+
+        //create an array tracking captured status of pieces
         captured = new Boolean[32];
 
         //get board's background image
@@ -117,6 +127,10 @@ public class Board extends JFrame
             System.exit(1);
         }
 
+        //set player's turn
+        turn = 'W';
+
+        //instantiate pieces and the captured pieces display
         initializePieces();
         checkCaptured();    
 
@@ -161,7 +175,8 @@ public class Board extends JFrame
             for (int i = 0; i < pieces.length; i++)
             {
                 if(x-(pieces[i].getX()*100) > 0 && x-(pieces[i].getX()*100) <= 100 &&
-                    y-(pieces[i].getY()*100) > 0 && y-(pieces[i].getY()*100) <= 100)
+                    y-(pieces[i].getY()*100) > 0 && y-(pieces[i].getY()*100) <= 100 &&
+                    turn == pieces[i].getPlayer())
                 {
                     selected = i;
                 }
@@ -225,6 +240,17 @@ public class Board extends JFrame
                             System.exit(1);
                         }
                     }
+                }
+                //change turn and set turnLabel if move was successful
+                if(turn == 'W')
+                {
+                    turn = 'B';
+                    turnLabel.setText("Black's Turn");
+                }
+                else
+                {
+                    turn = 'W';
+                    turnLabel.setText("White's Turn");
                 }
             }
             catch(InvalidMoveException ime)
@@ -335,11 +361,11 @@ public class Board extends JFrame
                     pieces[i] = new Queen(i%8, 0, 'W');
                 else if(i == W_KING)
                     pieces[i] = new King(i%8, 0, 'W');
-                else if(i >= W_PAWN1 && i <= W_PAWN8)
+                else if(i >= W_PAWN_MIN && i <= W_PAWN_MAX)
                     pieces[i] = new Pawn(i%8, 1, 'W');
 
                 // black pieces
-                else if(i >= B_PAWN1 && i <= B_PAWN8)
+                else if(i >= B_PAWN_MIN && i <= B_PAWN_MAX)
                     pieces[i] = new Pawn(i%8, 6, 'B');
                 else if(i == B_ROOK1 || i == B_ROOK2)
                     pieces[i] = new Rook(i%8, 7, 'B');
