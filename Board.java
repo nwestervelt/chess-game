@@ -27,6 +27,9 @@ public class Board extends JFrame
     //Boolean array used to tell if a piece is captured
     private Boolean[] captured;
 
+    //Variable containing char identifying who's turn it is
+    private char turn;
+
     //Integers used for cursor position and the selected piece
     private int currX, currY, selected = -1;
 
@@ -37,6 +40,7 @@ public class Board extends JFrame
     //Components for the menu
     private JButton newGameButton;
     private JButton forfeitButton;
+    private JLabel turnLabel;
     private JLabel whiteLabel;
     private JTextArea whiteCaptured;
     private JLabel blackLabel;
@@ -44,8 +48,10 @@ public class Board extends JFrame
 
     public Board()
     {
+        //call super class's constructor and set title
         super("Chess Board");
         
+        //create mouse event handlers
         MouseHandler mh = new MouseHandler();
         MouseMotionHandler mmh = new MouseMotionHandler();
 
@@ -69,6 +75,10 @@ public class Board extends JFrame
         //forfeit button
         forfeitButton = new JButton("Forfeit");
         menuPanel.add(forfeitButton);
+
+        //Label for turn
+        turnLabel = new JLabel("White's Turn");
+        menuPanel.add(turnLabel);
 
         //Label for white captured pieces
         whiteLabel = new JLabel("White Pieces Lost");
@@ -102,6 +112,8 @@ public class Board extends JFrame
 
         //create a generic array of ChessPiece objects
         pieces = new PieceAbstract[32];
+
+        //create an array tracking captured status of pieces
         captured = new Boolean[32];
 
         //get board's background image
@@ -115,6 +127,10 @@ public class Board extends JFrame
             System.exit(1);
         }
 
+        //set player's turn
+        turn = 'W';
+
+        //instantiate pieces and the captured pieces display
         initializePieces();
         checkCaptured();    
 
@@ -159,7 +175,8 @@ public class Board extends JFrame
             for (int i = 0; i < pieces.length; i++)
             {
                 if(x-(pieces[i].getX()*100) > 0 && x-(pieces[i].getX()*100) <= 100 &&
-                    y-(pieces[i].getY()*100) > 0 && y-(pieces[i].getY()*100) <= 100)
+                    y-(pieces[i].getY()*100) > 0 && y-(pieces[i].getY()*100) <= 100 &&
+                    turn == pieces[i].getPlayer())
                 {
                     selected = i;
                 }
@@ -223,6 +240,17 @@ public class Board extends JFrame
                             System.exit(1);
                         }
                     }
+                }
+                //change turn and set turnLabel if move was successful
+                if(turn == 'W')
+                {
+                    turn = 'B';
+                    turnLabel.setText("Black's Turn");
+                }
+                else
+                {
+                    turn = 'W';
+                    turnLabel.setText("White's Turn");
                 }
             }
             catch(InvalidMoveException ime)
