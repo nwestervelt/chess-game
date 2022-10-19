@@ -15,7 +15,7 @@ public class Board extends JFrame
         B_BISHOP2 = 29, B_KNIGHT2 = 30, B_ROOK2 = 31, B_PAWN_MIN = 16, B_PAWN_MAX = 23;
     
     //Static constants for piece values
-    public static final int PAWN_VALUE = 1, BISHOP_VALUE = 3, KNIGHT_VALUE = 3, ROOK_VALUE = 5, QUEEN_VALUE = 8;
+    public static final int PAWN_VALUE = 1, BISHOP_VALUE = 3, KNIGHT_VALUE = 3, ROOK_VALUE = 5, QUEEN_VALUE = 9;
 
     //Variables used to count captured pieces
     private int queenWCap = 0, rookWCap = 0, bishopWCap = 0, knightWCap = 0, pawnWCap = 0;
