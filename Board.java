@@ -5,6 +5,7 @@ import java.awt.image.*;
 import java.io.*;
 import javax.imageio.*;
 import javax.swing.*;
+import java.util.*;
 
 public class Board extends JFrame
 {
@@ -55,6 +56,9 @@ public class Board extends JFrame
         MouseHandler mh = new MouseHandler();
         MouseMotionHandler mmh = new MouseMotionHandler();
 
+        //create action handler for buttons
+        ActionHandler ah = new ActionHandler();
+
         //create board panel and add event handlers to it
         boardPanel = new BoardPanel();
         boardPanel.addMouseListener(mh);
@@ -70,10 +74,12 @@ public class Board extends JFrame
 
         //new game button 
         newGameButton = new JButton("New Game");
+        newGameButton.addActionListener(ah);
         menuPanel.add(newGameButton);
 
         //forfeit button
         forfeitButton = new JButton("Forfeit");
+        forfeitButton.addActionListener(ah);
         menuPanel.add(forfeitButton);
 
         //Label for turn
@@ -127,12 +133,8 @@ public class Board extends JFrame
             System.exit(1);
         }
 
-        //set player's turn
-        turn = 'W';
-
-        //instantiate pieces and the captured pieces display
+        //instantiate pieces 
         initializePieces();
-        checkCaptured();    
 
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -161,6 +163,26 @@ public class Board extends JFrame
             {
                 System.out.printf("%s%n%nTerminating.", ioe.getMessage());
                 System.exit(1);
+            }
+        }
+    }
+
+    private class ActionHandler implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            if(e.getSource() == newGameButton)
+            {
+                int result=JOptionPane.showConfirmDialog(null,"Are you sure?");
+                if (result == JOptionPane.YES_OPTION)
+                {
+                    initializePieces();
+                    boardPanel.repaint();
+                }
+            }
+            if(e.getSource() == forfeitButton)
+            {
+
             }
         }
     }
@@ -361,6 +383,19 @@ public class Board extends JFrame
             else if(i == B_KING)
                 pieces[i] = new King(i%8, 7, 'B');
         }
+        //initialize number of captured
+        queenWCap = 0; rookWCap = 0; bishopWCap = 0; knightWCap = 0; pawnWCap = 0;
+        queenBCap = 0; rookBCap = 0; bishopBCap = 0; knightBCap = 0; pawnBCap = 0;
+
+        //initialize captured array
+        Arrays.fill(captured,false);
+
+        //initialize captured display
+        checkCaptured();
+
+        //initialize player's turn
+        turn = 'W';
+        turnLabel.setText("White's Turn");
     }
     //check if each piece is captured
     private void checkCaptured()
