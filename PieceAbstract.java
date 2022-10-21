@@ -160,6 +160,9 @@ public abstract class PieceAbstract
                     occupyingPiece = i;
             }
         }
+        else
+            throw new InvalidMoveException("Rooks move horizontally and vertically, "
+                +"and can't pass through other pieces.");
         if(notBetween && occupyingPiece < 0 && (this.x == x || this.y == y))
         {
             this.x = x;
