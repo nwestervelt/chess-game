@@ -31,6 +31,9 @@ public class Board extends JFrame
     //Variable containing char identifying who's turn it is
     private char turn;
 
+    //Boolean keeping track if game is over
+    private boolean gameOver = false;
+
     //Integers used for cursor position and the selected piece
     private int currX, currY, selected = -1;
 
@@ -173,7 +176,7 @@ public class Board extends JFrame
         {
             if(e.getSource() == newGameButton)
             {
-                int result=JOptionPane.showConfirmDialog(null,"Are you sure?");
+                int result=JOptionPane.showConfirmDialog(null,"Are you sure you want to play a new game?");
                 if (result == JOptionPane.YES_OPTION)
                 {
                     initializePieces();
@@ -182,7 +185,25 @@ public class Board extends JFrame
             }
             if(e.getSource() == forfeitButton)
             {
-
+                int result=JOptionPane.showConfirmDialog(null,"Are you sure you want to forfeit?");
+                if (result == JOptionPane.YES_OPTION)
+                {
+                    gameOver = true;
+                    if (turn == 'W')
+                    {
+                        JOptionPane.showMessageDialog(null, "Black is the Winner!","Winner!",JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(null, "White is the Winner!","Winner!",JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    result=JOptionPane.showConfirmDialog(null,"Would you like to play a new game?");
+                    if (result == JOptionPane.YES_OPTION)
+                    {
+                        initializePieces();
+                        boardPanel.repaint();
+                    }
+                }
             }
         }
     }
@@ -191,6 +212,7 @@ public class Board extends JFrame
     {
         public void mousePressed (MouseEvent e)
         {
+            if (gameOver) return;
             int x=e.getX();
             int y=e.getY();
             //determines which piece was selected
@@ -396,6 +418,7 @@ public class Board extends JFrame
         //initialize player's turn
         turn = 'W';
         turnLabel.setText("White's Turn");
+        gameOver = false;
     }
     //check if each piece is captured
     private void checkCaptured()
