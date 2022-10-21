@@ -43,12 +43,12 @@ public class King extends PieceAbstract
             else  
                 index = Board.B_KING;
             //if king is moving left and left rook has not moved
-            if(x - this.x == -2 && ((Rook)pieces[index - 3]).getNotMoved())
+            if(x - this.x == -2 && ((Rook)pieces[index - 4]).getNotMoved())
             {
                 //searching for pieces between king and rook
                 for (int j = 0; j < pieces.length; j++)
                 {
-                    if(pieces[j].getX() < this.x && pieces[j].getX() > this.x - 3 &&
+                    if(pieces[j].getX() < this.x && pieces[j].getX() > this.x - 4 &&
                         pieces[j].getY() == this.y)
                     {
                         notBetween = false;
@@ -58,18 +58,18 @@ public class King extends PieceAbstract
                 if (notBetween)
                 {
                     this.x = x;
-                    pieces[index - 3].setX(this.x + 1);
+                    pieces[index - 4].setX(this.x + 1);
                     notMoved = false;
-                    ((Rook)pieces[index - 3]).setNotMoved(false);
+                    ((Rook)pieces[index - 4]).setNotMoved(false);
                 }
             }
             //if king is moving right and right rook has not moved 
-            else if(x - this.x == 2 && ((Rook)pieces[index + 4]).getNotMoved())
+            else if(x - this.x == 2 && ((Rook)pieces[index + 3]).getNotMoved())
             {
                 //searching for pieces between king and rook
                 for (int j = 0; j < pieces.length; j++)
                 {
-                    if(pieces[j].getX() > this.x && pieces[j].getX() < this.x + 4 &&
+                    if(pieces[j].getX() > this.x && pieces[j].getX() < this.x + 3 &&
                         pieces[j].getY() == this.y)
                     {
                         notBetween = false;
@@ -79,9 +79,9 @@ public class King extends PieceAbstract
                 if (notBetween)
                 {
                     this.x = x;
-                    pieces[index + 4].setX(this.x - 1);
+                    pieces[index + 3].setX(this.x - 1);
                     notMoved = false;
-                    ((Rook)pieces[index + 4]).setNotMoved(false);
+                    ((Rook)pieces[index + 3]).setNotMoved(false);
                 }
             }
         }

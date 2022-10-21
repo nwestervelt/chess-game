@@ -10,10 +10,10 @@ import java.util.*;
 public class Board extends JFrame
 {
     //Static constants for piece indexes
-    public static final int W_ROOK1 = 0, W_KNIGHT1 = 1, W_BISHOP1 = 2, W_KING = 3, W_QUEEN = 4,
-         W_BISHOP2 = 5, W_KNIGHT2 = 6, W_ROOK2 = 7, W_PAWN_MIN = 8, W_PAWN_MAX = 15;
-    public static final int B_ROOK1 = 24, B_KNIGHT1 = 25, B_BISHOP1 = 26, B_KING = 27, B_QUEEN = 28,
-        B_BISHOP2 = 29, B_KNIGHT2 = 30, B_ROOK2 = 31, B_PAWN_MIN = 16, B_PAWN_MAX = 23;
+    public static final int W_ROOK1 = 24, W_KNIGHT1 = 25, W_BISHOP1 = 26, W_QUEEN = 27, W_KING = 28,
+         W_BISHOP2 = 29, W_KNIGHT2 = 30, W_ROOK2 = 31, W_PAWN_MIN = 16, W_PAWN_MAX = 23;
+    public static final int B_ROOK1 = 0, B_KNIGHT1 = 1, B_BISHOP1 = 2, B_QUEEN = 3, B_KING = 4,
+        B_BISHOP2 = 5, B_KNIGHT2 = 6, B_ROOK2 = 7, B_PAWN_MIN = 8, B_PAWN_MAX = 15;
     
     //Static constants for piece values
     public static final int PAWN_VALUE = 1, BISHOP_VALUE = 3, KNIGHT_VALUE = 3, ROOK_VALUE = 5, QUEEN_VALUE = 9;
@@ -42,6 +42,7 @@ public class Board extends JFrame
     private BufferedImage board;
 
     //Components for the menu
+    private JPanel menuPanel;
     private JButton newGameButton;
     private JButton forfeitButton;
     private JLabel turnLabel;
@@ -70,7 +71,7 @@ public class Board extends JFrame
         add(boardPanel,BorderLayout.CENTER);
 
         //create menu panel to the west
-        JPanel menuPanel = new JPanel();
+        menuPanel = new JPanel();
         menuPanel.setPreferredSize(new Dimension (200,800));
         menuPanel.setBackground(Color.WHITE);
         add(menuPanel,BorderLayout.WEST);
@@ -89,21 +90,6 @@ public class Board extends JFrame
         turnLabel = new JLabel("White's Turn");
         menuPanel.add(turnLabel);
 
-        //Label for white captured pieces
-        whiteLabel = new JLabel("White Pieces Lost");
-        whiteLabel.setPreferredSize(new Dimension (200,100));
-        whiteLabel.setHorizontalAlignment(JLabel.CENTER);
-        whiteLabel.setVerticalAlignment(JLabel.BOTTOM);
-        menuPanel.add(whiteLabel);
-
-        //Text area showing white captured pieces
-        whiteCaptured = new JTextArea();
-        whiteCaptured.setPreferredSize(new Dimension (90,250));
-        whiteCaptured.setLineWrap(true);
-        whiteCaptured.setWrapStyleWord(true);
-        whiteCaptured.setEditable(false);
-        menuPanel.add(whiteCaptured);
-
         //Label for black captured pieces
         blackLabel = new JLabel("Black Pieces Lost");
         blackLabel.setPreferredSize(new Dimension (200,100));
@@ -118,6 +104,21 @@ public class Board extends JFrame
         blackCaptured.setWrapStyleWord(true);
         blackCaptured.setEditable(false);
         menuPanel.add(blackCaptured);
+
+        //Label for white captured pieces
+        whiteLabel = new JLabel("White Pieces Lost");
+        whiteLabel.setPreferredSize(new Dimension (200,100));
+        whiteLabel.setHorizontalAlignment(JLabel.CENTER);
+        whiteLabel.setVerticalAlignment(JLabel.BOTTOM);
+        menuPanel.add(whiteLabel);
+
+        //Text area showing white captured pieces
+        whiteCaptured = new JTextArea();
+        whiteCaptured.setPreferredSize(new Dimension (90,250));
+        whiteCaptured.setLineWrap(true);
+        whiteCaptured.setWrapStyleWord(true);
+        whiteCaptured.setEditable(false);
+        menuPanel.add(whiteCaptured);
 
         //create a generic array of ChessPiece objects
         pieces = new PieceAbstract[32];
@@ -151,7 +152,14 @@ public class Board extends JFrame
         {
             super.paintComponent(g);
             g.drawImage(board, 0, 0, null);
-
+            char ch = 'A';
+            Font font = new Font(Font.SERIF,Font.BOLD, 15);
+            g.setFont(font);
+            for (int i = 0; i < 8; i++)
+            {
+                g.drawString("" + (i+1), 0, ((7-i) * 100) + 15);
+                g.drawString("" + (char)(ch + i), ((i + 1) * 100) - 15, 790);
+            }
             try
             {
                 for(int i = 0; i < pieces.length; i++)
@@ -240,8 +248,8 @@ public class Board extends JFrame
                     checkCaptured();
                     //if a pawn is moved to the other side of the board
                     if(pieces[selected] instanceof Pawn &&
-                        ((pieces[selected].getY() == 0 && pieces[selected].getPlayer() == 'B') ||
-                        (pieces[selected].getY() == 7 && pieces[selected].getPlayer() == 'W')))
+                        ((pieces[selected].getY() == 7 && pieces[selected].getPlayer() == 'B') ||
+                        (pieces[selected].getY() == 0 && pieces[selected].getPlayer() == 'W')))
                     {
                         //create and make promotion dialog visible
                         PromotionDialog pd = new PromotionDialog(Board.this);
@@ -379,31 +387,31 @@ public class Board extends JFrame
         {
             // white pieces
             if(i == W_ROOK1 || i == W_ROOK2)
-                pieces[i] = new Rook(i%8, 0, 'W');
+                pieces[i] = new Rook(i%8, 7, 'W');
             else if(i == W_KNIGHT1 || i == W_KNIGHT2)
-                pieces[i] = new Knight(i%8, 0, 'W');
+                pieces[i] = new Knight(i%8, 7, 'W');
             else if(i == W_BISHOP1 || i == W_BISHOP2)
-                pieces[i] = new Bishop(i%8, 0, 'W');
+                pieces[i] = new Bishop(i%8, 7, 'W');
             else if(i == W_QUEEN)
-                pieces[i] = new Queen(i%8, 0, 'W');
+                pieces[i] = new Queen(i%8, 7, 'W');
             else if(i == W_KING)
-                pieces[i] = new King(i%8, 0, 'W');
+                pieces[i] = new King(i%8, 7, 'W');
             else if(i >= W_PAWN_MIN && i <= W_PAWN_MAX)
-                pieces[i] = new Pawn(i%8, 1, 'W');
+                pieces[i] = new Pawn(i%8, 6, 'W');
 
             // black pieces
             else if(i >= B_PAWN_MIN && i <= B_PAWN_MAX)
-                pieces[i] = new Pawn(i%8, 6, 'B');
+                pieces[i] = new Pawn(i%8, 1, 'B');
             else if(i == B_ROOK1 || i == B_ROOK2)
-                pieces[i] = new Rook(i%8, 7, 'B');
+                pieces[i] = new Rook(i%8, 0, 'B');
             else if(i == B_KNIGHT1 || i == B_KNIGHT2)
-                pieces[i] = new Knight(i%8, 7, 'B');
+                pieces[i] = new Knight(i%8, 0, 'B');
             else if(i == B_BISHOP1 || i == B_BISHOP2)
-                pieces[i] = new Bishop(i%8, 7, 'B');
+                pieces[i] = new Bishop(i%8, 0, 'B');
             else if(i == B_QUEEN)
-                pieces[i] = new Queen(i%8, 7, 'B');
+                pieces[i] = new Queen(i%8, 0, 'B');
             else if(i == B_KING)
-                pieces[i] = new King(i%8, 7, 'B');
+                pieces[i] = new King(i%8, 0, 'B');
         }
         //initialize number of captured
         queenWCap = 0; rookWCap = 0; bishopWCap = 0; knightWCap = 0; pawnWCap = 0;
@@ -434,7 +442,7 @@ public class Board extends JFrame
                     continue;
                 captured[i] = true;
                 //if white piece captured increment the captured counter for that piece
-                if(i < 16)
+                if(i > 16)
                 {
                     if (pieces[i] instanceof Pawn)
                         pawnWCap++;
@@ -470,18 +478,18 @@ public class Board extends JFrame
         int whiteValue = (queenWCap * QUEEN_VALUE) + (rookWCap * ROOK_VALUE) + (bishopWCap * BISHOP_VALUE) + (knightWCap * KNIGHT_VALUE) + (pawnWCap * PAWN_VALUE);
         int blackValue = (queenBCap * QUEEN_VALUE) + (rookBCap * ROOK_VALUE) + (bishopBCap * BISHOP_VALUE) + (knightBCap * KNIGHT_VALUE) + (pawnBCap * PAWN_VALUE);
         //update white captured pieces and value
-        whiteCaptured.setText("Queens, " + queenWCap + " " +
-                        "Rooks, " + rookWCap + " " +
-                        "Bishops, " + bishopWCap + " " +
-                        "Knights, " + knightWCap + " " +
-                        "Pawns, " + pawnWCap + "  " + 
+        whiteCaptured.setText("Queens, " + queenWCap + "\n\n" +
+                        "Rooks, " + rookWCap + "\n\n" +
+                        "Bishops, " + bishopWCap + "\n\n" +
+                        "Knights, " + knightWCap + "\n\n" +
+                        "Pawns, " + pawnWCap + "\n\n" + 
                         "Value: " + (blackValue - whiteValue));
         //update black captured pieces and value
-        blackCaptured.setText("Queens, " + queenBCap + " " +
-                        "Rooks, " + rookBCap + " " +
-                        "Bishops, " + bishopBCap + " " +
-                        "Knights, " + knightBCap + " " +
-                        "Pawns, " + pawnBCap + "  " +
+        blackCaptured.setText("Queens, " + queenBCap + "\n\n" +
+                        "Rooks, " + rookBCap + "\n\n" +
+                        "Bishops, " + bishopBCap + "\n\n" +
+                        "Knights, " + knightBCap + "\n\n" +
+                        "Pawns, " + pawnBCap + "\n\n" +
                         "Value: " + (whiteValue - blackValue));
     }
     //start the application

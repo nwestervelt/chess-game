@@ -33,8 +33,8 @@ public class Pawn extends PieceAbstract
         boolean notBetween = true, movingForward = false;
 
         //if player is moving their piece forwards
-        if((player == 'W' && y - this.y > 0) ||
-            (player == 'B' && y - this.y < 0))
+        if((player == 'W' && y - this.y < 0) ||
+            (player == 'B' && y - this.y > 0))
         {
             for(int i = 0; i < pieces.length; i++)
             {
@@ -56,8 +56,8 @@ public class Pawn extends PieceAbstract
                 //if pieces[i] is a pawn, en passant can be used, and position is behind move location
                 else if(pieces[i] instanceof Pawn && ((Pawn)pieces[i]).isEnPassant() && (pieces[i].getX() == x))
                 {
-                    if((pieces[i].getY() - y == 1 && player == 'B') ||
-                        (pieces[i].getY() - y == -1 && player == 'W'))
+                    if((pieces[i].getY() - y == -1 && player == 'B') ||
+                        (pieces[i].getY() - y == 1 && player == 'W'))
                         occupyingPiece = i;
                 }
             }
