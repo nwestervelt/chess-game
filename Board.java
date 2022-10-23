@@ -691,7 +691,7 @@ public class Board extends JFrame
                 history.append("        " + type + notation[pieces[selected].getY()][pieces[selected].getX()] + "\n");
         }
     }
-    
+    //start the application
     public static void main(String[] args)
     {
         new Board();
