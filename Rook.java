@@ -5,17 +5,14 @@ import java.awt.image.*;
 
 public class Rook extends PieceAbstract
 {
+    //variable to track if this Rook has moved
     private boolean notMoved = true;
-
-    public Rook()
-    {
-        super();
-    }
+    //use constructor in PieceAbstract
     public Rook(int x, int y, char player)
-        throws NoSuchPlayerException
     {
         super(x, y, player);
     }
+    //return the image associated with this Rook
     public BufferedImage getImage()
         throws IOException
     {
@@ -23,16 +20,19 @@ public class Rook extends PieceAbstract
         image = ImageIO.read(new File("images/"+player+"Rook.png"));
         return image;
     }
-    public void move(int x, int y, PieceAbstract[] pieces)
+    //move this Rook according to the appropriate rules
+    public void move(int x, int y, boolean check, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
-        rookMove(x, y, pieces);
+        rookMove(x, y, check, pieces);
         notMoved = false;
     }
+    //return if this Rook has moved yet
     public boolean getNotMoved()
     {
         return notMoved;
     }
+    //set the notMoved variable, used when castling to ensure this Rook can't castle again
     public void setNotMoved(boolean notMoved)
     {
         this.notMoved = notMoved;

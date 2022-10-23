@@ -5,21 +5,19 @@ import java.awt.image.*;
 
 public class Pawn extends PieceAbstract
 {
+    //variables to track if this Pawn has moved and if en passant can be used on it
     private boolean notMoved = true, enPassant = false;
-
-    public Pawn()
-    {
-        super();
-    }
+    //use constructor in PieceAbstract
     public Pawn(int x, int y, char player)
-        throws NoSuchPlayerException
     {
         super(x, y, player);
     }
+    //return if en passant can be used on this Pawn
     public boolean isEnPassant()
     {
         return enPassant;
     }
+    //return the image associated with this Pawn
     public BufferedImage getImage()
         throws IOException
     {
@@ -27,15 +25,16 @@ public class Pawn extends PieceAbstract
         image = ImageIO.read(new File("images/"+player+"Pawn.png"));
         return image;
     }
-    public void move(int x, int y, PieceAbstract[] pieces)
+    //move this Pawn according to the appropriate rules
+    public void move(int x, int y, boolean performingCheck, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
-        int occupyingPiece = -1;
+        int occupyingPiece = -1, oldX = this.x, oldY = this.y;
         boolean notBetween = true, movingForward = false;
 
         //if player is moving their piece forwards
-        if((player == 'W' && y - this.y > 0) ||
-            (player == 'B' && y - this.y < 0))
+        if((player == 'W' && y - this.y < 0) ||
+            (player == 'B' && y - this.y > 0))
         {
             for(int i = 0; i < pieces.length; i++)
             {
@@ -57,8 +56,8 @@ public class Pawn extends PieceAbstract
                 //if pieces[i] is a pawn, en passant can be used, and position is behind move location
                 else if(pieces[i] instanceof Pawn && ((Pawn)pieces[i]).isEnPassant() && (pieces[i].getX() == x))
                 {
-                    if((pieces[i].getY() - y == 1 && player == 'B') ||
-                        (pieces[i].getY() - y == -1 && player == 'W'))
+                    if((pieces[i].getY() - y == -1 && player == 'B') ||
+                        (pieces[i].getY() - y == 1 && player == 'W'))
                         occupyingPiece = i;
                 }
             }
@@ -72,18 +71,26 @@ public class Pawn extends PieceAbstract
             //if moving one space
             if(Math.abs(y - this.y) == 1)
             {
-                this.x = x;
-                this.y = y;
-                notMoved = false;
-                enPassant = false;
+                //only perform move if not checking check status of other player's king
+                if(!performingCheck)
+                {
+                    this.x = x;
+                    this.y = y;
+                    notMoved = false;
+                    enPassant = false;
+                }
             }
             //if moving two spaces
             else if(Math.abs(y - this.y) == 2 && notMoved)
             {
-               this.x = x;
-               this.y = y;
-               notMoved = false;
-               enPassant = true; 
+               //only perform move if not checking check status of other player's king
+               if(!performingCheck)
+               {
+                   this.x = x;
+                   this.y = y;
+                   notMoved = false;
+                   enPassant = true; 
+               }
             }
         }
         //if occupied and pawn is moving forward and opposing player is occupying 
@@ -91,14 +98,22 @@ public class Pawn extends PieceAbstract
         else if (occupyingPiece >= 0 && movingForward && pieces[occupyingPiece].getPlayer() != player 
             && (x == this.x + 1 || x == this.x - 1) && Math.abs(y - this.y) == 1)
         {
-            this.x = x;
-            this.y = y;
-            capturePiece(occupyingPiece, pieces);
-            enPassant = false;
+            //only perform move if not checking check status of other player's king
+            if(!performingCheck)
+            {
+                this.x = x;
+                this.y = y;
+                capturePiece(occupyingPiece, pieces);
+                enPassant = false;
+            }
         }
         //throw exception if didn't move
         else
             throw new InvalidMoveException("Pawns can only move towards the opposing side, and "+
                 "they can only move two spaces forwards if they haven't moved yet.");
+        //if move method wasn't called by another piece for checking
+        //if the king is in check, check if the king is in check (prevents recursive call)
+        if(!performingCheck)
+            kingCheckLogic(pieces, oldX, oldY);
     }
 }

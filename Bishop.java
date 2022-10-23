@@ -5,15 +5,12 @@ import java.awt.image.*;
 
 public class Bishop extends PieceAbstract
 {
-    public Bishop()
-    {
-        super();
-    }
+    //use constructor in AbstractPiece
     public Bishop(int x, int y, char player)
-        throws NoSuchPlayerException
     {
         super(x, y, player);
     }
+    //return the image associated with this Bishop
     public BufferedImage getImage()
         throws IOException
     {
@@ -21,9 +18,10 @@ public class Bishop extends PieceAbstract
         image = ImageIO.read(new File("images/"+player+"Bishop.png"));
         return image;
     }
-    public void move(int x, int y, PieceAbstract[] pieces)
+    //move this Bishop according to the appropriate rules
+    public void move(int x, int y, boolean check, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
-        bishopMove(x, y, pieces);
+        bishopMove(x, y, check, pieces);
     }
 }

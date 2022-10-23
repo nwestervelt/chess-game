@@ -5,15 +5,12 @@ import java.awt.image.*;
 
 public class Queen extends PieceAbstract
 {
-    public Queen()
-    {
-        super();
-    }
+    //use constructor in PieceAbstract
     public Queen(int x, int y, char player)
-        throws NoSuchPlayerException
     {
         super(x, y, player);
     }
+    //get the image associated with this Queen
     public BufferedImage getImage()
         throws IOException
     {
@@ -21,18 +18,15 @@ public class Queen extends PieceAbstract
         image = ImageIO.read(new File("images/"+player+"Queen.png"));
         return image;
     }
-    public void move(int x, int y, PieceAbstract[] pieces)
+    //move this Queen, following the appropriate rules
+    public void move(int x, int y, boolean check, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
-        //if diagonal movement call bishopMove method
-        //else call rookMove method
+        //if diagonal move use Bishop's move method
         if (Math.abs(x - this.x) == Math.abs(y - this.y))
-        {
-            bishopMove(x, y, pieces); 
-        }
+            bishopMove(x, y, check, pieces); 
+        //if horizontal move use Rook's move method
         else 
-        {
-            rookMove(x, y, pieces);
-        }
+            rookMove(x, y, check, pieces);
     }
 }
