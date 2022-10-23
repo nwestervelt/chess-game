@@ -43,7 +43,7 @@ public abstract class PieceAbstract
     {
         this.y = y;
     }
-    //used to move this piece according to it's movement rules (both move methods)
+    //used to move this piece according to it's movement rules
     public abstract void move(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException;
     //used to capture a piece
