@@ -51,6 +51,18 @@ public class Board extends JFrame
     private JLabel blackLabel;
     private JTextArea blackCaptured;
 
+    //Componenets for the move history
+    private JPanel historyPanel;
+    private JScrollPane scrollPane;
+    private JTextArea history;
+    private JLabel hLabel;
+    private String[][] notation;
+    private int turnCount = 1;
+    private int castle = 0;
+    private boolean capture = false;
+    private int pawnX = 0;
+    private boolean promotion = false;
+
     public Board()
     {
         //call super class's constructor and set title
@@ -120,6 +132,45 @@ public class Board extends JFrame
         whiteCaptured.setEditable(false);
         menuPanel.add(whiteCaptured);
 
+        //create a history panel to the east
+        historyPanel = new JPanel();
+        historyPanel.setPreferredSize(new Dimension (200,800));
+        historyPanel.setBackground(Color.WHITE);
+        add(historyPanel,BorderLayout.EAST);
+
+        //Label for history
+        hLabel = new JLabel("Move History");
+        hLabel.setPreferredSize(new Dimension (200,100));
+        hLabel.setHorizontalAlignment(JLabel.CENTER);
+        hLabel.setVerticalAlignment(JLabel.BOTTOM);
+        historyPanel.add(hLabel);
+
+        //Text area displaying history
+        history = new JTextArea();
+        history.setPreferredSize(new Dimension (200,5000));
+        history.setLineWrap(true);
+        history.setWrapStyleWord(true);
+        history.setEditable(false);
+        history.setAutoscrolls(true);
+        historyPanel.add(history);
+
+        //add scrollpane for text area
+        scrollPane = new JScrollPane(history);
+        scrollPane.setPreferredSize(new Dimension (200,600));
+        scrollPane.createVerticalScrollBar();
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        historyPanel.add(scrollPane);
+
+        //create an array with the notation for each square
+        notation = new String[8][8];
+        for (int i = 0; i < 8; i++)
+        {
+            for(int j = 0; j < 8; j++)
+            {
+                notation[7-i][j] = "" + (char)(97+j) + (i+1);
+            }
+        }
+
         //create a generic array of ChessPiece objects
         pieces = new PieceAbstract[32];
 
@@ -152,13 +203,13 @@ public class Board extends JFrame
         {
             super.paintComponent(g);
             g.drawImage(board, 0, 0, null);
-            char ch = 'A';
             Font font = new Font(Font.SERIF,Font.BOLD, 15);
             g.setFont(font);
+            //draw numbers and letters for the rows and columns
             for (int i = 0; i < 8; i++)
             {
                 g.drawString("" + (i+1), 0, ((7-i) * 100) + 15);
-                g.drawString("" + (char)(ch + i), ((i + 1) * 100) - 15, 790);
+                g.drawString("" + (char)(97 + i), ((i + 1) * 100) - 15, 790);
             }
             try
             {
@@ -182,6 +233,7 @@ public class Board extends JFrame
     {
         public void actionPerformed(ActionEvent e)
         {
+            //new game button
             if(e.getSource() == newGameButton)
             {
                 int result=JOptionPane.showConfirmDialog(null,"Are you sure you want to play a new game?");
@@ -191,19 +243,22 @@ public class Board extends JFrame
                     boardPanel.repaint();
                 }
             }
+            //forfeit button
             if(e.getSource() == forfeitButton)
             {
                 int result=JOptionPane.showConfirmDialog(null,"Are you sure you want to forfeit?");
                 if (result == JOptionPane.YES_OPTION)
                 {
                     gameOver = true;
+                    //if its whites turn then white forfeits
                     if (turn == 'W')
                     {
-                        JOptionPane.showMessageDialog(null, "Black is the Winner!","Winner!",JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Black is the Winner by forfeit","Winner!",JOptionPane.INFORMATION_MESSAGE);
                     }
+                    //if its blacks turn then black forfeits
                     else
                     {
-                        JOptionPane.showMessageDialog(null, "White is the Winner!","Winner!",JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "White is the Winner by forfeit","Winner!",JOptionPane.INFORMATION_MESSAGE);
                     }
                     result=JOptionPane.showConfirmDialog(null,"Would you like to play a new game?");
                     if (result == JOptionPane.YES_OPTION)
@@ -243,6 +298,26 @@ public class Board extends JFrame
                 //if new coordinates are inside the board's boundraries
                 if (currX <= 800 || currX >= 0 || currY <= 800 || currY >= 0)
                 {
+                    //if pawn save X coordinate for notation
+                    if (pieces[selected] instanceof Pawn)
+                        pawnX = pieces[selected].getX();
+                    if (W_KING == selected || B_KING == selected)
+                    {
+                        //king side castling notation
+                        if ((currX+50)/100 == pieces[selected].getX() + 2 && (currY+50)/100 == pieces[selected].getY())
+                            castle = 1;
+                        //queen side castling notation
+                        if ((currX+50)/100 == pieces[selected].getX() - 2 && (currY+50)/100 == pieces[selected].getY())
+                            castle = 2;
+                    }
+                    for(int i = 0; i < pieces.length; i++)
+                    {
+                        //if piece is being captured for notation
+                        if(pieces[i].getX() == (currX+50)/100 && pieces[i].getY() == (currY+50)/100)
+                        {
+                            capture = true;
+                        }
+                    }
                     //move the selected piece, include false because this is a regular move
                     pieces[selected].move((currX+50)/100, (currY+50)/100, false, pieces);
                     checkCaptured();
@@ -251,6 +326,7 @@ public class Board extends JFrame
                         ((pieces[selected].getY() == 7 && pieces[selected].getPlayer() == 'B') ||
                         (pieces[selected].getY() == 0 && pieces[selected].getPlayer() == 'W')))
                     {
+                        promotion = true;
                         //create and make promotion dialog visible
                         PromotionDialog pd = new PromotionDialog(Board.this);
                         pd.setVisible(true);
@@ -278,14 +354,16 @@ public class Board extends JFrame
                         }
                     }
                 }
-                //change turn and set turnLabel if move was successful
+                //change turn, set turnLabel if move was successful, and move history
                 if(turn == 'W')
                 {
+                    moveHistory();
                     turn = 'B';
                     turnLabel.setText("Black's Turn");
                 }
                 else
                 {
+                    moveHistory();
                     turn = 'W';
                     turnLabel.setText("White's Turn");
                 }
@@ -427,6 +505,11 @@ public class Board extends JFrame
         turn = 'W';
         turnLabel.setText("White's Turn");
         gameOver = false;
+
+        //reset move history
+        history.setText("");
+        castle = 0;
+        turnCount = 1;
     }
     //check if each piece is captured
     private void checkCaptured()
@@ -492,7 +575,123 @@ public class Board extends JFrame
                         "Pawns, " + pawnBCap + "\n\n" +
                         "Value: " + (whiteValue - blackValue));
     }
-    //start the application
+
+    //add move notations into the move history section
+    public void moveHistory()
+    {
+        String type = pieces[selected].getClass() + "";
+        //if knight change type to N to not confuse ith king
+        if (type.substring(6).equals("Knight"))
+            type = "N";
+        else
+            type = type.substring(6,7);
+        //white
+        if(turn == 'W')
+        {
+            //promotion
+            //pawn moves ignore P 
+            if (promotion)
+            {
+                //promotion and capture
+                if (pawnX != pieces[selected].getX())
+                {
+                    String previous = notation[0][pawnX];
+                    previous = previous.substring(0,1);
+                    history.append(turnCount + ".   " + previous + "x" + notation[pieces[selected].getY()][pieces[selected].getX()] + type);
+                    promotion = false;
+                }
+                else
+                {
+                    history.append(turnCount + ".   " + notation[pieces[selected].getY()][pieces[selected].getX()] + type);
+                    promotion = false;
+                }
+            }
+            //pawn move
+            else if (type.equals("P"))
+            {
+                if (pawnX != pieces[selected].getX())
+                {
+                    //move and capture
+                    String previous = notation[0][pawnX];
+                    previous = previous.substring(0,1);
+                    history.append(turnCount + ".   " +  previous + "x" + notation[pieces[selected].getY()][pieces[selected].getX()]);
+                    capture = false;
+                }
+                else 
+                    history.append(turnCount + ".   " + notation[pieces[selected].getY()][pieces[selected].getX()]);
+            }
+            //castling notation
+            else if(castle == 1)
+            {
+                //king side castling
+                history.append(turnCount + ".   " + "0-0");
+                castle = 0;
+            }
+            else if(castle == 2)
+            {
+                //queen side castling 
+                history.append(turnCount + ".   " + "0-0-0");
+                castle = 0;
+            }
+            //normal move notation
+            else if(capture)
+            {
+                //capturing
+                history.append(turnCount + ".   " + type + "x" + notation[pieces[selected].getY()][pieces[selected].getX()]);
+                capture = false;
+            }
+            else
+                //movement
+                history.append(turnCount + ".   " + type + notation[pieces[selected].getY()][pieces[selected].getX()]);
+        }
+        //black
+        else
+        {
+            turnCount++;
+            if (promotion)
+            {
+                if (pawnX != pieces[selected].getX())
+                {
+                    String previous = notation[0][pawnX];
+                    previous = previous.substring(0,1);
+                    history.append("        " + previous + "x" + notation[pieces[selected].getY()][pieces[selected].getX()] + type + "\n");
+                    promotion = false;
+                }
+                else
+                    history.append("        " + notation[pieces[selected].getY()][pieces[selected].getX()] + type + "\n");
+            }
+            else if (type.equals("P"))
+            {
+                if (pawnX != pieces[selected].getX())
+                {
+                    String previous = notation[0][pawnX];
+                    previous = previous.substring(0,1);
+                    history.append("        " +  previous + "x" + notation[pieces[selected].getY()][pieces[selected].getX()] + "\n");
+                    capture = false;
+                }
+                else 
+                    history.append("        " + notation[pieces[selected].getY()][pieces[selected].getX()] + "\n");
+            }
+            else if(castle == 1)
+            {
+                history.append("        " + "0-0\n");
+                castle = 0;
+            }
+            else if(castle == 2)
+            {
+                history.append("        " + "0-0-0\n");
+                castle = 0;
+            }
+            else if(capture)
+            {
+                history.append("        " + type + "x" + notation[pieces[selected].getY()][pieces[selected].getX()] + "\n");
+                capture = false;
+            }
+            else
+                history.append("        " + type + notation[pieces[selected].getY()][pieces[selected].getX()] + "\n");
+        }
+    }
+    
     public static void main(String[] args)
     {
         new Board();
