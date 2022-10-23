@@ -193,7 +193,10 @@ public abstract class PieceAbstract
             }
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 13d36fa6b828592b072ee578374e3905f19e46b4
         else
             throw new InvalidMoveException("Rooks move horizontally and vertically, "
                 +"and can't pass through other pieces.");

@@ -483,7 +483,6 @@ public class Board extends JFrame
                 //if white piece captured increment the captured counter for that piece
 =======
                 //if white piece captured print out the piece in the captured section
->>>>>>> 13d36fa (Swapped Piece Sides)
                 if(i > 16)
                 {
                     if (pieces[i] instanceof Pawn)
@@ -523,7 +522,6 @@ public class Board extends JFrame
         //update white captured pieces and value
 =======
         //Show white captured pieces and value
->>>>>>> 13d36fa (Swapped Piece Sides)
         whiteCaptured.setText("Queens, " + queenWCap + "\n\n" +
                         "Rooks, " + rookWCap + "\n\n" +
                         "Bishops, " + bishopWCap + "\n\n" +
@@ -534,7 +532,6 @@ public class Board extends JFrame
         //update black captured pieces and value
 =======
         //Show black captured pieces and value
->>>>>>> 13d36fa (Swapped Piece Sides)
         blackCaptured.setText("Queens, " + queenBCap + "\n\n" +
                         "Rooks, " + rookBCap + "\n\n" +
                         "Bishops, " + bishopBCap + "\n\n" +
