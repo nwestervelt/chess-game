@@ -191,16 +191,9 @@ public class Board extends JFrame
                 //if new coordinates are inside the board's boundraries
                 if (currX <= 800 || currX >= 0 || currY <= 800 || currY >= 0)
                 {
-                    if (selected == B_KING || selected == W_KING)
-                    {
-                        pieces[selected].move((currX+50)/100, (currY+50)/100, pieces, W_KING, B_KING);
-                        checkCaptured();
-                    }
-                    else    
-                    {
-                        pieces[selected].move((currX+50)/100, (currY+50)/100, pieces);
-                        checkCaptured();
-                    }
+                    //move the selected piece
+                    pieces[selected].move((currX+50)/100, (currY+50)/100, pieces);
+                    checkCaptured();
                     //if a pawn is moved to the other side of the board
                     if(pieces[selected] instanceof Pawn &&
                         ((pieces[selected].getY() == 0 && pieces[selected].getPlayer() == 'B') ||
@@ -210,34 +203,26 @@ public class Board extends JFrame
                         PromotionDialog pd = new PromotionDialog(Board.this);
                         pd.setVisible(true);
                         PieceAbstract newPiece;
-                        try
+                        //replace currently selected piece with selected piece type
+                        if(pd.getSelectedButton() == PromotionDialog.QUEEN)
                         {
-                            //replace currently selected piece with selected piece type
-                            if(pd.getSelectedButton() == PromotionDialog.QUEEN)
-                            {
-                                newPiece = new Queen(pieces[selected].getX(), pieces[selected].getY(), pieces[selected].getPlayer());
-                                pieces[selected] = newPiece;
-                            }
-                            else if(pd.getSelectedButton() == PromotionDialog.KNIGHT)
-                            {
-                                newPiece = new Knight(pieces[selected].getX(), pieces[selected].getY(), pieces[selected].getPlayer());
-                                pieces[selected] = newPiece;
-                            }
-                            else if(pd.getSelectedButton() == PromotionDialog.BISHOP)
-                            {
-                                newPiece = new Bishop(pieces[selected].getX(), pieces[selected].getY(), pieces[selected].getPlayer());
-                                pieces[selected] = newPiece;
-                            }
-                            else if(pd.getSelectedButton() == PromotionDialog.ROOK)
-                            {
-                                newPiece = new Rook(pieces[selected].getX(), pieces[selected].getY(), pieces[selected].getPlayer());
-                                pieces[selected] = newPiece;
-                            }
+                            newPiece = new Queen(pieces[selected].getX(), pieces[selected].getY(), pieces[selected].getPlayer());
+                            pieces[selected] = newPiece;
                         }
-                        catch(NoSuchPlayerException nspe)
+                        else if(pd.getSelectedButton() == PromotionDialog.KNIGHT)
                         {
-                            System.out.printf("%s%n%nTerminating.", nspe.getMessage());
-                            System.exit(1);
+                            newPiece = new Knight(pieces[selected].getX(), pieces[selected].getY(), pieces[selected].getPlayer());
+                            pieces[selected] = newPiece;
+                        }
+                        else if(pd.getSelectedButton() == PromotionDialog.BISHOP)
+                        {
+                            newPiece = new Bishop(pieces[selected].getX(), pieces[selected].getY(), pieces[selected].getPlayer());
+                            pieces[selected] = newPiece;
+                        }
+                        else if(pd.getSelectedButton() == PromotionDialog.ROOK)
+                        {
+                            newPiece = new Rook(pieces[selected].getX(), pieces[selected].getY(), pieces[selected].getPlayer());
+                            pieces[selected] = newPiece;
                         }
                     }
                 }
@@ -346,46 +331,38 @@ public class Board extends JFrame
 
     private void initializePieces()
     {
-        try
+        for(int i = 0; i < pieces.length; i++)
         {
-            for(int i = 0; i < pieces.length; i++)
-            {
-                // white pieces
-                if(i == W_ROOK1 || i == W_ROOK2)
-                    pieces[i] = new Rook(i%8, 0, 'W');
-                else if(i == W_KNIGHT1 || i == W_KNIGHT2)
-                    pieces[i] = new Knight(i%8, 0, 'W');
-                else if(i == W_BISHOP1 || i == W_BISHOP2)
-                    pieces[i] = new Bishop(i%8, 0, 'W');
-                else if(i == W_QUEEN)
-                    pieces[i] = new Queen(i%8, 0, 'W');
-                else if(i == W_KING)
-                    pieces[i] = new King(i%8, 0, 'W');
-                else if(i >= W_PAWN_MIN && i <= W_PAWN_MAX)
-                    pieces[i] = new Pawn(i%8, 1, 'W');
+            // white pieces
+            if(i == W_ROOK1 || i == W_ROOK2)
+                pieces[i] = new Rook(i%8, 0, 'W');
+            else if(i == W_KNIGHT1 || i == W_KNIGHT2)
+                pieces[i] = new Knight(i%8, 0, 'W');
+            else if(i == W_BISHOP1 || i == W_BISHOP2)
+                pieces[i] = new Bishop(i%8, 0, 'W');
+            else if(i == W_QUEEN)
+                pieces[i] = new Queen(i%8, 0, 'W');
+            else if(i == W_KING)
+                pieces[i] = new King(i%8, 0, 'W');
+            else if(i >= W_PAWN_MIN && i <= W_PAWN_MAX)
+                pieces[i] = new Pawn(i%8, 1, 'W');
 
-                // black pieces
-                else if(i >= B_PAWN_MIN && i <= B_PAWN_MAX)
-                    pieces[i] = new Pawn(i%8, 6, 'B');
-                else if(i == B_ROOK1 || i == B_ROOK2)
-                    pieces[i] = new Rook(i%8, 7, 'B');
-                else if(i == B_KNIGHT1 || i == B_KNIGHT2)
-                    pieces[i] = new Knight(i%8, 7, 'B');
-                else if(i == B_BISHOP1 || i == B_BISHOP2)
-                    pieces[i] = new Bishop(i%8, 7, 'B');
-                else if(i == B_QUEEN)
-                    pieces[i] = new Queen(i%8, 7, 'B');
-                else if(i == B_KING)
-                    pieces[i] = new King(i%8, 7, 'B');
-            }
-        }
-        catch(NoSuchPlayerException nspe)
-        {
-            System.out.printf("%s%n%nTerminating.", nspe.getMessage());
-            System.exit(1);
+            // black pieces
+            else if(i >= B_PAWN_MIN && i <= B_PAWN_MAX)
+                pieces[i] = new Pawn(i%8, 6, 'B');
+            else if(i == B_ROOK1 || i == B_ROOK2)
+                pieces[i] = new Rook(i%8, 7, 'B');
+            else if(i == B_KNIGHT1 || i == B_KNIGHT2)
+                pieces[i] = new Knight(i%8, 7, 'B');
+            else if(i == B_BISHOP1 || i == B_BISHOP2)
+                pieces[i] = new Bishop(i%8, 7, 'B');
+            else if(i == B_QUEEN)
+                pieces[i] = new Queen(i%8, 7, 'B');
+            else if(i == B_KING)
+                pieces[i] = new King(i%8, 7, 'B');
         }
     }
-    
+    //check if each piece is captured
     private void checkCaptured()
     {
         //iterate through piece array and a boolean array for captured pieces
@@ -394,11 +371,11 @@ public class Board extends JFrame
             //if piece is captured 
             if(pieces[i].getX() == -100 || pieces[i].getY() == -100)
             {
-                //if already done continue
+                //if already set as captured
                 if (captured[i] == true)
                     continue;
                 captured[i] = true;
-                //if white piece captured print out the piece in the captured section
+                //if white piece captured increment the captured counter for that piece
                 if(i < 16)
                 {
                     if (pieces[i] instanceof Pawn)
@@ -412,7 +389,7 @@ public class Board extends JFrame
                     else if (pieces[i] instanceof Knight)
                         knightWCap++;
                 }
-                //else black
+                //if black piece captured increment the captured counter for that piece
                 else
                 {
                     if (pieces[i] instanceof Pawn)
@@ -427,20 +404,21 @@ public class Board extends JFrame
                         knightBCap++;
                 }
             }
-            //else set it false
+            //if piece isn't captured (not located at -100,-100), set as not captured
             else 
                 captured[i] = false;    
         }
+        //calculate each player's value using value of captured pieces
         int whiteValue = (queenWCap * QUEEN_VALUE) + (rookWCap * ROOK_VALUE) + (bishopWCap * BISHOP_VALUE) + (knightWCap * KNIGHT_VALUE) + (pawnWCap * PAWN_VALUE);
         int blackValue = (queenBCap * QUEEN_VALUE) + (rookBCap * ROOK_VALUE) + (bishopBCap * BISHOP_VALUE) + (knightBCap * KNIGHT_VALUE) + (pawnBCap * PAWN_VALUE);
-        //Show white captured pieces and value
+        //update white captured pieces and value
         whiteCaptured.setText("Queens, " + queenWCap + " " +
                         "Rooks, " + rookWCap + " " +
                         "Bishops, " + bishopWCap + " " +
                         "Knights, " + knightWCap + " " +
                         "Pawns, " + pawnWCap + "  " + 
                         "Value: " + (blackValue - whiteValue));
-        //Show black captured pieces and value
+        //update black captured pieces and value
         blackCaptured.setText("Queens, " + queenBCap + " " +
                         "Rooks, " + rookBCap + " " +
                         "Bishops, " + bishopBCap + " " +
@@ -448,7 +426,7 @@ public class Board extends JFrame
                         "Pawns, " + pawnBCap + "  " +
                         "Value: " + (whiteValue - blackValue));
     }
-    
+    //start the application
     public static void main(String[] args)
     {
         new Board();

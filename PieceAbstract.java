@@ -1,74 +1,59 @@
-// Abstract lass file providing default method implementations.
+// Abstract class file providing default method implementations.
 import java.awt.image.*;
 import java.io.*;
 public abstract class PieceAbstract
 {
+    //variables common to all classes extending PieceAbstract
     int x;
     int y;
     char player;
     
-    public PieceAbstract()
-    {
-        player = ' ';
-        x = 0;
-        y = 0;
-    }
+    //constructor taking an initial position and player value
     public PieceAbstract(int x, int y, char player)
-        throws NoSuchPlayerException
     {
-        setPlayer(player);
+        this.player = player;
         this.x = x;
         this.y = y;
     }
-    public void setPlayer(char player)
-        throws NoSuchPlayerException
-    {
-        if(player == 'W' || player == 'B')
-            this.player = player;
-        else
-            throw new NoSuchPlayerException(player+" is not a valid value for player.");
-    }
+    //used to tell who owns a piece
     public char getPlayer()
     {
         return player;
     }
+    //used to get the image associated with this piece
     public abstract BufferedImage getImage()
         throws IOException;
+    //used to get the x position of this piece
     public int getX()
     {
         return x;
     }
+    //used to get the y position of this piece
     public int getY()
     {
         return y;
     }
+    //used to set the x position of this piece
     protected void setX(int x)
     {
         this.x = x;
     }
+    //used to set the y position of this piece
     protected void setY(int y)
     {
         this.y = y;
     }
-    public void move(int x, int y, PieceAbstract[] pieces)
-        throws InvalidMoveException
-    {
-        this.x = x;
-        this.y = y;
-    }
-    public void move(int x, int y, PieceAbstract[] pieces, int W_KING, int B_KING)
-        throws InvalidMoveException
-    {
-        this.x = x;
-        this.y = y;
-    }
+    //used to move this piece according to it's movement rules (both move methods)
+    public abstract void move(int x, int y, PieceAbstract[] pieces)
+        throws InvalidMoveException;
+    //used to capture a piece
     protected void capturePiece(int occupyingPiece, PieceAbstract[] pieces)
     {
         //sets the captured piece offscreen so it is no longer visible
         pieces[occupyingPiece].setX(-100);
         pieces[occupyingPiece].setY(-100);
     }
-    
+    //used to move the Bishop, located here so that Queens can also use it
     public void bishopMove(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
@@ -122,9 +107,7 @@ public abstract class PieceAbstract
                 }
                 //if space is occupied, store that piece's index
                 if(pieces[i].getX() == x && pieces[i].getY() == y)
-                {
                     occupyingPiece = i;
-                }
             }
         }  
         //if nothing between and no other of your piece are in the square and in the correct diagonal
@@ -143,7 +126,7 @@ public abstract class PieceAbstract
             throw new InvalidMoveException("Bishops move along the diagonal, "
                 +"and can't pass through other pieces.");
     }
-
+    //used to move Rooks, located here so that Queens can also use it
     public void rookMove(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
@@ -174,9 +157,7 @@ public abstract class PieceAbstract
                 }
                 //check if player is attempting to move ontop of any piece
                 if(pieces[i].getX() == x && pieces[i].getY() == y)
-                {
                     occupyingPiece = i;
-                }
             }
         }
         if(notBetween && occupyingPiece < 0 && (this.x == x || this.y == y))

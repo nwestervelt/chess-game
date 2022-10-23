@@ -7,12 +7,7 @@ public class King extends PieceAbstract
 {
     private boolean notMoved = true;
 
-    public King()
-    {
-        super();
-    }
     public King(int x, int y, char player)
-        throws NoSuchPlayerException
     {
         super(x, y, player);
     }
@@ -23,7 +18,7 @@ public class King extends PieceAbstract
         image = ImageIO.read(new File("images/"+player+"King.png"));
         return image;
     }
-    public void move(int x, int y, PieceAbstract[] pieces, int W_KING, int B_KING)
+    public void move(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
         int occupyingPiece = -1;
@@ -35,9 +30,7 @@ public class King extends PieceAbstract
             {
                 //if space is occupied, store that piece's index
                 if(pieces[i].getX() == x && pieces[i].getY() == y)
-                {
                     occupyingPiece = i;
-                }
             }
         }
         //if King has not moved and is moving two spaces horizontally
@@ -46,13 +39,9 @@ public class King extends PieceAbstract
             //get the King's index
             int index = 0;
             if (this.player == 'W')
-            {
-                index = W_KING;
-            }
+                index = Board.W_KING;
             else  
-            {
-                index = B_KING;
-            }   
+                index = Board.B_KING;
             //if king is moving left and left rook has not moved
             if(x - this.x == -2 && ((Rook)pieces[index - 3]).getNotMoved())
             {

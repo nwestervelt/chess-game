@@ -5,15 +5,12 @@ import java.awt.image.*;
 
 public class Knight extends PieceAbstract
 {
-    public Knight()
-    {
-        super();
-    }
+    //use constructor in PieceAbstract
     public Knight(int x, int y, char player)
-        throws NoSuchPlayerException
     {
         super(x, y, player);
     }
+    //return the image associated with this Knight
     public BufferedImage getImage()
         throws IOException
     {
@@ -21,6 +18,7 @@ public class Knight extends PieceAbstract
         image = ImageIO.read(new File("images/"+player+"Knight.png"));
         return image;
     }
+    //move this Knight according to the appropriate rules
     public void move(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
@@ -30,9 +28,7 @@ public class Knight extends PieceAbstract
         {
             //if space is occupied, store that piece's index
             if(pieces[i].getX() == x && pieces[i].getY() == y)
-            {
                 occupyingPiece = i;
-            }
         }
         if(occupyingPiece < 0 && ((Math.abs(x - this.getX()) == 2 && Math.abs(y - this.getY()) == 1) ||
             (Math.abs(x - this.getX()) == 1 && Math.abs(y - this.getY()) == 2)))

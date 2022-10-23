@@ -5,21 +5,19 @@ import java.awt.image.*;
 
 public class Pawn extends PieceAbstract
 {
+    //variables to track if this Pawn has moved and if en passant can be used on it
     private boolean notMoved = true, enPassant = false;
-
-    public Pawn()
-    {
-        super();
-    }
+    //use constructor in PieceAbstract
     public Pawn(int x, int y, char player)
-        throws NoSuchPlayerException
     {
         super(x, y, player);
     }
+    //return if en passant can be used on this Pawn
     public boolean isEnPassant()
     {
         return enPassant;
     }
+    //return the image associated with this Pawn
     public BufferedImage getImage()
         throws IOException
     {
@@ -27,6 +25,7 @@ public class Pawn extends PieceAbstract
         image = ImageIO.read(new File("images/"+player+"Pawn.png"));
         return image;
     }
+    //move this Pawn according to the appropriate rules
     public void move(int x, int y, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
