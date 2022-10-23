@@ -26,10 +26,10 @@ public class Pawn extends PieceAbstract
         return image;
     }
     //move this Pawn according to the appropriate rules
-    public void move(int x, int y, PieceAbstract[] pieces)
+    public void move(int x, int y, boolean performingCheck, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
-        int occupyingPiece = -1;
+        int occupyingPiece = -1, oldX = this.x, oldY = this.y;
         boolean notBetween = true, movingForward = false;
 
         //if player is moving their piece forwards
@@ -71,18 +71,26 @@ public class Pawn extends PieceAbstract
             //if moving one space
             if(Math.abs(y - this.y) == 1)
             {
-                this.x = x;
-                this.y = y;
-                notMoved = false;
-                enPassant = false;
+                //only perform move if not checking check status of other player's king
+                if(!performingCheck)
+                {
+                    this.x = x;
+                    this.y = y;
+                    notMoved = false;
+                    enPassant = false;
+                }
             }
             //if moving two spaces
             else if(Math.abs(y - this.y) == 2 && notMoved)
             {
-               this.x = x;
-               this.y = y;
-               notMoved = false;
-               enPassant = true; 
+               //only perform move if not checking check status of other player's king
+               if(!performingCheck)
+               {
+                   this.x = x;
+                   this.y = y;
+                   notMoved = false;
+                   enPassant = true; 
+               }
             }
         }
         //if occupied and pawn is moving forward and opposing player is occupying 
@@ -90,14 +98,22 @@ public class Pawn extends PieceAbstract
         else if (occupyingPiece >= 0 && movingForward && pieces[occupyingPiece].getPlayer() != player 
             && (x == this.x + 1 || x == this.x - 1) && Math.abs(y - this.y) == 1)
         {
-            this.x = x;
-            this.y = y;
-            capturePiece(occupyingPiece, pieces);
-            enPassant = false;
+            //only perform move if not checking check status of other player's king
+            if(!performingCheck)
+            {
+                this.x = x;
+                this.y = y;
+                capturePiece(occupyingPiece, pieces);
+                enPassant = false;
+            }
         }
         //throw exception if didn't move
         else
             throw new InvalidMoveException("Pawns can only move towards the opposing side, and "+
                 "they can only move two spaces forwards if they haven't moved yet.");
+        //if move method wasn't called by another piece for checking
+        //if the king is in check, check if the king is in check (prevents recursive call)
+        if(!performingCheck)
+            kingCheckLogic(pieces, oldX, oldY);
     }
 }

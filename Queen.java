@@ -19,14 +19,14 @@ public class Queen extends PieceAbstract
         return image;
     }
     //move this Queen, following the appropriate rules
-    public void move(int x, int y, PieceAbstract[] pieces)
+    public void move(int x, int y, boolean check, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
         //if diagonal move use Bishop's move method
         if (Math.abs(x - this.x) == Math.abs(y - this.y))
-            bishopMove(x, y, pieces); 
+            bishopMove(x, y, check, pieces); 
         //if horizontal move use Rook's move method
         else 
-            rookMove(x, y, pieces);
+            rookMove(x, y, check, pieces);
     }
 }

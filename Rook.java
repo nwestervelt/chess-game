@@ -21,10 +21,10 @@ public class Rook extends PieceAbstract
         return image;
     }
     //move this Rook according to the appropriate rules
-    public void move(int x, int y, PieceAbstract[] pieces)
+    public void move(int x, int y, boolean check, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
-        rookMove(x, y, pieces);
+        rookMove(x, y, check, pieces);
         notMoved = false;
     }
     //return if this Rook has moved yet

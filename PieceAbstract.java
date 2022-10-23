@@ -34,31 +34,51 @@ public abstract class PieceAbstract
         return y;
     }
     //used to set the x position of this piece
-    protected void setX(int x)
+    public void setX(int x)
     {
         this.x = x;
     }
     //used to set the y position of this piece
-    protected void setY(int y)
+    public void setY(int y)
     {
         this.y = y;
     }
     //used to move this piece according to it's movement rules
-    public abstract void move(int x, int y, PieceAbstract[] pieces)
+    public abstract void move(int x, int y, boolean check, PieceAbstract[] pieces)
         throws InvalidMoveException;
     //used to capture a piece
-    protected void capturePiece(int occupyingPiece, PieceAbstract[] pieces)
+    public void capturePiece(int occupyingPiece, PieceAbstract[] pieces)
     {
         //sets the captured piece offscreen so it is no longer visible
         pieces[occupyingPiece].setX(-100);
         pieces[occupyingPiece].setY(-100);
     }
+    //used to return this piece to it's starting position if the player's king is in check
+    protected void kingCheckLogic(PieceAbstract[] pieces, int oldX, int oldY)
+        throws InvalidMoveException
+    {
+        //check if the player's King is in check
+        if(player == 'W' && ((King)pieces[Board.W_KING]).check(pieces))
+        {
+            //return piece to starting position if King is in check
+            this.x = oldX;
+            this.y = oldY;
+            throw new InvalidMoveException("The white king was in check after the move.");
+        }
+        else if(player == 'B' && ((King)pieces[Board.B_KING]).check(pieces))
+        {
+            //return piece to starting position if King is in check
+            this.x = oldX;
+            this.y = oldY;
+            throw new InvalidMoveException("The black king was in check after the move.");
+        }
+    }
     //used to move the Bishop, located here so that Queens can also use it
-    public void bishopMove(int x, int y, PieceAbstract[] pieces)
+    public void bishopMove(int x, int y, boolean performingCheck, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
         boolean notBetween = true;
-        int occupyingPiece = -1;
+        int occupyingPiece = -1, oldX = this.x, oldY = this.y;
         //if in the diagonal 
         if(Math.abs(x - this.x) == Math.abs(y - this.y))
         {
@@ -109,29 +129,41 @@ public abstract class PieceAbstract
                 if(pieces[i].getX() == x && pieces[i].getY() == y)
                     occupyingPiece = i;
             }
-        }  
+        }
         //if nothing between and no other of your piece are in the square and in the correct diagonal
         if(notBetween && occupyingPiece < 0 && (Math.abs(x - this.x) == Math.abs(y - this.y)))
         {
-            this.x = x;
-            this.y = y;
+            //only perform move if not checking check status of other player's king
+            if(!performingCheck)
+            {
+                this.x = x;
+                this.y = y;
+            }
         }
         else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player)
         {
-            this.x = x;
-            this.y = y;
-            capturePiece(occupyingPiece, pieces);
+            //only perform move if not checking check status of other player's king
+            if(!performingCheck)
+            {
+                this.x = x;
+                this.y = y;
+                capturePiece(occupyingPiece, pieces);
+            }
         }
         else
             throw new InvalidMoveException("Bishops move along the diagonal, "
                 +"and can't pass through other pieces.");
+        //if move method wasn't called by another piece for checking
+        //if the king is in check, check if the king is in check (prevents recursive call)
+        if(!performingCheck)
+            kingCheckLogic(pieces, oldX, oldY);
     }
     //used to move Rooks, located here so that Queens can also use it
-    public void rookMove(int x, int y, PieceAbstract[] pieces)
+    public void rookMove(int x, int y, boolean performingCheck, PieceAbstract[] pieces)
         throws InvalidMoveException
     {
         boolean notBetween = true;
-        int occupyingPiece = -1;
+        int occupyingPiece = -1, oldX = this.x, oldY = this.y;
         //check vertically for pieces between
         if((this.x == x && this.y != y) || (this.x != x && this.y == y))
         {
@@ -165,17 +197,29 @@ public abstract class PieceAbstract
                 +"and can't pass through other pieces.");
         if(notBetween && occupyingPiece < 0 && (this.x == x || this.y == y))
         {
-            this.x = x;
-            this.y = y;
+            //only perform move if not checking check status of other player's king
+            if(!performingCheck)
+            {
+                this.x = x;
+                this.y = y;
+            }
         }
         else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player)
         {
-            this.x = x;
-            this.y = y;
-            capturePiece(occupyingPiece, pieces);
+            //only perform move if not checking check status of other player's king
+            if(!performingCheck)
+            {
+                this.x = x;
+                this.y = y;
+                capturePiece(occupyingPiece, pieces);
+            }
         }
         else
             throw new InvalidMoveException("Rooks move horizontally and vertically, "
                 +"and can't pass through other pieces.");
+        //if move method wasn't called by another piece for checking
+        //if the king is in check, check if the king is in check (prevents recursive call)
+        if(!performingCheck)
+            kingCheckLogic(pieces, oldX, oldY);
     }    
 }
