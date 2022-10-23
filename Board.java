@@ -385,7 +385,6 @@ public class Board extends JFrame
     {
         for(int i = 0; i < pieces.length; i++)
         {
-<<<<<<< HEAD
             // white pieces
             if(i == W_ROOK1 || i == W_ROOK2)
                 pieces[i] = new Rook(i%8, 7, 'W');
@@ -413,43 +412,6 @@ public class Board extends JFrame
                 pieces[i] = new Queen(i%8, 0, 'B');
             else if(i == B_KING)
                 pieces[i] = new King(i%8, 0, 'B');
-=======
-            for(int i = 0; i < pieces.length; i++)
-            {
-                // white pieces
-                if(i == W_ROOK1 || i == W_ROOK2)
-                    pieces[i] = new Rook(i%8, 7, 'W');
-                else if(i == W_KNIGHT1 || i == W_KNIGHT2)
-                    pieces[i] = new Knight(i%8, 7, 'W');
-                else if(i == W_BISHOP1 || i == W_BISHOP2)
-                    pieces[i] = new Bishop(i%8, 7, 'W');
-                else if(i == W_QUEEN)
-                    pieces[i] = new Queen(i%8, 7, 'W');
-                else if(i == W_KING)
-                    pieces[i] = new King(i%8, 7, 'W');
-                else if(i >= W_PAWN_MIN && i <= W_PAWN_MAX)
-                    pieces[i] = new Pawn(i%8, 6, 'W');
-
-                // black pieces
-                else if(i >= B_PAWN_MIN && i <= B_PAWN_MAX)
-                    pieces[i] = new Pawn(i%8, 1, 'B');
-                else if(i == B_ROOK1 || i == B_ROOK2)
-                    pieces[i] = new Rook(i%8, 0, 'B');
-                else if(i == B_KNIGHT1 || i == B_KNIGHT2)
-                    pieces[i] = new Knight(i%8, 0, 'B');
-                else if(i == B_BISHOP1 || i == B_BISHOP2)
-                    pieces[i] = new Bishop(i%8, 0, 'B');
-                else if(i == B_QUEEN)
-                    pieces[i] = new Queen(i%8, 0, 'B');
-                else if(i == B_KING)
-                    pieces[i] = new King(i%8, 0, 'B');
-            }
-        }
-        catch(NoSuchPlayerException nspe)
-        {
-            System.out.printf("%s%n%nTerminating.", nspe.getMessage());
-            System.exit(1);
->>>>>>> 13d36fa (Swapped Piece Sides)
         }
         //initialize number of captured
         queenWCap = 0; rookWCap = 0; bishopWCap = 0; knightWCap = 0; pawnWCap = 0;
@@ -479,10 +441,7 @@ public class Board extends JFrame
                 if (captured[i] == true)
                     continue;
                 captured[i] = true;
-<<<<<<< HEAD
                 //if white piece captured increment the captured counter for that piece
-=======
-                //if white piece captured print out the piece in the captured section
                 if(i > 16)
                 {
                     if (pieces[i] instanceof Pawn)
@@ -518,20 +477,14 @@ public class Board extends JFrame
         //calculate each player's value using value of captured pieces
         int whiteValue = (queenWCap * QUEEN_VALUE) + (rookWCap * ROOK_VALUE) + (bishopWCap * BISHOP_VALUE) + (knightWCap * KNIGHT_VALUE) + (pawnWCap * PAWN_VALUE);
         int blackValue = (queenBCap * QUEEN_VALUE) + (rookBCap * ROOK_VALUE) + (bishopBCap * BISHOP_VALUE) + (knightBCap * KNIGHT_VALUE) + (pawnBCap * PAWN_VALUE);
-<<<<<<< HEAD
         //update white captured pieces and value
-=======
-        //Show white captured pieces and value
         whiteCaptured.setText("Queens, " + queenWCap + "\n\n" +
                         "Rooks, " + rookWCap + "\n\n" +
                         "Bishops, " + bishopWCap + "\n\n" +
                         "Knights, " + knightWCap + "\n\n" +
                         "Pawns, " + pawnWCap + "\n\n" + 
                         "Value: " + (blackValue - whiteValue));
-<<<<<<< HEAD
         //update black captured pieces and value
-=======
-        //Show black captured pieces and value
         blackCaptured.setText("Queens, " + queenBCap + "\n\n" +
                         "Rooks, " + rookBCap + "\n\n" +
                         "Bishops, " + bishopBCap + "\n\n" +
