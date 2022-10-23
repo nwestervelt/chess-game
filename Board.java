@@ -210,7 +210,8 @@ public class Board extends JFrame
             for (int i = 0; i < 8; i++)
             {
                 g.drawString("" + (i+1), 0, ((7-i) * 100) + 15);
-                g.drawString("" + (char)(97 + i), ((i + 1) * 100) - 15, 790);
+               //character cast is using ascii values
+               g.drawString("" + (char)(97 + i), ((i + 1) * 100) - 15, 790);
             }
             try
             {
