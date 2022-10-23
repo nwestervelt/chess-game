@@ -167,7 +167,8 @@ public class Board extends JFrame
         {
             for(int j = 0; j < 8; j++)
             {
-                notation[7-i][j] = "" + (char)(97+j) + (i+1);
+               //character cast is using ascii values
+               notation[7-i][j] = "" + (char)(97+j) + (i+1);
             }
         }
 
@@ -351,7 +352,7 @@ public class Board extends JFrame
                         {
                             newPiece = new Rook(pieces[selected].getX(), pieces[selected].getY(), pieces[selected].getPlayer());
                             pieces[selected] = newPiece;
-                        }
+                    }
                     }
                 }
                 //change turn, set turnLabel if move was successful, and move history
