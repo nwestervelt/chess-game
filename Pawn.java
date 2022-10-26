@@ -1,4 +1,4 @@
-// Class file for Pawn chess pieces.
+//class file for Pawn chess pieces
 import java.io.*;
 import javax.imageio.*;
 import java.awt.image.*;
@@ -7,10 +7,17 @@ public class Pawn extends PieceAbstract
 {
     //variables to track if this Pawn has moved and if en passant can be used on it
     private boolean notMoved = true, enPassant = false;
+
+    //variable storing this pawn's old x position
+    private int startX;
+
+    //reference to newpiece from a possible promotion
+    PieceAbstract newPiece;
+
     //use constructor in PieceAbstract
-    public Pawn(int x, int y, char player)
+    public Pawn(int x, int y, char player, MainFrame mainFrame)
     {
-        super(x, y, player);
+        super(x, y, player, mainFrame);
     }
     //return if en passant can be used on this Pawn
     public boolean isEnPassant()
@@ -21,43 +28,43 @@ public class Pawn extends PieceAbstract
     public BufferedImage getImage()
         throws IOException
     {
-        BufferedImage image;
-        image = ImageIO.read(new File("images/"+player+"Pawn.png"));
-        return image;
+        return ImageIO.read(new File("images/"+player+"Pawn.png"));
     }
     //move this Pawn according to the appropriate rules
-    public void move(int x, int y, boolean performingCheck, PieceAbstract[] pieces)
+    public void move(int x, int y, boolean performingCheck)
         throws InvalidMoveException
     {
         int occupyingPiece = -1, oldX = this.x, oldY = this.y;
-        boolean notBetween = true, movingForward = false;
+        boolean notBetween = true, movingForward = false, isPromoting = false;
+
+        startX = this.x;
 
         //if player is moving their piece forwards
         if((player == 'W' && y - this.y < 0) ||
             (player == 'B' && y - this.y > 0))
         {
-            for(int i = 0; i < pieces.length; i++)
+            for(int i = 0; i < mainFrame.pieces.length; i++)
             {
-                //if pieces[i] is this object
-                if(pieces[i] == this) continue;
+                //if piece is this object
+                if(mainFrame.pieces[i] == this) continue;
 
                 //check for pieces between when moving two spaces forward
                 if(x == this.x && Math.abs(y - this.y) == 2)
                 {
-                    //if pieces[i] occupies the space behind the ending space
-                    if(pieces[i].getX() == x && pieces[i].getY() == ((this.y + y) / 2))
+                    //if piece occupies the space behind the ending space
+                    if(mainFrame.pieces[i].getX() == x && mainFrame.pieces[i].getY() == ((this.y + y) / 2))
                         notBetween = false;
                 }
                 //if space is occupied, store that piece's index
-                if(pieces[i].getX() == x && pieces[i].getY() == y)
+                if(mainFrame.pieces[i].getX() == x && mainFrame.pieces[i].getY() == y)
                 {
                     occupyingPiece = i;
                 }
-                //if pieces[i] is a pawn, en passant can be used, and position is behind move location
-                else if(pieces[i] instanceof Pawn && ((Pawn)pieces[i]).isEnPassant() && (pieces[i].getX() == x))
+                //if the piece is a pawn, en passant can be used, and position is behind move location
+                else if(mainFrame.pieces[i] instanceof Pawn && ((Pawn)mainFrame.pieces[i]).isEnPassant() && (mainFrame.pieces[i].getX() == x))
                 {
-                    if((pieces[i].getY() - y == -1 && player == 'B') ||
-                        (pieces[i].getY() - y == 1 && player == 'W'))
+                    if((mainFrame.pieces[i].getY() - y == -1 && player == 'B') ||
+                        (mainFrame.pieces[i].getY() - y == 1 && player == 'W'))
                         occupyingPiece = i;
                 }
             }
@@ -95,7 +102,7 @@ public class Pawn extends PieceAbstract
         }
         //if occupied and pawn is moving forward and opposing player is occupying 
         //and it is 1 space to the diagonal of the pawn
-        else if (occupyingPiece >= 0 && movingForward && pieces[occupyingPiece].getPlayer() != player 
+        else if (occupyingPiece >= 0 && movingForward && mainFrame.pieces[occupyingPiece].getPlayer() != player 
             && (x == this.x + 1 || x == this.x - 1) && Math.abs(y - this.y) == 1)
         {
             //only perform move if not checking check status of other player's king
@@ -103,17 +110,28 @@ public class Pawn extends PieceAbstract
             {
                 this.x = x;
                 this.y = y;
-                capturePiece(occupyingPiece, pieces);
+                capturePiece(occupyingPiece);
                 enPassant = false;
+                moveType = HistoryPanel.CAPTURE;
             }
         }
         //throw exception if didn't move
         else
             throw new InvalidMoveException("Pawns can only move towards the opposing side, and "+
                 "they can only move two spaces forwards if they haven't moved yet.");
-        //if move method wasn't called by another piece for checking
-        //if the king is in check, check if the king is in check (prevents recursive call)
+
+        //check if this pawn can promote
+        if(this.y == 0 || this.y == 7)
+            isPromoting = true;
+        
+        //if not checking for check status of other player's king
         if(!performingCheck)
-            kingCheckLogic(pieces, oldX, oldY);
+        {
+            //check if this player's King is in check after their move
+            kingCheckLogic(oldX, oldY);
+
+            //update the move history
+            mainFrame.updateHistory(this, moveType, startX, isPromoting);
+        }
     }
 }

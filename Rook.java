@@ -7,24 +7,23 @@ public class Rook extends PieceAbstract
 {
     //variable to track if this Rook has moved
     private boolean notMoved = true;
+
     //use constructor in PieceAbstract
-    public Rook(int x, int y, char player)
+    public Rook(int x, int y, char player, MainFrame mainFrame)
     {
-        super(x, y, player);
+        super(x, y, player, mainFrame);
     }
     //return the image associated with this Rook
     public BufferedImage getImage()
         throws IOException
     {
-        BufferedImage image;
-        image = ImageIO.read(new File("images/"+player+"Rook.png"));
-        return image;
+        return ImageIO.read(new File("images/"+player+"Rook.png"));
     }
     //move this Rook according to the appropriate rules
-    public void move(int x, int y, boolean check, PieceAbstract[] pieces)
+    public void move(int x, int y, boolean check)
         throws InvalidMoveException
     {
-        rookMove(x, y, check, pieces);
+        rookMove(x, y, check);
         notMoved = false;
     }
     //return if this Rook has moved yet

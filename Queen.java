@@ -6,27 +6,26 @@ import java.awt.image.*;
 public class Queen extends PieceAbstract
 {
     //use constructor in PieceAbstract
-    public Queen(int x, int y, char player)
+    public Queen(int x, int y, char player, MainFrame mainFrame)
     {
-        super(x, y, player);
+        super(x, y, player, mainFrame);
     }
     //get the image associated with this Queen
     public BufferedImage getImage()
         throws IOException
     {
-        BufferedImage image;
-        image = ImageIO.read(new File("images/"+player+"Queen.png"));
-        return image;
+        return ImageIO.read(new File("images/"+player+"Queen.png"));
     }
     //move this Queen, following the appropriate rules
-    public void move(int x, int y, boolean check, PieceAbstract[] pieces)
+    public void move(int x, int y, boolean check)
         throws InvalidMoveException
     {
         //if diagonal move use Bishop's move method
         if (Math.abs(x - this.x) == Math.abs(y - this.y))
-            bishopMove(x, y, check, pieces); 
+            bishopMove(x, y, check);
+
         //if horizontal move use Rook's move method
         else 
-            rookMove(x, y, check, pieces);
+            rookMove(x, y, check);
     }
 }
