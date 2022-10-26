@@ -1,4 +1,4 @@
-// Class file for Knight chess pieces.
+//class file for Knight chess pieces
 import java.io.*;
 import javax.imageio.*;
 import java.awt.image.*;
@@ -6,28 +6,26 @@ import java.awt.image.*;
 public class Knight extends PieceAbstract
 {
     //use constructor in PieceAbstract
-    public Knight(int x, int y, char player)
+    public Knight(int x, int y, char player, MainFrame mainFrame)
     {
-        super(x, y, player);
+        super(x, y, player, mainFrame);
     }
     //return the image associated with this Knight
     public BufferedImage getImage()
         throws IOException
     {
-        BufferedImage image;
-        image = ImageIO.read(new File("images/"+player+"Knight.png"));
-        return image;
+        return ImageIO.read(new File("images/"+player+"Knight.png"));
     }
     //move this Knight according to the appropriate rules
-    public void move(int x, int y, boolean performingCheck, PieceAbstract[] pieces)
+    public void move(int x, int y, boolean performingCheck)
         throws InvalidMoveException
     {
         int occupyingPiece = -1, oldX = this.x, oldY = this.y;
 
-        for(int i = 0; i < pieces.length; i++)
+        for(int i = 0; i < mainFrame.pieces.length; i++)
         {
             //if space is occupied, store that piece's index
-            if(pieces[i].getX() == x && pieces[i].getY() == y)
+            if(mainFrame.pieces[i].getX() == x && mainFrame.pieces[i].getY() == y)
                 occupyingPiece = i;
         }
         if(occupyingPiece < 0 && ((Math.abs(x - this.getX()) == 2 && Math.abs(y - this.getY()) == 1) ||
@@ -40,7 +38,7 @@ public class Knight extends PieceAbstract
                 this.y = y;
             }
         }
-        else if (occupyingPiece >= 0 && pieces[occupyingPiece].getPlayer() != player &&
+        else if (occupyingPiece >= 0 && mainFrame.pieces[occupyingPiece].getPlayer() != player &&
             ((Math.abs(x - this.getX()) == 2 && Math.abs(y - this.getY()) == 1) ||
             (Math.abs(x - this.getX()) == 1 && Math.abs(y - this.getY()) == 2)))
         {
@@ -49,15 +47,21 @@ public class Knight extends PieceAbstract
             {
                 this.x = x;
                 this.y = y;
-                capturePiece(occupyingPiece, pieces);
+                capturePiece(occupyingPiece);
             }
         }
         else
             throw new InvalidMoveException("Knights move in L shapes, 2 spaces in one direction and 1 space in"+
                 "a perpendicular direction.");
-        //if move method wasn't called by another piece for checking
-        //if the king is in check, check if the king is in check (prevents recursive call)
+
+        //if not checking for check status of other player's king
         if(!performingCheck)
-            kingCheckLogic(pieces, oldX, oldY);
+        {
+            //check if this player's King is in check after their move
+            kingCheckLogic(oldX, oldY);
+
+            //update the move history (starting x not used in this case)
+            mainFrame.updateHistory(this, moveType, -1, false);
+        }
     }
 }

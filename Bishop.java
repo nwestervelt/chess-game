@@ -6,22 +6,20 @@ import java.awt.image.*;
 public class Bishop extends PieceAbstract
 {
     //use constructor in AbstractPiece
-    public Bishop(int x, int y, char player)
+    public Bishop(int x, int y, char player, MainFrame mainFrame)
     {
-        super(x, y, player);
+        super(x, y, player, mainFrame);
     }
     //return the image associated with this Bishop
     public BufferedImage getImage()
         throws IOException
     {
-        BufferedImage image;
-        image = ImageIO.read(new File("images/"+player+"Bishop.png"));
-        return image;
+        return ImageIO.read(new File("images/"+player+"Bishop.png"));
     }
     //move this Bishop according to the appropriate rules
-    public void move(int x, int y, boolean check, PieceAbstract[] pieces)
+    public void move(int x, int y, boolean check)
         throws InvalidMoveException
     {
-        bishopMove(x, y, check, pieces);
+        bishopMove(x, y, check);
     }
 }
