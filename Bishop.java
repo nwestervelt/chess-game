@@ -1,4 +1,4 @@
-// Class file for Bishop chess pieces.
+//class file for Bishop chess pieces.
 import java.io.*;
 import javax.imageio.*;
 import java.awt.image.*;
@@ -6,9 +6,9 @@ import java.awt.image.*;
 public class Bishop extends PieceAbstract
 {
     //use constructor in AbstractPiece
-    public Bishop(int x, int y, char player, MainFrame mainFrame)
+    public Bishop(int x, int y, char player, MainFrame mainFrame, PieceAbstract[] pieces)
     {
-        super(x, y, player, mainFrame);
+        super(x, y, player, mainFrame, pieces);
     }
     //return the image associated with this Bishop
     public BufferedImage getImage()

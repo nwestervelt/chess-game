@@ -13,10 +13,12 @@ public class BoardPanel extends JPanel
 
     private BufferedImage board;
     private MainFrame mainFrame;
+    private PieceAbstract[] pieces;
 
-    public BoardPanel(MainFrame mainFrame)
+    public BoardPanel(MainFrame mainFrame, PieceAbstract[] pieces)
     {
         this.mainFrame = mainFrame;
+        this.pieces = pieces;
         MouseHandler mh = new MouseHandler();
         MouseMotionHandler mmh = new MouseMotionHandler();
 
@@ -52,13 +54,13 @@ public class BoardPanel extends JPanel
         }
         try
         {
-            for(int i = 0; i < mainFrame.pieces.length; i++)
+            for(int i = 0; i < pieces.length; i++)
             {
-                if(i != selected && !mainFrame.pieces[i].isCaptured())
-                    g.drawImage(mainFrame.pieces[i].getImage(), mainFrame.pieces[i].getX()*100, mainFrame.pieces[i].getY()*100, null);
+                if(i != selected && !pieces[i].isCaptured())
+                    g.drawImage(pieces[i].getImage(), pieces[i].getX()*100, pieces[i].getY()*100, null);
             }
             if(selected != -1)
-                g.drawImage(mainFrame.pieces[selected].getImage(), currX, currY, null);
+                g.drawImage(pieces[selected].getImage(), currX, currY, null);
         }
         catch(IOException ioe)
         {
@@ -70,16 +72,16 @@ public class BoardPanel extends JPanel
     {
         public void mousePressed (MouseEvent e)
         {
-            if (mainFrame.gameOver) return;
+            if (mainFrame.isGameover()) return;
             int x=e.getX();
             int y=e.getY();
 
             //determines which piece was selected
-            for (int i = 0; i < mainFrame.pieces.length; i++)
+            for (int i = 0; i < pieces.length; i++)
             {
-                if(x-(mainFrame.pieces[i].getX()*100) > 0 && x-(mainFrame.pieces[i].getX()*100) <= 100 &&
-                    y-(mainFrame.pieces[i].getY()*100) > 0 && y-(mainFrame.pieces[i].getY()*100) <= 100 &&
-                    mainFrame.turn == mainFrame.pieces[i].getPlayer())
+                if(x-(pieces[i].getX()*100) > 0 && x-(pieces[i].getX()*100) <= 100 &&
+                    y-(pieces[i].getY()*100) > 0 && y-(pieces[i].getY()*100) <= 100 &&
+                    mainFrame.getTurn() == pieces[i].getPlayer())
                 {
                     selected = i;
                 }
@@ -95,11 +97,11 @@ public class BoardPanel extends JPanel
                 if (currX <= 800 || currX >= 0 || currY <= 800 || currY >= 0)
                 {
                     //move the selected piece, include false because this is a regular move
-                    mainFrame.pieces[selected].move((currX+50)/100, (currY+50)/100, false);
+                    pieces[selected].move((currX+50)/100, (currY+50)/100, false);
                     
                     //if a pawn is moved to the other side of the board
-                    if(mainFrame.pieces[selected] instanceof Pawn &&
-                        (mainFrame.pieces[selected].getY() == 7 || (mainFrame.pieces[selected].getY() == 0)))
+                    if(pieces[selected] instanceof Pawn &&
+                        (pieces[selected].getY() == 7 || (pieces[selected].getY() == 0)))
                     {
                         //create and make promotion dialog visible
                         PromotionDialog pd = new PromotionDialog(mainFrame);
@@ -109,37 +111,37 @@ public class BoardPanel extends JPanel
                         //replace currently selected piece with selected piece type
                         if(pd.getSelectedButton() == PromotionDialog.QUEEN)
                         {
-                            newPiece = new Queen(mainFrame.pieces[selected].getX(), mainFrame.pieces[selected].getY(),
-                                mainFrame.pieces[selected].getPlayer(), mainFrame);
-                            mainFrame.pieces[selected] = newPiece;
+                            newPiece = new Queen(pieces[selected].getX(), pieces[selected].getY(),
+                                pieces[selected].getPlayer(), mainFrame, pieces);
+                            pieces[selected] = newPiece;
                         }
                         else if(pd.getSelectedButton() == PromotionDialog.KNIGHT)
                         {
-                            newPiece = new Knight(mainFrame.pieces[selected].getX(), mainFrame.pieces[selected].getY(),
-                                mainFrame.pieces[selected].getPlayer(), mainFrame);
-                            mainFrame.pieces[selected] = newPiece;
+                            newPiece = new Knight(pieces[selected].getX(), pieces[selected].getY(),
+                                pieces[selected].getPlayer(), mainFrame, pieces);
+                            pieces[selected] = newPiece;
                         }
                         else if(pd.getSelectedButton() == PromotionDialog.BISHOP)
                         {
-                            newPiece = new Bishop(mainFrame.pieces[selected].getX(), mainFrame.pieces[selected].getY(),
-                                mainFrame.pieces[selected].getPlayer(), mainFrame);
-                            mainFrame.pieces[selected] = newPiece;
+                            newPiece = new Bishop(pieces[selected].getX(), pieces[selected].getY(),
+                                pieces[selected].getPlayer(), mainFrame, pieces);
+                            pieces[selected] = newPiece;
                         }
                         else if(pd.getSelectedButton() == PromotionDialog.ROOK)
                         {
-                            newPiece = new Rook(mainFrame.pieces[selected].getX(), mainFrame.pieces[selected].getY(),
-                                mainFrame.pieces[selected].getPlayer(), mainFrame);
-                            mainFrame.pieces[selected] = newPiece;
+                            newPiece = new Rook(pieces[selected].getX(), pieces[selected].getY(),
+                                pieces[selected].getPlayer(), mainFrame, pieces);
+                            pieces[selected] = newPiece;
                         }
                         //tell the mainFrame to update the history to include the promotion details
-                        mainFrame.updateHistoryPromotion(mainFrame.pieces[selected]);
+                        mainFrame.addPromotion(pieces[selected]);
                     }
                 }
                 //update turn and menuPanel information
-                if(mainFrame.turn == 'W')
-                    mainFrame.turn = 'B';
+                if(mainFrame.getTurn() == 'W')
+                    mainFrame.setTurn('B');
                 else
-                    mainFrame.turn = 'W';
+                    mainFrame.setTurn('W');
 
                 mainFrame.updateMenu();
             }

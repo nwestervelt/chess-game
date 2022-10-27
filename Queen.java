@@ -6,9 +6,9 @@ import java.awt.image.*;
 public class Queen extends PieceAbstract
 {
     //use constructor in PieceAbstract
-    public Queen(int x, int y, char player, MainFrame mainFrame)
+    public Queen(int x, int y, char player, MainFrame mainFrame, PieceAbstract[] pieces)
     {
-        super(x, y, player, mainFrame);
+        super(x, y, player, mainFrame, pieces);
     }
     //get the image associated with this Queen
     public BufferedImage getImage()
