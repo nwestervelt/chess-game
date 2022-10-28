@@ -10,16 +10,16 @@ public class HistoryPanel extends JPanel
     private int turnCount = 1;
     private String[][] notation;
     private String[] pawnNotation;
+    private PieceAbstract[] pieces;
 
     private JLabel hLabel;
     private JTextArea history;
     private JScrollPane scrollPane;
-    private MainFrame mainFrame;
 
-    public HistoryPanel(MainFrame mainFrame)
+    public HistoryPanel(PieceAbstract[] pieces)
     {
-        //reference to the MainFrame
-        this.mainFrame = mainFrame;
+        this.pieces = pieces;
+
         //label for history
         hLabel = new JLabel("Move History");
         hLabel.setPreferredSize(new Dimension (200,100));
@@ -133,8 +133,8 @@ public class HistoryPanel extends JPanel
     public void addCheck(PieceAbstract piece)
     {
         //if other player's king is in check
-        if(piece.getPlayer() == 'W' && ((King)mainFrame.pieces[MainFrame.B_KING]).check() ||
-            piece.getPlayer() == 'B' && ((King)mainFrame.pieces[MainFrame.W_KING]).check())
+        if(piece.getPlayer() == 'W' && ((King)pieces[MainFrame.B_KING]).check() ||
+            piece.getPlayer() == 'B' && ((King)pieces[MainFrame.W_KING]).check())
         {
             history.append("+");
         }

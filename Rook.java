@@ -9,9 +9,9 @@ public class Rook extends PieceAbstract
     private boolean notMoved = true;
 
     //use constructor in PieceAbstract
-    public Rook(int x, int y, char player, MainFrame mainFrame)
+    public Rook(int x, int y, char player, MainFrame mainFrame, PieceAbstract[] pieces)
     {
-        super(x, y, player, mainFrame);
+        super(x, y, player, mainFrame, pieces);
     }
     //return the image associated with this Rook
     public BufferedImage getImage()
