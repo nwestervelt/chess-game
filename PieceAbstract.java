@@ -145,12 +145,19 @@ public abstract class PieceAbstract
         throws InvalidMoveException;
 
     //used to return this piece to it's starting position if this player's king is in check
-    protected void moveBack(int oldX, int oldY)
+    protected void moveBack(int oldX, int oldY, int occupyingPiece)
         throws InvalidMoveException
     {
         //check if the player's King is in check
         if(player == 'W' && ((King)pieces[MainFrame.W_KING]).check())
         {
+            //return the captured piece to the board
+            if(occupyingPiece >= 0 && pieces[occupyingPiece].isCaptured())
+            {
+                pieces[occupyingPiece].setX(this.x);
+                pieces[occupyingPiece].setY(this.y);
+                pieces[occupyingPiece].setCaptured(false);
+            }
             //return piece to starting position if King is in check
             this.x = oldX;
             this.y = oldY;
@@ -158,6 +165,13 @@ public abstract class PieceAbstract
         }
         else if(player == 'B' && ((King)pieces[MainFrame.B_KING]).check())
         {
+            //return the captured piece to the board
+            if(occupyingPiece >= 0 && pieces[occupyingPiece].isCaptured())
+            {
+                pieces[occupyingPiece].setX(this.x);
+                pieces[occupyingPiece].setY(this.y);
+                pieces[occupyingPiece].setCaptured(false);
+            }
             //return piece to starting position if King is in check
             this.x = oldX;
             this.y = oldY;
@@ -229,10 +243,16 @@ public abstract class PieceAbstract
             {
                 this.x = x;
                 this.y = y;
+                moveType = HistoryPanel.NORMAL;
             }
         }
         else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player)
         {
+            //set checkCaptured to true
+            if(player == 'W')
+                ((King)pieces[MainFrame.W_KING]).setCheckCaptured(true);
+            else
+                ((King)pieces[MainFrame.B_KING]).setCheckCaptured(true);
             //only perform move if not checking check status of other player's king
             if(!performingCheck)
             {
@@ -250,7 +270,7 @@ public abstract class PieceAbstract
         if(!performingCheck)
         {
             //check if this player's King is in check after performing their move
-            moveBack(oldX, oldY);
+            moveBack(oldX, oldY,occupyingPiece);
 
             //add this move to move history
             mainFrame.addMove(this, moveType, -1, false);
@@ -298,10 +318,16 @@ public abstract class PieceAbstract
             {
                 this.x = x;
                 this.y = y;
+                moveType = HistoryPanel.NORMAL;
             }
         }
         else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player)
         {
+            //set checkCaptured to true
+            if(player == 'W')
+                ((King)pieces[MainFrame.W_KING]).setCheckCaptured(true);
+            else
+                ((King)pieces[MainFrame.B_KING]).setCheckCaptured(true);
             //only perform move if not checking check status of other player's king
             if(!performingCheck)
             {
@@ -319,7 +345,7 @@ public abstract class PieceAbstract
         if(!performingCheck)
         {
             //check if this player's King is in check after performing their move
-            moveBack(oldX, oldY);
+            moveBack(oldX, oldY,occupyingPiece);
 
             //add this move to move history
             mainFrame.addMove(this, moveType, -1, false);

@@ -36,18 +36,25 @@ public class Knight extends PieceAbstract
             {
                 this.x = x;
                 this.y = y;
+                moveType = HistoryPanel.NORMAL;
             }
         }
         else if (occupyingPiece >= 0 && pieces[occupyingPiece].getPlayer() != player &&
             ((Math.abs(x - this.getX()) == 2 && Math.abs(y - this.getY()) == 1) ||
             (Math.abs(x - this.getX()) == 1 && Math.abs(y - this.getY()) == 2)))
         {
+            //set checkCaptured to true
+            if(player == 'W')
+                ((King)pieces[MainFrame.W_KING]).setCheckCaptured(true);
+            else    
+                ((King)pieces[MainFrame.B_KING]).setCheckCaptured(true);
             //if not checking check status of other player's king
             if(!performingCheck)
             {
                 this.x = x;
                 this.y = y;
                 capturePiece(occupyingPiece);
+                moveType = HistoryPanel.CAPTURE;
             }
         }
         else
@@ -58,7 +65,7 @@ public class Knight extends PieceAbstract
         if(!performingCheck)
         {
             //check if this player's King is in check after their move
-            moveBack(oldX, oldY);
+            moveBack(oldX, oldY,occupyingPiece);
 
             //add this move to move history
             mainFrame.addMove(this, moveType, -1, false);
