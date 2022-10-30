@@ -98,6 +98,12 @@ public class MenuPanel extends JPanel
         bKnightCap = PieceAbstract.getCapturedCount(MainFrame.B_KNIGHT1);
         bPawnCap = PieceAbstract.getCapturedCount(MainFrame.B_PAWN_MIN);
 
+        //set counts back to 0 if the game is over
+        if(mainFrame.isGameover())
+        {
+            wQueenCap = 0; wRookCap = 0; wBishopCap = 0; wKnightCap = 0; wPawnCap = 0;
+            bQueenCap = 0; bRookCap = 0; bBishopCap = 0; bKnightCap = 0; bPawnCap = 0;
+        }
         //update counts in this panel
         redrawInterface();
     }

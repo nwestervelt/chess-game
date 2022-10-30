@@ -149,6 +149,29 @@ public class BoardPanel extends JPanel
             {
                 System.out.println(ime.getMessage());
             }
+            //set the value for piece moved/ the piece that put king in check
+            if (mainFrame.getTurn() == 'W')
+                ((King)pieces[MainFrame.W_KING]).setChecker(selected);
+            else 
+                ((King)pieces[MainFrame.B_KING]).setChecker(selected);
+
+            //if player's king is in check mate, update status of game accordingly
+            if(mainFrame.getTurn() == 'W' && ((King)pieces[MainFrame.W_KING]).check())
+            {
+                if(((King)pieces[MainFrame.W_KING]).checkMate())
+                {
+                    mainFrame.setGameover(true);
+                    JOptionPane.showMessageDialog(mainFrame, "Black is the winner by checkmate", "Winner!", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+            else if(mainFrame.getTurn() == 'B' && ((King)pieces[MainFrame.B_KING]).check())
+            {
+                if(((King)pieces[MainFrame.B_KING]).checkMate())
+                {
+                    mainFrame.setGameover(true);
+                    JOptionPane.showMessageDialog(mainFrame, "White is the winner by checkmate", "Winner!", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
             repaint();
             selected = -1;
         }
