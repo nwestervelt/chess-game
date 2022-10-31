@@ -8,18 +8,18 @@ public abstract class PieceAbstract
     int moveType = HistoryPanel.NORMAL;
     char player;
     boolean captured;
+    MainFrame mainFrame;
+    PieceAbstract[] pieces;
 
     //counters for captured pieces
     private static int wPawnCap = 0, wRookCap = 0, wKnightCap = 0, wBishopCap = 0, wQueenCap = 0;
     private static int bPawnCap = 0, bRookCap = 0, bKnightCap = 0, bBishopCap = 0, bQueenCap = 0;
 
-    //reference to the MainFrame
-    MainFrame mainFrame;
-    
     //constructor taking an initial position and player value
-    public PieceAbstract(int x, int y, char player, MainFrame mainFrame)
+    public PieceAbstract(int x, int y, char player, MainFrame mainFrame, PieceAbstract[] pieces)
     {
         this.mainFrame = mainFrame;
+        this.pieces = pieces;
         this.player = player;
         this.x = x;
         this.y = y;
@@ -107,9 +107,9 @@ public abstract class PieceAbstract
     public void capturePiece(int occupyingPiece)
     {
         //sets the captured piece offscreen and sets it as captured
-        mainFrame.pieces[occupyingPiece].setX(-100);
-        mainFrame.pieces[occupyingPiece].setY(-100);
-        mainFrame.pieces[occupyingPiece].setCaptured(true);
+        pieces[occupyingPiece].setX(-100);
+        pieces[occupyingPiece].setY(-100);
+        pieces[occupyingPiece].setCaptured(true);
     }
     //used to tell who owns a piece
     public char getPlayer()
@@ -145,18 +145,18 @@ public abstract class PieceAbstract
         throws InvalidMoveException;
 
     //used to return this piece to it's starting position if this player's king is in check
-    protected void kingCheckLogic(int oldX, int oldY)
+    protected void moveBack(int oldX, int oldY)
         throws InvalidMoveException
     {
         //check if the player's King is in check
-        if(player == 'W' && ((King)mainFrame.pieces[MainFrame.W_KING]).check())
+        if(player == 'W' && ((King)pieces[MainFrame.W_KING]).check())
         {
             //return piece to starting position if King is in check
             this.x = oldX;
             this.y = oldY;
             throw new InvalidMoveException("The white king was in check after the move.");
         }
-        else if(player == 'B' && ((King)mainFrame.pieces[MainFrame.B_KING]).check())
+        else if(player == 'B' && ((King)pieces[MainFrame.B_KING]).check())
         {
             //return piece to starting position if King is in check
             this.x = oldX;
@@ -174,14 +174,14 @@ public abstract class PieceAbstract
         if(Math.abs(x - this.x) == Math.abs(y - this.y))
         {
             //iterating through each piece
-            for (int i = 0; i < mainFrame.pieces.length; i++)
+            for (int i = 0; i < pieces.length; i++)
             {
                 //if moving up and to the right 
                 if(x - this.x > 0 && y - this.y < 0)
                 {
-                    if ((Math.abs(mainFrame.pieces[i].getX() - this.x) == Math.abs(mainFrame.pieces[i].getY() - this.y))&&
-                        (mainFrame.pieces[i].getX() < x && mainFrame.pieces[i].getX() > this.x) &&
-                        (mainFrame.pieces[i].getY() > y && mainFrame.pieces[i].getY() < this.y))
+                    if ((Math.abs(pieces[i].getX() - this.x) == Math.abs(pieces[i].getY() - this.y))&&
+                        (pieces[i].getX() < x && pieces[i].getX() > this.x) &&
+                        (pieces[i].getY() > y && pieces[i].getY() < this.y))
                     {
                         notBetween = false;
                     }
@@ -189,9 +189,9 @@ public abstract class PieceAbstract
                 //if moving down and to the right
                 else if(x - this.x > 0 && y - this.y > 0)
                 {
-                    if ((Math.abs(mainFrame.pieces[i].getX() - this.x) == Math.abs(mainFrame.pieces[i].getY() - this.y))&&
-                        (mainFrame.pieces[i].getX() < x && mainFrame.pieces[i].getX() > this.x) &&
-                        (mainFrame.pieces[i].getY() < y && mainFrame.pieces[i].getY() > this.y))
+                    if ((Math.abs(pieces[i].getX() - this.x) == Math.abs(pieces[i].getY() - this.y))&&
+                        (pieces[i].getX() < x && pieces[i].getX() > this.x) &&
+                        (pieces[i].getY() < y && pieces[i].getY() > this.y))
                     {
                         notBetween = false;
                     }
@@ -199,9 +199,9 @@ public abstract class PieceAbstract
                 //if moving up and to the left
                 else if(x - this.x < 0 && y - this.y < 0)
                 {
-                    if ((Math.abs(mainFrame.pieces[i].getX() - this.x) == Math.abs(mainFrame.pieces[i].getY() - this.y))&&
-                        (mainFrame.pieces[i].getX() > x && mainFrame.pieces[i].getX() < this.x) &&
-                        (mainFrame.pieces[i].getY() > y && mainFrame.pieces[i].getY() < this.y))
+                    if ((Math.abs(pieces[i].getX() - this.x) == Math.abs(pieces[i].getY() - this.y))&&
+                        (pieces[i].getX() > x && pieces[i].getX() < this.x) &&
+                        (pieces[i].getY() > y && pieces[i].getY() < this.y))
                     {
                         notBetween = false;
                     }
@@ -209,15 +209,15 @@ public abstract class PieceAbstract
                 //if moving down and to the left
                 else if(x - this.x < 0 && y - this.y > 0)
                 {  
-                    if ((Math.abs(mainFrame.pieces[i].getX() - this.x) == Math.abs(mainFrame.pieces[i].getY() - this.y))&&
-                        (mainFrame.pieces[i].getX() > x && mainFrame.pieces[i].getX() < this.x) &&
-                        (mainFrame.pieces[i].getY() < y && mainFrame.pieces[i].getY() > this.y))
+                    if ((Math.abs(pieces[i].getX() - this.x) == Math.abs(pieces[i].getY() - this.y))&&
+                        (pieces[i].getX() > x && pieces[i].getX() < this.x) &&
+                        (pieces[i].getY() < y && pieces[i].getY() > this.y))
                     {
                         notBetween = false;
                     }
                 }
                 //if space is occupied, store that piece's index
-                if(mainFrame.pieces[i].getX() == x && mainFrame.pieces[i].getY() == y)
+                if(pieces[i].getX() == x && pieces[i].getY() == y)
                     occupyingPiece = i;
             }
         }
@@ -231,7 +231,7 @@ public abstract class PieceAbstract
                 this.y = y;
             }
         }
-        else if (occupyingPiece >= 0 && notBetween && mainFrame.pieces[occupyingPiece].getPlayer() != player)
+        else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player)
         {
             //only perform move if not checking check status of other player's king
             if(!performingCheck)
@@ -244,16 +244,16 @@ public abstract class PieceAbstract
         }
         else
             throw new InvalidMoveException("Bishops move along the diagonal, "
-                +"and can't pass through other mainFrame.pieces.");
+                +"and can't pass through other pieces.");
 
         //if not checking for check status of other player's king
         if(!performingCheck)
         {
             //check if this player's King is in check after performing their move
-            kingCheckLogic(oldX, oldY);
+            moveBack(oldX, oldY);
 
-            //update the move history (starting x not used in this case)
-            mainFrame.updateHistory(this, moveType, -1, false);
+            //add this move to move history
+            mainFrame.addMove(this, moveType, -1, false);
         }
     }
     //used to move Rooks, located here so that Queens can also use it
@@ -263,31 +263,31 @@ public abstract class PieceAbstract
         boolean notBetween = true;
         int occupyingPiece = -1, oldX = this.x, oldY = this.y;
 
-        //check vertically and horizontally for mainFrame.pieces between
+        //check vertically and horizontally for pieces between
         if((this.x == x && this.y != y) || (this.x != x && this.y == y))
         {
-            for(int i = 0; i < mainFrame.pieces.length; i++)
+            for(int i = 0; i < pieces.length; i++)
             {
                 //check vertically for pieces between
-                if(mainFrame.pieces[i].getX() == x)
+                if(pieces[i].getX() == x)
                 {
-                    if((mainFrame.pieces[i].getY() < this.y && mainFrame.pieces[i].getY() > y) ||
-                        mainFrame.pieces[i].getY() < y && mainFrame.pieces[i].getY() > this.y)
+                    if((pieces[i].getY() < this.y && pieces[i].getY() > y) ||
+                        pieces[i].getY() < y && pieces[i].getY() > this.y)
                     {
                         notBetween = false;
                     }
                 }
                 //check horizontally for pieces between
-                else if(mainFrame.pieces[i].getY() == y)
+                else if(pieces[i].getY() == y)
                 {
-                    if((mainFrame.pieces[i].getX() < this.x && mainFrame.pieces[i].getX() > x) ||
-                        mainFrame.pieces[i].getX() < x && mainFrame.pieces[i].getX() > this.x)
+                    if((pieces[i].getX() < this.x && pieces[i].getX() > x) ||
+                        pieces[i].getX() < x && pieces[i].getX() > this.x)
                     {
                         notBetween = false;
                     }
                 }
                 //check if player is attempting to move ontop of any piece
-                if(mainFrame.pieces[i].getX() == x && mainFrame.pieces[i].getY() == y)
+                if(pieces[i].getX() == x && pieces[i].getY() == y)
                     occupyingPiece = i;
             }
         }
@@ -313,16 +313,16 @@ public abstract class PieceAbstract
         }
         else
             throw new InvalidMoveException("Rooks move horizontally and vertically, "
-                +"and can't pass through other mainFrame.pieces.");
+                +"and can't pass through other pieces.");
 
         //if not checking for check status of other player's king
         if(!performingCheck)
         {
             //check if this player's King is in check after performing their move
-            kingCheckLogic(oldX, oldY);
+            moveBack(oldX, oldY);
 
-            //update the move history (starting x not used in this case)
-            mainFrame.updateHistory(this, moveType, -1, false);
+            //add this move to move history
+            mainFrame.addMove(this, moveType, -1, false);
         }
     }    
 }

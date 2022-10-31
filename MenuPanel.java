@@ -79,9 +79,9 @@ public class MenuPanel extends JPanel
     public void updateMenuLabels()
     {
         //update turn label
-        if(mainFrame.turn == 'W')
+        if(mainFrame.getTurn() == 'W')
             turnLabel.setText("White's Turn");
-        else if(mainFrame.turn == 'B')
+        else
             turnLabel.setText("Black's Turn");
 
         //retrieve white piece capture counts
@@ -141,10 +141,10 @@ public class MenuPanel extends JPanel
                 int result=JOptionPane.showConfirmDialog(mainFrame,"Are you sure you want to forfeit?");
                 if (result == JOptionPane.YES_OPTION)
                 {
-                    mainFrame.gameOver = true;
+                    mainFrame.setGameover(true);
 
                     //if its whites turn then white forfeits
-                    if (mainFrame.turn == 'W')
+                    if (mainFrame.getTurn() == 'W')
                         JOptionPane.showMessageDialog(mainFrame, "Black is the Winner by forfeit","Winner!",JOptionPane.INFORMATION_MESSAGE);
 
                     //if its blacks turn then black forfeits
