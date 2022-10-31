@@ -321,7 +321,7 @@ public abstract class PieceAbstract
                 moveType = HistoryPanel.NORMAL;
             }
         }
-        else if (occupyingPiece >= 0 && notBetween && mainFrame.pieces[occupyingPiece].getPlayer() != player && (this.x != x && this.y != y))
+        else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player && (this.x != x && this.y != y))
         {
             //set checkCaptured to true
             if(player == 'W')
