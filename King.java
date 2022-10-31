@@ -124,14 +124,15 @@ public class King extends PieceAbstract
                 }
             }
         }
-        else if(occupyingPiece < 0 && Math.abs(x - this.x) < 2 && Math.abs(y - this.y) < 2)
+        if(occupyingPiece < 0 && Math.abs(x - this.x) < 2 && Math.abs(y - this.y) < 2 )
         {
             //if not checking check status of other player's king
             if(!performingCheck)
             {
                 this.x = x;
                 this.y = y;
-                moveType = HistoryPanel.NORMAL;
+                if (moveType != HistoryPanel.KING_CASTLE && moveType != HistoryPanel.QUEEN_CASTLE)
+                    moveType = HistoryPanel.NORMAL;
                 moveBack(oldX,oldY,occupyingPiece);
                 //only set notMoved if the move didnt cause check
                 if(this.x != oldX || this.y != oldY)
@@ -163,8 +164,10 @@ public class King extends PieceAbstract
         //if not checking for check status of other player's king
         if(!performingCheck)
         {
+            moveBack(oldX,oldY,occupyingPiece);
             //add this move to move history
             mainFrame.addMove(this, moveType, -1, false);
+            moveType = HistoryPanel.NORMAL;
         }
     }
     //check if this King is in check
@@ -186,6 +189,8 @@ public class King extends PieceAbstract
             try
             {
                 //check if a piece can move onto the King using the move method, true parameter needed to perform this
+                if(pieces[searchIndex].isCaptured())
+                    continue;
                 pieces[searchIndex].move(x, y, true);
                 //if a piece is captured and it can be the one that was checking the king
                 if(checkCaptured && checkerB)
