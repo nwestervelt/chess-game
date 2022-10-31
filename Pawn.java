@@ -71,9 +71,10 @@ public class Pawn extends PieceAbstract
             //set flag for moving forwards
             movingForward = true;
         }
-        //if nothing between start and end, not occupied by friendly piece, and
-        //moving in the same column
-        if(notBetween && occupyingPiece < 0 && movingForward && x == this.x)
+        //if nothing between start and end, not occupied by friendly piece,
+        //moving in the same column, and not trying to move two spaces after already moving
+        if(notBetween && occupyingPiece < 0 && movingForward && x == this.x &&
+            (Math.abs(y - this.y) == 1 || (Math.abs(y - this.y) == 2 && notMoved)))
         {
             //if moving one space
             if(Math.abs(y - this.y) == 1)

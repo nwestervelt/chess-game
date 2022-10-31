@@ -291,7 +291,7 @@ public abstract class PieceAbstract
                     occupyingPiece = i;
             }
         }
-        if(notBetween && occupyingPiece < 0 && (this.x == x || this.y == y))
+        if(notBetween && occupyingPiece < 0 && (this.x == x || this.y == y) && (this.x != x && this.y != y))
         {
             //only perform move if not checking check status of other player's king
             if(!performingCheck)
@@ -300,7 +300,7 @@ public abstract class PieceAbstract
                 this.y = y;
             }
         }
-        else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player)
+        else if (occupyingPiece >= 0 && notBetween && mainFrame.pieces[occupyingPiece].getPlayer() != player && (this.x != x && this.y != y))
         {
             //only perform move if not checking check status of other player's king
             if(!performingCheck)
