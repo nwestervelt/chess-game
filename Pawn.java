@@ -84,6 +84,7 @@ public class Pawn extends PieceAbstract
                 {
                     this.x = x;
                     this.y = y;
+                    moveType = HistoryPanel.NORMAL;
                     notMoved = false;
                     enPassant = false;
                 }
@@ -94,10 +95,11 @@ public class Pawn extends PieceAbstract
                //only perform move if not checking check status of other player's king
                if(!performingCheck)
                {
-                   this.x = x;
-                   this.y = y;
-                   notMoved = false;
-                   enPassant = true; 
+                    this.x = x;
+                    this.y = y;
+                    moveType = HistoryPanel.NORMAL;
+                    notMoved = false;
+                    enPassant = true; 
                }
             }
         }
@@ -106,6 +108,11 @@ public class Pawn extends PieceAbstract
         else if (occupyingPiece >= 0 && movingForward && pieces[occupyingPiece].getPlayer() != player 
             && (x == this.x + 1 || x == this.x - 1) && Math.abs(y - this.y) == 1)
         {
+            //set checkCaptured to true
+            if(player == 'W')
+                ((King)pieces[MainFrame.W_KING]).setCheckCaptured(true);
+            else
+                ((King)pieces[MainFrame.B_KING]).setCheckCaptured(true);
             //only perform move if not checking check status of other player's king
             if(!performingCheck)
             {
@@ -113,7 +120,7 @@ public class Pawn extends PieceAbstract
                 this.y = y;
                 capturePiece(occupyingPiece);
                 enPassant = false;
-                moveType = HistoryPanel.CAPTURE;
+                moveType = HistoryPanel.CAPTURE; 
             }
         }
         //throw exception if didn't move
@@ -129,7 +136,7 @@ public class Pawn extends PieceAbstract
         if(!performingCheck)
         {
             //check if this player's King is in check after their move
-            moveBack(oldX, oldY);
+            moveBack(oldX, oldY,occupyingPiece);
 
             //add this move to move history
             mainFrame.addMove(this, moveType, startX, isPromoting);

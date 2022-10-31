@@ -25,6 +25,14 @@ public class MainFrame extends JFrame
         //call super class's constructor and set title
         super("Chess");
         
+        //create array of chess pieces
+        pieces = new PieceAbstract[32];
+
+        //setup game state variables
+        turn = 'W';
+        gameOver = false;
+        initializePieces();
+
         //create board panel
         boardPanel = new BoardPanel(this, pieces);
         add(boardPanel,BorderLayout.CENTER);
@@ -36,14 +44,6 @@ public class MainFrame extends JFrame
         //create menu panel
         menuPanel = new MenuPanel(this);
         add(menuPanel,BorderLayout.WEST);
-
-        //create array of chess pieces
-        pieces = new PieceAbstract[32];
-
-        //setup game state variables
-        turn = 'W';
-        gameOver = false;
-        initializePieces();
 
         //setup this frame's behavior/appearance
         setResizable(false);
@@ -89,10 +89,10 @@ public class MainFrame extends JFrame
     {
         initializePieces();
         turn = 'W';
+        menuPanel.updateMenuLabels();
         gameOver = false;
 
         historyPanel.clearHistory();
-        menuPanel.updateMenuLabels();
         boardPanel.repaint();
     }
     //get the current player's turn

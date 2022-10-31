@@ -7,6 +7,13 @@ public class King extends PieceAbstract
 {
     private boolean notMoved = true;
 
+    //boolean for if a piece has been captured
+    private boolean checkCaptured = false;
+    //boolean for if piece being tried is on the same spot as checker
+    private boolean checkerB = false;
+    //index of piece doing the check on the king
+    private int checker = 0;
+
     public King(int x, int y, char player, MainFrame mainFrame, PieceAbstract[] pieces)
     {
         super(x, y, player, mainFrame, pieces);
@@ -15,6 +22,16 @@ public class King extends PieceAbstract
         throws IOException
     {
         return ImageIO.read(new File("images/"+player+"King.png"));
+    }
+    //allows other classes to change this variable
+    public void setCheckCaptured(boolean checkCaptured)
+    {
+        this.checkCaptured = checkCaptured;
+    }
+    //allows other classes to change this variable
+    public void setChecker(int checker)
+    {
+        this.checker = checker;
     }
     public void move(int x, int y, boolean performingCheck)
         throws InvalidMoveException
@@ -58,11 +75,20 @@ public class King extends PieceAbstract
                 //if nothing between king and rook, move king and rook
                 if (notBetween)
                 {
-                    this.x = x;
-                    pieces[index - 4].setX(this.x + 1);
-                    ((Rook)pieces[index - 4]).setNotMoved(false);
-                    notMoved = false;
-                    moveType = HistoryPanel.KING_CASTLE;
+                    //making sure the king is not in check through the movement in castling
+                    this.x = x+1;
+                    moveBack(oldX,oldY,occupyingPiece);
+                    if(this.x != oldX)
+                    {
+                        this.x = x;
+                        if(this.x != oldX)
+                        {
+                            pieces[index - 4].setX(this.x + 1);
+                            ((Rook)pieces[index - 4]).setNotMoved(false);
+                            notMoved = false;
+                            moveType = HistoryPanel.QUEEN_CASTLE;
+                        }
+                    }
                 }
             }
             //if king is moving right and right rook has not moved 
@@ -80,22 +106,37 @@ public class King extends PieceAbstract
                 //if nothing between king and rook, move king and rook
                 if (notBetween)
                 {
-                    this.x = x;
-                    pieces[index + 3].setX(this.x - 1);
-                    ((Rook)pieces[index + 3]).setNotMoved(false);
-                    notMoved = false;
-                    moveType = HistoryPanel.QUEEN_CASTLE;
+                    //making sure the king is not in check through the movement in castling
+                    this.x = x-1;
+                    moveBack(oldX,oldY,occupyingPiece);
+                    if(this.x != oldX)
+                    {
+                        this.x = x;
+                        moveBack(oldX,oldY,occupyingPiece);
+                        if(this.x != oldX)
+                        {
+                            pieces[index + 3].setX(this.x - 1);
+                            ((Rook)pieces[index + 3]).setNotMoved(false);
+                            notMoved = false;
+                            moveType = HistoryPanel.KING_CASTLE;
+                        }
+                    }
                 }
             }
         }
-        if(occupyingPiece < 0 && Math.abs(x - this.x) < 2 && Math.abs(y - this.y) < 2)
+        if(occupyingPiece < 0 && Math.abs(x - this.x) < 2 && Math.abs(y - this.y) < 2 )
         {
             //if not checking check status of other player's king
             if(!performingCheck)
             {
                 this.x = x;
                 this.y = y;
-                this.notMoved = false;
+                if (moveType != HistoryPanel.KING_CASTLE && moveType != HistoryPanel.QUEEN_CASTLE)
+                    moveType = HistoryPanel.NORMAL;
+                moveBack(oldX,oldY,occupyingPiece);
+                //only set notMoved if the move didnt cause check
+                if(this.x != oldX || this.y != oldY)
+                    this.notMoved = false;
             }
         }
         else if (occupyingPiece >= 0 && pieces[occupyingPiece].getPlayer() != player)
@@ -105,10 +146,17 @@ public class King extends PieceAbstract
             {
                 this.x = x;
                 this.y = y;
-                this.notMoved = false;
-                capturePiece(occupyingPiece);
-                moveType = HistoryPanel.CAPTURE;
+                moveBack(oldX, oldY,occupyingPiece);
+                //only set notMoved and capture if the move didnt cause check
+                if(this.x != oldX || this.y != oldY)
+                {
+                    this.notMoved = false;
+                    capturePiece(occupyingPiece);
+                    moveType = HistoryPanel.CAPTURE;
+                }
             }
+            //has to be here or it would not run correctly
+            moveBack(oldX,oldY,occupyingPiece);
         }
         else
             throw new InvalidMoveException("Kings can only move one space at a time, in any direction.");
@@ -116,11 +164,10 @@ public class King extends PieceAbstract
         //if not checking for check status of other player's king
         if(!performingCheck)
         {
-            //check if this player's King is in check after their move
-            moveBack(oldX, oldY);
-
+            moveBack(oldX,oldY,occupyingPiece);
             //add this move to move history
             mainFrame.addMove(this, moveType, -1, false);
+            moveType = HistoryPanel.NORMAL;
         }
     }
     //check if this King is in check
@@ -142,8 +189,16 @@ public class King extends PieceAbstract
             try
             {
                 //check if a piece can move onto the King using the move method, true parameter needed to perform this
+                if(pieces[searchIndex].isCaptured())
+                    continue;
                 pieces[searchIndex].move(x, y, true);
-
+                //if a piece is captured and it can be the one that was checking the king
+                if(checkCaptured && checkerB)
+                {
+                    inCheck = false;
+                    checkCaptured = false;
+                    return inCheck;
+                }
                 //will only get here if the move was valid
                 inCheck = true;
             }
@@ -152,5 +207,61 @@ public class King extends PieceAbstract
             searchIndex++;
         }
         return inCheck;
+    }
+    public boolean checkMate()
+    {
+        int startingIndex = 16;
+
+        if(player == 'B')
+            startingIndex = 0;
+        //check for any legal moves for this player's pieces
+        for(int n = startingIndex; n < startingIndex + 16; n++)
+        {
+            //x coordinate
+            for(int i = 0; i < 8; i++)
+            {
+                //y coordinate
+                for(int j = 0; j < 8; j++)
+                {
+                    //save old position
+                    int oldX = pieces[n].getX();
+                    int oldY = pieces[n].getY();
+                    try
+                    {
+                        //attempt the move
+                        pieces[n].move(i, j,true);
+                        //if the move is going on to the piece that is checking the king
+                        if(pieces[checker].getX() == i && pieces[checker].getY() == j)
+                            checkerB = true;
+                        //actually set the x and y for when when the check method is called
+                        pieces[n].setX(i);
+                        pieces[n].setY(j);
+                        //if not in check
+                        if(!check())
+                        {
+                            //if no longer in check set piece back to its old square
+                            //and set the checker back to false and return false
+                            pieces[n].setX(oldX);
+                            pieces[n].setY(oldY);
+                            checkerB = false;
+                            return false;
+                        }
+                        else
+                        {
+                            //if still in check set back to old square and checker back to false
+                            pieces[n].setX(oldX);
+                            pieces[n].setY(oldY);
+                            checkerB = false;
+                        }
+                    }
+                    //if move is invalid, do nothing and continue
+                    catch(InvalidMoveException ime)
+                    {
+                    }
+                }
+            }
+        }
+        //if here, this King is in check mate
+        return true;
     }
 }
