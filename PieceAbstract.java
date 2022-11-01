@@ -56,6 +56,7 @@ public abstract class PieceAbstract
         else
             return -1;
     }
+    //used to reset the captured piece counts back to 0
     public static void initializeCaptureCount()
     {
         //set counts back to 0 if the game is over
