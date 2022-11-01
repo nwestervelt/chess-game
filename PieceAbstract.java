@@ -56,6 +56,13 @@ public abstract class PieceAbstract
         else
             return -1;
     }
+    //used to reset the captured piece counts back to 0
+    public static void initializeCaptureCount()
+    {
+        //set counts back to 0 if the game is over
+        wQueenCap = 0; wRookCap = 0; wBishopCap = 0; wKnightCap = 0; wPawnCap = 0;
+        bQueenCap = 0; bRookCap = 0; bBishopCap = 0; bKnightCap = 0; bPawnCap = 0;
+    }
     //used to tell if the piece has been captured
     public boolean isCaptured()
     {
@@ -311,7 +318,7 @@ public abstract class PieceAbstract
                     occupyingPiece = i;
             }
         }
-        if(notBetween && occupyingPiece < 0 && (this.x == x || this.y == y) && (this.x != x && this.y != y))
+        if(notBetween && occupyingPiece < 0 && (this.x == x || this.y == y) && (this.x != x || this.y != y))
         {
             //only perform move if not checking check status of other player's king
             if(!performingCheck)
@@ -321,7 +328,7 @@ public abstract class PieceAbstract
                 moveType = HistoryPanel.NORMAL;
             }
         }
-        else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player && (this.x != x && this.y != y))
+        else if (occupyingPiece >= 0 && notBetween && pieces[occupyingPiece].getPlayer() != player && (this.x != x || this.y != y))
         {
             //set checkCaptured to true
             if(player == 'W')
