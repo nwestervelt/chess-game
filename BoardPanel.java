@@ -155,6 +155,8 @@ public class BoardPanel extends JPanel
             else 
                 ((King)pieces[MainFrame.B_KING]).setChecker(selected);
 
+            repaint();
+
             //if player's king is in check mate, update status of game accordingly
             if(mainFrame.getTurn() == 'W' && ((King)pieces[MainFrame.W_KING]).check())
             {
