@@ -73,14 +73,15 @@ public class King extends PieceAbstract
                     }
                 }
                 //if nothing between king and rook, move king and rook
-                if (notBetween)
+                if (notBetween && !check())
                 {
-                    //making sure the king is not in check through the movement in castling
+                    //making sure the king is not in check through the movement during castling
                     this.x = x+1;
                     moveBack(oldX,oldY,occupyingPiece);
                     if(this.x != oldX)
                     {
                         this.x = x;
+                        moveBack(oldX,oldY,occupyingPiece);
                         if(this.x != oldX)
                         {
                             pieces[index - 4].setX(this.x + 1);
@@ -104,7 +105,7 @@ public class King extends PieceAbstract
                     }
                 }
                 //if nothing between king and rook, move king and rook
-                if (notBetween)
+                if (notBetween && !check())
                 {
                     //making sure the king is not in check through the movement in castling
                     this.x = x-1;
@@ -190,7 +191,10 @@ public class King extends PieceAbstract
             {
                 //check if a piece can move onto the King using the move method, true parameter needed to perform this
                 if(pieces[searchIndex].isCaptured())
+                {
+                    searchIndex++;
                     continue;
+                }
                 pieces[searchIndex].move(x, y, true);
                 //if a piece is captured and it can be the one that was checking the king
                 if(checkCaptured && checkerB)
