@@ -48,7 +48,7 @@ public class MenuPanel extends JPanel
 
         //text area showing black captured pieces
         blackCaptured = new JTextArea();
-        blackCaptured.setPreferredSize(new Dimension (90,250));
+        blackCaptured.setPreferredSize(new Dimension (110,250));
         blackCaptured.setLineWrap(true);
         blackCaptured.setWrapStyleWord(true);
         blackCaptured.setEditable(false);
@@ -63,7 +63,7 @@ public class MenuPanel extends JPanel
 
         //text area showing white captured pieces
         whiteCaptured = new JTextArea();
-        whiteCaptured.setPreferredSize(new Dimension (90,250));
+        whiteCaptured.setPreferredSize(new Dimension (110,250));
         whiteCaptured.setLineWrap(true);
         whiteCaptured.setWrapStyleWord(true);
         whiteCaptured.setEditable(false);
@@ -115,20 +115,20 @@ public class MenuPanel extends JPanel
             (bBishopCap * BISHOP_VALUE) + (bKnightCap * KNIGHT_VALUE) + (bPawnCap * PAWN_VALUE);
 
         //update white captured pieces and value
-        whiteCaptured.setText("Queens, " + wQueenCap + "\n\n" +
-                        "Rooks, " + wRookCap + "\n\n" +
-                        "Bishops, " + wBishopCap + "\n\n" +
-                        "Knights, " + wKnightCap + "\n\n" +
-                        "Pawns, " + wPawnCap + "\n\n" + 
-                        "Value: " + (blackValue - whiteValue));
+        whiteCaptured.setText("Queens:\t" + wQueenCap + "\n\n" +
+                        "Rooks:\t" + wRookCap + "\n\n" +
+                        "Bishops:\t" + wBishopCap + "\n\n" +
+                        "Knights:\t" + wKnightCap + "\n\n" +
+                        "Pawns:\t" + wPawnCap + "\n\n" + 
+                        "Value:\t" + (blackValue - whiteValue));
 
         //update black captured pieces and value
-        blackCaptured.setText("Queens, " + bQueenCap + "\n\n" +
-                        "Rooks, " + bRookCap + "\n\n" +
-                        "Bishops, " + bBishopCap + "\n\n" +
-                        "Knights, " + bKnightCap + "\n\n" +
-                        "Pawns, " + bPawnCap + "\n\n" +
-                        "Value: " + (whiteValue - blackValue));
+        blackCaptured.setText("Queens:\t" + bQueenCap + "\n\n" +
+                        "Rooks:\t" + bRookCap + "\n\n" +
+                        "Bishops:\t" + bBishopCap + "\n\n" +
+                        "Knights:\t" + bKnightCap + "\n\n" +
+                        "Pawns:\t" + bPawnCap + "\n\n" +
+                        "Value:\t" + (whiteValue - blackValue));
     }
     private class ButtonHandler implements ActionListener
     {
