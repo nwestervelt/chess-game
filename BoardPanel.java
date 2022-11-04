@@ -42,7 +42,7 @@ public class BoardPanel extends JPanel
         super.paintComponent(g);
         g.drawImage(board, 0, 0, null);
         
-        g.setFont(new Font(Font.SERIF,Font.BOLD, 15));
+        g.setFont(new Font(Font.SANS_SERIF,Font.BOLD, 20));
 
         //draw numbers and letters for the rows and columns
         for (int i = 0; i < 8; i++)
@@ -50,7 +50,7 @@ public class BoardPanel extends JPanel
             g.drawString("" + (i+1), 0, ((7-i) * 100) + 15);
 
            //character cast is using ascii values
-           g.drawString("" + (char)(97 + i), ((i + 1) * 100) - 15, 790);
+           g.drawString("" + (char)(97 + i), ((i + 1) * 100) - 15, 795);
         }
         try
         {
