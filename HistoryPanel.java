@@ -148,9 +148,9 @@ public class HistoryPanel extends JPanel
             turnCount++;
             history.append("\n");
         }
-        //if White's turn, print 8 spaces
+        //if White's turn, tab over for blacks next move
         else
-            history.append("        ");
+            history.append("\t");
     }
     //used to add symbols for the ending location to the history
     public void addEndLocation(PieceAbstract piece)
