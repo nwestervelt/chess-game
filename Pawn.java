@@ -34,7 +34,9 @@ public class Pawn extends PieceAbstract
     public void move(int x, int y, boolean performingCheck)
         throws InvalidMoveException
     {
-        int occupyingPiece = -1, oldX = this.x, oldY = this.y;
+        int occupyingPiece = -1;
+        oldX = this.x;
+        oldY = this.y;
         boolean notBetween = true, movingForward = false, isPromoting = false;
 
         startX = this.x;

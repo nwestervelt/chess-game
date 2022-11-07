@@ -20,7 +20,9 @@ public class Knight extends PieceAbstract
     public void move(int x, int y, boolean performingCheck)
         throws InvalidMoveException
     {
-        int occupyingPiece = -1, oldX = this.x, oldY = this.y;
+        int occupyingPiece = -1;
+        oldX = this.x;
+        oldY = this.y;
 
         for(int i = 0; i < pieces.length; i++)
         {
