@@ -4,7 +4,7 @@ import java.awt.image.*;
 public abstract class PieceAbstract
 {
     //variables common to all classes extending PieceAbstract
-    int x, y;
+    int x, y, oldX, oldY;
     int moveType = HistoryPanel.NORMAL;
     char player;
     boolean captured;
@@ -23,6 +23,8 @@ public abstract class PieceAbstract
         this.player = player;
         this.x = x;
         this.y = y;
+        this.oldX = x;
+        this.oldY = y;
         captured = false;
     }
     //used to retrieve count of captured pieces
@@ -132,10 +134,20 @@ public abstract class PieceAbstract
     {
         return x;
     }
+    //used to get the old x position of this piece
+    public int getOldX()
+    {
+        return oldX;
+    }
     //used to get the y position of this piece
     public int getY()
     {
         return y;
+    }
+    //used to get the old y position of this piece
+    public int getOldY()
+    {
+        return oldY;
     }
     //used to set the x position of this piece
     public void setX(int x)
@@ -185,15 +197,17 @@ public abstract class PieceAbstract
             throw new InvalidMoveException("The black king was in check after the move.");
         }
     }
-    //used to move the Bishop, located here so that Queens can also use it
-    public void bishopMove(int x, int y, boolean performingCheck)
-        throws InvalidMoveException
+    //used to check if there's any pieces between this piece's current position and the final position
+    public boolean notBetween(int x, int y)
     {
-        boolean notBetween = true;
-        int occupyingPiece = -1, oldX = this.x, oldY = this.y;
-        //if in the diagonal 
-        if(Math.abs(x - this.x) == Math.abs(y - this.y))
+        boolean notBetween = false;
+
+        //if in the diagonal and a Queen or Bishop
+        if(Math.abs(x - this.x) == Math.abs(y - this.y) && (this instanceof Queen || this instanceof Bishop))
         {
+            //set to true since we know the piece is on a diagonal
+            notBetween = true;
+
             //iterating through each piece
             for (int i = 0; i < pieces.length; i++)
             {
@@ -237,6 +251,58 @@ public abstract class PieceAbstract
                         notBetween = false;
                     }
                 }
+            }
+        }
+        //check vertically and horizontally for pieces between if a Rook
+        else if(((this.x == x && this.y != y) || (this.x != x && this.y == y)) && (this instanceof Rook || this instanceof Queen))
+        {
+            //set to true since we know the row or column matches
+            notBetween = true;
+
+            for(int i = 0; i < pieces.length; i++)
+            {
+                //check vertically for pieces between
+                if(pieces[i].getX() == x)
+                {
+                    if((pieces[i].getY() < this.y && pieces[i].getY() > y) ||
+                        pieces[i].getY() < y && pieces[i].getY() > this.y)
+                    {
+                        notBetween = false;
+                    }
+                }
+                //check horizontally for pieces between
+                else if(pieces[i].getY() == y)
+                {
+                    if((pieces[i].getX() < this.x && pieces[i].getX() > x) ||
+                        pieces[i].getX() < x && pieces[i].getX() > this.x)
+                    {
+                        notBetween = false;
+                    }
+                }
+            }
+        }
+        //will return false unless either of the two if blocks above are entered
+        //and it is found that there is nothing between the starting and ending positions
+        return notBetween;
+    }
+    //used to move the Bishop, located here so that Queens can also use it
+    public void bishopMove(int x, int y, boolean performingCheck)
+        throws InvalidMoveException
+    {
+        boolean notBetween = true;
+        int occupyingPiece = -1;
+        oldX = this.x;
+        oldY = this.y;
+
+        //check if any pieces are between
+        notBetween = notBetween(x, y);
+
+        //if in the diagonal 
+        if(Math.abs(x - this.x) == Math.abs(y - this.y))
+        {
+            //iterating through each piece
+            for (int i = 0; i < pieces.length; i++)
+            {
                 //if space is occupied, store that piece's index
                 if(pieces[i].getX() == x && pieces[i].getY() == y)
                     occupyingPiece = i;
@@ -288,31 +354,18 @@ public abstract class PieceAbstract
         throws InvalidMoveException
     {
         boolean notBetween = true;
-        int occupyingPiece = -1, oldX = this.x, oldY = this.y;
+        int occupyingPiece = -1;
+        oldX = this.x;
+        oldY = this.y;
 
-        //check vertically and horizontally for pieces between
+        //check if there's any pieces between starting and end position
+        notBetween = notBetween(x, y);
+
+        //if row or column matches
         if((this.x == x && this.y != y) || (this.x != x && this.y == y))
         {
             for(int i = 0; i < pieces.length; i++)
             {
-                //check vertically for pieces between
-                if(pieces[i].getX() == x)
-                {
-                    if((pieces[i].getY() < this.y && pieces[i].getY() > y) ||
-                        pieces[i].getY() < y && pieces[i].getY() > this.y)
-                    {
-                        notBetween = false;
-                    }
-                }
-                //check horizontally for pieces between
-                else if(pieces[i].getY() == y)
-                {
-                    if((pieces[i].getX() < this.x && pieces[i].getX() > x) ||
-                        pieces[i].getX() < x && pieces[i].getX() > this.x)
-                    {
-                        notBetween = false;
-                    }
-                }
                 //check if player is attempting to move ontop of any piece
                 if(pieces[i].getX() == x && pieces[i].getY() == y)
                     occupyingPiece = i;

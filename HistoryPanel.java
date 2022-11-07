@@ -79,6 +79,8 @@ public class HistoryPanel extends JPanel
         {
             //add symbol for the piece
             addPieceSymbol(piece);
+            //add ambiguous move notation
+            addAmbiguous(piece);
             //add symbol for capturing
             addCapture(piece, moveType, startX);
             //add symbol for ending location
@@ -117,6 +119,37 @@ public class HistoryPanel extends JPanel
             history.append("B");
         else if(piece instanceof Knight)
             history.append("N");
+    }
+    //used to add starting square if the move is ambiguous
+    public void addAmbiguous(PieceAbstract piece)
+    {
+        int startIndex = MainFrame.B_MIN;
+
+        if(piece.getPlayer() == 'W')
+            startIndex = MainFrame.W_MIN;
+
+        for(int i = startIndex; i < startIndex + pieces.length/2; i++)
+        {
+            if(pieces[i] == piece)
+                continue;
+
+            if(pieces[i].getClass() == piece.getClass())
+            {
+                if(pieces[i] instanceof Knight &&
+                    ((Math.abs(pieces[i].getX() - piece.getX()) == 2 && Math.abs(pieces[i].getY() - piece.getY()) == 1) ||
+                    (Math.abs(pieces[i].getX() - piece.getX()) == 1 && Math.abs(pieces[i].getY() - piece.getY()) == 2)))
+                {
+                    history.append(notation[piece.getOldY()][piece.getOldX()]);
+                    break;
+                }
+                if((pieces[i] instanceof Rook || pieces[i] instanceof Bishop || pieces[i] instanceof Queen) &&
+                    pieces[i].notBetween(piece.getX(), piece.getY()))
+                {
+                    history.append(notation[piece.getOldY()][piece.getOldX()]);
+                    break;
+                }
+            }
+        }
     }
     //used to add a capture symbol to the history
     public void addCapture(PieceAbstract piece, int moveType, int startX)

@@ -36,7 +36,9 @@ public class King extends PieceAbstract
     public void move(int x, int y, boolean performingCheck)
         throws InvalidMoveException
     {
-        int occupyingPiece = -1, oldX = this.x, oldY = this.y;
+        int occupyingPiece = -1;
+        oldX = this.x;
+        oldY = this.y;
         boolean notBetween = true;
 
         //if moving one space
