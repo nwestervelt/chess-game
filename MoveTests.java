@@ -1,3 +1,5 @@
+//JUnit Testing for each pieces move methods
+
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 
@@ -40,7 +42,6 @@ public class MoveTests
                 pieces[i] = new King(i%8, 0, 'B', null, pieces);
         }
     }
-
     //White Knight invalid 1
     @Test
     public void testMoveKnightInvalidW1()
@@ -53,7 +54,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //White Knight invalid 2
     @Test
     public void testMoveKnightInvalidW2()
@@ -68,7 +68,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //Black Knight invalid 1
     @Test
     public void testMoveKnightInvalidB1()
@@ -81,7 +80,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //Black Knight invalid 2
     @Test
     public void testMoveKnightInvalidB2()
@@ -96,7 +94,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //White Knight valid moves
     @Test
     public void testMoveKnightValidW()
@@ -114,7 +111,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(false);}
     }
-
     //Black Knight valid moves
     @Test
     public void testMoveKnightValidB()
@@ -132,7 +128,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(false);}
     }
-
     //White Bishop invalid 1
     @Test
     public void testMoveBishopInvalidW1()
@@ -145,7 +140,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //White Bishop invalid 2
     @Test
     public void testMoveBishopInvalidW2()
@@ -158,7 +152,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //White Bishop invalid 3
     @Test
     public void testMoveBishopInvalidW3()
@@ -172,7 +165,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //White Bishop invalid 4
     @Test
     public void testMoveBishopInvalidW4()
@@ -198,7 +190,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-    
     //Black Bishop invalid 2
     @Test
     public void testMoveBishopInvalidB2()
@@ -211,7 +202,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-    
     //Black Bishop invalid 3
     @Test
     public void testMoveBishopInvalidB3()
@@ -225,7 +215,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-    
     //Black Bishop invalid 4
     @Test
     public void testMoveBishopInvalidB4()
@@ -239,7 +228,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //White Bishop valid moves 
     @Test
     public void testMoveBishopValidW()
@@ -257,7 +245,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(false);}
     }
-
     //Black Bishop valid moves 
     @Test
     public void testMoveBishopValidB()
@@ -275,7 +262,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(false);}
     }
-
     //White Rook invalid 1
     @Test
     public void testMoveRookInvalidW1()
@@ -288,7 +274,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //White Rook invalid 2
     @Test
     public void testMoveRookInvalidW2()
@@ -301,7 +286,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //White Rook invalid 3
     @Test
     public void testMoveRookInvalidW3()
@@ -315,7 +299,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //Black Rook invalid 1
     @Test
     public void testMoveRookInvalidB1()
@@ -328,7 +311,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //Black Rook invalid 2
     @Test
     public void testMoveRookInvalidB2()
@@ -341,7 +323,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //Black Rook invalid 3
     @Test
     public void testMoveRookInvalidB3()
@@ -355,7 +336,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(true);}
     }
-
     //White Rook valid moves
     @Test
     public void testMoveRookValidW()
@@ -373,7 +353,6 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(false);}
     }
-
     //Black Rook valid moves
     @Test
     public void testMoveRookValidB()
