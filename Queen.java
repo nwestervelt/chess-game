@@ -21,11 +21,14 @@ public class Queen extends PieceAbstract
         throws InvalidMoveException
     {
         //if diagonal move use Bishop's move method
-        if (Math.abs(x - this.x) == Math.abs(y - this.y))
+        if (Math.abs(x - this.x) == Math.abs(y - this.y) && (x != this.x && y != this.y))
             bishopMove(x, y, check);
 
         //if horizontal move use Rook's move method
-        else 
+        else if((x == this.x && y != this.y) || (x != this.x && y == this.y))
             rookMove(x, y, check);
+
+        else
+            throw new InvalidMoveException("Queen didn't move from initial position.");
     }
 }
