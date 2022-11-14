@@ -33,6 +33,11 @@ public class King extends PieceAbstract
     {
         this.checker = checker;
     }
+    //set notMoved variable
+    public void setNotMoved(boolean notMoved)
+    {
+        this.notMoved = notMoved;
+    }
     public void move(int x, int y, boolean performingCheck)
         throws InvalidMoveException
     {
@@ -84,7 +89,7 @@ public class King extends PieceAbstract
                     {
                         this.x = x;
                         moveBack(oldX,oldY,occupyingPiece);
-                        if(this.x != oldX)
+                        if(this.x != oldX && !performingCheck)
                         {
                             pieces[index - 4].setX(this.x + 1);
                             ((Rook)pieces[index - 4]).setNotMoved(false);
@@ -116,7 +121,7 @@ public class King extends PieceAbstract
                     {
                         this.x = x;
                         moveBack(oldX,oldY,occupyingPiece);
-                        if(this.x != oldX)
+                        if(this.x != oldX && !performingCheck)
                         {
                             pieces[index + 3].setX(this.x - 1);
                             ((Rook)pieces[index + 3]).setNotMoved(false);
