@@ -135,7 +135,7 @@ public class HistoryPanel extends JPanel
 
             if(pieces[i].getClass() == piece.getClass())
             {
-                if(pieces[i] instanceof Knight &&
+                if(pieces[i] instanceof Knight && !pieces[i].isCaptured() &&
                     ((Math.abs(pieces[i].getX() - piece.getX()) == 2 && Math.abs(pieces[i].getY() - piece.getY()) == 1) ||
                     (Math.abs(pieces[i].getX() - piece.getX()) == 1 && Math.abs(pieces[i].getY() - piece.getY()) == 2)))
                 {
@@ -143,7 +143,7 @@ public class HistoryPanel extends JPanel
                     break;
                 }
                 if((pieces[i] instanceof Rook || pieces[i] instanceof Bishop || pieces[i] instanceof Queen) &&
-                    pieces[i].notBetween(piece.getX(), piece.getY()))
+                    pieces[i].notBetween(piece.getX(), piece.getY()) && !pieces[i].isCaptured())
                 {
                     history.append(notation[piece.getOldY()][piece.getOldX()]);
                     break;
