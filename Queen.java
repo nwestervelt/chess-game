@@ -29,6 +29,6 @@ public class Queen extends PieceAbstract
             rookMove(x, y, check);
 
         else
-            throw new InvalidMoveException("Queen didn't move from initial position.");
+            throw new InvalidMoveException("Invalid move for Queen.");
     }
 }
