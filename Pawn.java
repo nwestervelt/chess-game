@@ -24,11 +24,21 @@ public class Pawn extends PieceAbstract
     {
         return enPassant;
     }
+    //set if en passant can be used on this Pawn
+    public void setEnPassant(boolean enPassant)
+    {
+        this.enPassant = enPassant;
+    }
     //return the image associated with this Pawn
     public BufferedImage getImage()
         throws IOException
     {
         return ImageIO.read(new File("images/"+player+"Pawn.png"));
+    }
+    //set notmoved variable
+    public void setNotMoved(boolean notMoved)
+    {
+        this.notMoved = notMoved;
     }
     //move this Pawn according to the appropriate rules
     public void move(int x, int y, boolean performingCheck)
