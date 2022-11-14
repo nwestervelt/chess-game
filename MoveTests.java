@@ -370,4 +370,542 @@ public class MoveTests
         }
         catch(InvalidMoveException ime) {assertTrue(false);}
     }
+    //White Pawn invalid 1
+    @Test
+    public void testMovePawnInvalidW1()
+    {
+        try
+        {
+            //move a white pawn in front of another white pawn
+            pieces[MainFrame.W_PAWN_MAX].setX(pieces[MainFrame.W_PAWN_MIN].getX());
+            pieces[MainFrame.W_PAWN_MAX].setY(pieces[MainFrame.W_PAWN_MIN].getY() - 1);
+            //should be invalid move because of moving onto same colored piece, forwards
+            pieces[MainFrame.W_PAWN_MIN].move(pieces[MainFrame.W_PAWN_MAX].getX(), pieces[MainFrame.W_PAWN_MAX].getY(), true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White Pawn invalid 2
+    @Test
+    public void testMovePawnInvalidW2()
+    {
+        try
+        {
+            //move a white pawn in front of another white pawn
+            pieces[MainFrame.W_PAWN_MAX].setX(pieces[MainFrame.W_PAWN_MIN].getX());
+            pieces[MainFrame.W_PAWN_MAX].setY(pieces[MainFrame.W_PAWN_MIN].getY() - 1);
+            //should be invalid move because of moving past another piece
+            pieces[MainFrame.W_PAWN_MIN].move(pieces[MainFrame.W_PAWN_MAX].getX(), pieces[MainFrame.W_PAWN_MAX].getY() - 1, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White Pawn invalid 3
+    @Test
+    public void testMovePawnInvalidW3()
+    {
+        try
+        {
+            //move a white pawn 2 spaces in front of another white pawn
+            pieces[MainFrame.W_PAWN_MAX].setX(pieces[MainFrame.W_PAWN_MIN].getX());
+            pieces[MainFrame.W_PAWN_MAX].setY(pieces[MainFrame.W_PAWN_MIN].getY() - 2);
+            //should be invalid move because of moving onto same colored piece
+            pieces[MainFrame.W_PAWN_MIN].move(pieces[MainFrame.W_PAWN_MAX].getX(), pieces[MainFrame.W_PAWN_MAX].getY(), true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White Pawn invalid 4
+    @Test
+    public void testMovePawnInvalidW4()
+    {
+        try
+        {
+            //Move a white pawn to a front diagonal of another white pawn
+            pieces[MainFrame.W_PAWN_MAX].setX(pieces[MainFrame.W_PAWN_MIN].getX() + 1);
+            pieces[MainFrame.W_PAWN_MAX].setY(pieces[MainFrame.W_PAWN_MIN].getY() - 1);
+            //should be invalid move because of moving onto same colored piece, diagonally
+            pieces[MainFrame.W_PAWN_MIN].move(pieces[MainFrame.W_PAWN_MAX].getX(), pieces[MainFrame.W_PAWN_MAX].getY(), true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White Pawn invalid 5
+    @Test
+    public void testMovePawnInvalidW5()
+    {
+        try
+        {
+            //should be invalid move because of moving diagonally with no piece to capture
+            pieces[MainFrame.W_PAWN_MIN].move(pieces[MainFrame.W_PAWN_MIN].getX() + 1, pieces[MainFrame.W_PAWN_MIN].getY() - 1, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White Pawn invalid 6
+    @Test
+    public void testMovePawnInvalidW6()
+    {
+        try
+        {
+            //should be invalid move because of moving more than two spaces forwards
+            pieces[MainFrame.W_PAWN_MIN].move(pieces[MainFrame.W_PAWN_MIN].getX(), pieces[MainFrame.W_PAWN_MIN].getY() - 3, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White Pawn invalid 7
+    @Test
+    public void testMovePawnInvalidW7()
+    {
+        try
+        {
+            //set notMoved variable as if the pawn has moved
+            ((Pawn)pieces[MainFrame.W_PAWN_MIN]).setNotMoved(false);
+            //should be invalid move because of moving two spaces forwards after already moving
+            pieces[MainFrame.W_PAWN_MIN].move(pieces[MainFrame.W_PAWN_MIN].getX(), pieces[MainFrame.W_PAWN_MIN].getY() - 2, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White Pawn valid moves
+    @Test
+    public void testMovePawnValidW()
+    {
+        try
+        {
+            //setup
+            pieces[MainFrame.B_PAWN_MIN].setX(pieces[MainFrame.W_PAWN_MIN].getX() + 1);
+            pieces[MainFrame.B_PAWN_MIN].setY(pieces[MainFrame.W_PAWN_MIN].getY() - 1);
+            pieces[MainFrame.B_PAWN_MAX].setX(pieces[MainFrame.W_PAWN_MAX].getX() - 1);
+            pieces[MainFrame.B_PAWN_MAX].setY(pieces[MainFrame.W_PAWN_MAX].getY() - 1);
+            ((Pawn)pieces[MainFrame.B_PAWN_MAX]).setEnPassant(true);
+            pieces[MainFrame.W_PAWN_MAX].setY(pieces[MainFrame.W_PAWN_MAX].getY() - 1);
+
+            //move forwards one space
+            pieces[MainFrame.W_PAWN_MIN].move(pieces[MainFrame.W_PAWN_MIN].getX(), pieces[MainFrame.W_PAWN_MIN].getY() - 1, true);
+            //move forwards two spaces
+            pieces[MainFrame.W_PAWN_MIN].move(pieces[MainFrame.W_PAWN_MIN].getX(), pieces[MainFrame.W_PAWN_MIN].getY() - 2, true);
+            //capture a black piece
+            pieces[MainFrame.W_PAWN_MIN].move(pieces[MainFrame.B_PAWN_MIN].getX(), pieces[MainFrame.B_PAWN_MIN].getY(), true);
+            //perform enPassant
+            pieces[MainFrame.W_PAWN_MAX].move(pieces[MainFrame.B_PAWN_MAX].getX(), pieces[MainFrame.B_PAWN_MAX].getY() - 1, true);
+        }
+        catch(InvalidMoveException ime) {assertTrue(false);}
+    }
+    //Black Pawn invalid 1
+    @Test
+    public void testMovePawnInvalidB1()
+    {
+        try
+        {
+            //move a black pawn in front of another black pawn
+            pieces[MainFrame.B_PAWN_MAX].setX(pieces[MainFrame.B_PAWN_MIN].getX());
+            pieces[MainFrame.B_PAWN_MAX].setY(pieces[MainFrame.B_PAWN_MIN].getY() + 1);
+            //should be invalid move because of moving onto same colored piece, forwards
+            pieces[MainFrame.B_PAWN_MIN].move(pieces[MainFrame.B_PAWN_MAX].getX(), pieces[MainFrame.B_PAWN_MAX].getY(), true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //Black Pawn invalid 2
+    @Test
+    public void testMovePawnInvalidB2()
+    {
+        try
+        {
+            //move a black pawn in front of another black pawn
+            pieces[MainFrame.B_PAWN_MAX].setX(pieces[MainFrame.B_PAWN_MIN].getX());
+            pieces[MainFrame.B_PAWN_MAX].setY(pieces[MainFrame.B_PAWN_MIN].getY() + 1);
+            //should be invalid move because of moving past another piece
+            pieces[MainFrame.B_PAWN_MIN].move(pieces[MainFrame.B_PAWN_MAX].getX(), pieces[MainFrame.B_PAWN_MAX].getY() + 1, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //Black Pawn invalid 3
+    @Test
+    public void testMovePawnInvalidB3()
+    {
+        try
+        {
+            //move a black pawn 2 spaces in front of another black pawn
+            pieces[MainFrame.B_PAWN_MAX].setX(pieces[MainFrame.B_PAWN_MIN].getX());
+            pieces[MainFrame.B_PAWN_MAX].setY(pieces[MainFrame.B_PAWN_MIN].getY() + 2);
+            //should be invalid move because of moving onto same colored piece
+            pieces[MainFrame.B_PAWN_MIN].move(pieces[MainFrame.B_PAWN_MAX].getX(), pieces[MainFrame.B_PAWN_MAX].getY(), true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //Black Pawn invalid 4
+    @Test
+    public void testMovePawnInvalidB4()
+    {
+        try
+        {
+            //Move a black pawn to a front diagonal of another black pawn
+            pieces[MainFrame.B_PAWN_MAX].setX(pieces[MainFrame.B_PAWN_MIN].getX() + 1);
+            pieces[MainFrame.B_PAWN_MAX].setY(pieces[MainFrame.B_PAWN_MIN].getY() + 1);
+            //should be invalid move because of moving onto same colored piece, diagonally
+            pieces[MainFrame.B_PAWN_MIN].move(pieces[MainFrame.B_PAWN_MAX].getX(), pieces[MainFrame.B_PAWN_MAX].getY(), true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //Black Pawn invalid 5
+    @Test
+    public void testMovePawnInvalidB5()
+    {
+        try
+        {
+            //should be invalid move because of moving diagonally with no piece to capture
+            pieces[MainFrame.B_PAWN_MIN].move(pieces[MainFrame.B_PAWN_MIN].getX() + 1, pieces[MainFrame.B_PAWN_MIN].getY() + 1, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //Black Pawn invalid 6
+    @Test
+    public void testMovePawnInvalidB6()
+    {
+        try
+        {
+            //should be invalid move because of moving more than two spaces forwards
+            pieces[MainFrame.B_PAWN_MIN].move(pieces[MainFrame.B_PAWN_MIN].getX(), pieces[MainFrame.B_PAWN_MIN].getY() + 3, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //Black Pawn invalid 7
+    @Test
+    public void testMovePawnInvalidB7()
+    {
+        try
+        {
+            //set notMoved variable as if the pawn has moved
+            ((Pawn)pieces[MainFrame.B_PAWN_MIN]).setNotMoved(false);
+            //should be invalid move because of moving two spaces forwards after already moving
+            pieces[MainFrame.B_PAWN_MIN].move(pieces[MainFrame.B_PAWN_MIN].getX(), pieces[MainFrame.B_PAWN_MIN].getY() + 2, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //Black Pawn valid moves
+    @Test
+    public void testMovePawnValidB()
+    {
+        try
+        {
+            //setup
+            pieces[MainFrame.W_PAWN_MIN].setX(pieces[MainFrame.B_PAWN_MIN].getX() + 1);
+            pieces[MainFrame.W_PAWN_MIN].setY(pieces[MainFrame.B_PAWN_MIN].getY() + 1);
+            pieces[MainFrame.W_PAWN_MAX].setX(pieces[MainFrame.B_PAWN_MAX].getX() + 1);
+            pieces[MainFrame.W_PAWN_MAX].setY(pieces[MainFrame.B_PAWN_MAX].getY() + 1);
+            ((Pawn)pieces[MainFrame.W_PAWN_MAX]).setEnPassant(true);
+            pieces[MainFrame.B_PAWN_MAX].setY(pieces[MainFrame.B_PAWN_MAX].getY() + 1);
+
+            //move forwards one space
+            pieces[MainFrame.B_PAWN_MIN].move(pieces[MainFrame.B_PAWN_MIN].getX(), pieces[MainFrame.B_PAWN_MIN].getY() + 1, true);
+            //move forwards two spaces
+            pieces[MainFrame.B_PAWN_MIN].move(pieces[MainFrame.B_PAWN_MIN].getX(), pieces[MainFrame.B_PAWN_MIN].getY() + 2, true);
+            //capture a white piece
+            pieces[MainFrame.B_PAWN_MIN].move(pieces[MainFrame.W_PAWN_MIN].getX(), pieces[MainFrame.W_PAWN_MIN].getY(), true);
+            //perform enPassant
+            pieces[MainFrame.B_PAWN_MAX].move(pieces[MainFrame.W_PAWN_MAX].getX(), pieces[MainFrame.W_PAWN_MAX].getY() + 1, true);
+        }
+        catch(InvalidMoveException ime) {assertTrue(false);}
+    }
+    //White King invalid 1
+    @Test
+    public void testMoveKingInvalidW1()
+    {
+        try
+        {
+            //invalid move because of moving onto same colored piece
+            pieces[MainFrame.W_KING].move(pieces[MainFrame.W_KING].getX(), pieces[MainFrame.W_KING].getY() - 1, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White King invalid 2
+    @Test
+    public void testMoveKingInvalidW2()
+    {
+        try
+        {
+            //move all white pawns two spaces forwards for convenience
+            for(int i = MainFrame.W_PAWN_MIN; i <= MainFrame.W_PAWN_MAX; i++)
+            {
+                pieces[i].setX(pieces[i].getX());
+                pieces[i].setY(pieces[i].getY() - 2);
+            }
+            //invalid move because of moving two spaces without castling
+            pieces[MainFrame.W_KING].move(pieces[MainFrame.W_KING].getX(), pieces[MainFrame.W_KING].getY() - 2, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White King invalid 3
+    @Test
+    public void testMoveKingInvalidW3()
+    {
+        try
+        {
+            //move all white pawns two spaces forwards for convenience
+            for(int i = MainFrame.W_PAWN_MIN; i <= MainFrame.W_PAWN_MAX; i++)
+            {
+                pieces[i].setX(pieces[i].getX());
+                pieces[i].setY(pieces[i].getY() - 2);
+            }
+            //invalid move because of moving two spaces without castling
+            pieces[MainFrame.W_KING].move(pieces[MainFrame.W_KING].getX(), pieces[MainFrame.W_KING].getY() - 2, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White King invalid 4
+    @Test
+    public void testMoveKingInvalidW4()
+    {
+        try
+        {
+            //move all white pawns two spaces forwards for convenience
+            for(int i = MainFrame.W_PAWN_MIN; i <= MainFrame.W_PAWN_MAX; i++)
+            {
+                pieces[i].setX(pieces[i].getX());
+                pieces[i].setY(pieces[i].getY() - 2);
+            }
+            //invalid move because of moving two spaces sideways with pieces in the way
+            pieces[MainFrame.W_KING].move(pieces[MainFrame.W_KING].getX() - 2, pieces[MainFrame.W_KING].getY(), true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White King invalid 5
+    @Test
+    public void testMoveKingInvalidW5()
+    {
+        try
+        {
+            //move all pieces between white king and rooks out of the way
+            pieces[MainFrame.W_BISHOP1].setX(-1);
+            pieces[MainFrame.W_BISHOP1].setY(-1);
+            pieces[MainFrame.W_BISHOP2].setX(-1);
+            pieces[MainFrame.W_BISHOP2].setY(-1);
+            pieces[MainFrame.W_KNIGHT1].setX(-1);
+            pieces[MainFrame.W_KNIGHT1].setY(-1);
+            pieces[MainFrame.W_KNIGHT2].setX(-1);
+            pieces[MainFrame.W_KNIGHT2].setY(-1);
+            pieces[MainFrame.W_QUEEN].setX(-1);
+            pieces[MainFrame.W_QUEEN].setY(-1);
+            //set white king to moved
+            ((King)pieces[MainFrame.W_KING]).setNotMoved(false);
+
+            //invalid move because of moving two spaces sideways after already moving
+            pieces[MainFrame.W_KING].move(pieces[MainFrame.W_KING].getX() - 2, pieces[MainFrame.W_KING].getY(), true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White King invalid 6
+    @Test
+    public void testMoveKingInvalidW6()
+    {
+        try
+        {
+            //move all pieces between white king and rooks out of the way
+            pieces[MainFrame.W_BISHOP1].setX(-1);
+            pieces[MainFrame.W_BISHOP1].setY(-1);
+            pieces[MainFrame.W_BISHOP2].setX(-1);
+            pieces[MainFrame.W_BISHOP2].setY(-1);
+            pieces[MainFrame.W_KNIGHT1].setX(-1);
+            pieces[MainFrame.W_KNIGHT1].setY(-1);
+            pieces[MainFrame.W_KNIGHT2].setX(-1);
+            pieces[MainFrame.W_KNIGHT2].setY(-1);
+            pieces[MainFrame.W_QUEEN].setX(-1);
+            pieces[MainFrame.W_QUEEN].setY(-1);
+            //set white king to moved
+            ((King)pieces[MainFrame.W_KING]).setNotMoved(false);
+
+            //invalid move because of moving two spaces sideways after already moving
+            pieces[MainFrame.W_KING].move(pieces[MainFrame.W_KING].getX() + 2, pieces[MainFrame.W_KING].getY(), true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White King valid moves
+    @Test
+    public void testMoveKingValidW()
+    {
+        try
+        {
+            //move all pieces between white king and rooks out of the way
+            pieces[MainFrame.W_BISHOP1].setX(-1);
+            pieces[MainFrame.W_BISHOP1].setY(-1);
+            pieces[MainFrame.W_BISHOP2].setX(-1);
+            pieces[MainFrame.W_BISHOP2].setY(-1);
+            pieces[MainFrame.W_KNIGHT1].setX(-1);
+            pieces[MainFrame.W_KNIGHT1].setY(-1);
+            pieces[MainFrame.W_KNIGHT2].setX(-1);
+            pieces[MainFrame.W_KNIGHT2].setY(-1);
+            pieces[MainFrame.W_QUEEN].setX(-1);
+            pieces[MainFrame.W_QUEEN].setY(-1);
+
+            //perform move
+            pieces[MainFrame.W_KING].move(pieces[MainFrame.W_KING].getX() - 1, pieces[MainFrame.W_KING].getY(), true);
+
+            //perform castling
+            pieces[MainFrame.W_KING].move(pieces[MainFrame.W_KING].getX() - 2, pieces[MainFrame.W_KING].getY(), true);
+            pieces[MainFrame.W_KING].move(pieces[MainFrame.W_KING].getX() + 2, pieces[MainFrame.W_KING].getY(), true);
+            assertTrue(true);
+        }
+        catch(InvalidMoveException ime) {assertTrue(false);}
+    }
+    //Black King invalid 1
+    @Test
+    public void testMoveKingInvalidB1()
+    {
+        try
+        {
+            //invalid move because of moving onto same colored piece
+            pieces[MainFrame.B_KING].move(pieces[MainFrame.B_KING].getX(), pieces[MainFrame.B_KING].getY() + 1, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //Black King invalid 2
+    @Test
+    public void testMoveKingInvalidB2()
+    {
+        try
+        {
+            //move all black pawns two spaces forwards for convenience
+            for(int i = MainFrame.B_PAWN_MIN; i <= MainFrame.B_PAWN_MAX; i++)
+            {
+                pieces[i].setX(pieces[i].getX());
+                pieces[i].setY(pieces[i].getY() + 2);
+            }
+            //invalid move because of moving two spaces without castling
+            pieces[MainFrame.B_KING].move(pieces[MainFrame.B_KING].getX(), pieces[MainFrame.B_KING].getY() - 2, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //Black King invalid 3
+    @Test
+    public void testMoveKingInvalidB3()
+    {
+        try
+        {
+            //move all black pawns two spaces forwards for convenience
+            for(int i = MainFrame.B_PAWN_MIN; i <= MainFrame.B_PAWN_MAX; i++)
+            {
+                pieces[i].setX(pieces[i].getX());
+                pieces[i].setY(pieces[i].getY() + 2);
+            }
+            //invalid move because of moving two spaces without castling
+            pieces[MainFrame.B_KING].move(pieces[MainFrame.B_KING].getX(), pieces[MainFrame.B_KING].getY() - 2, true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //Black King invalid 4
+    @Test
+    public void testMoveKingInvalidB4()
+    {
+        try
+        {
+            //move all black pawns two spaces forwards for convenience
+            for(int i = MainFrame.B_PAWN_MIN; i <= MainFrame.B_PAWN_MAX; i++)
+            {
+                pieces[i].setX(pieces[i].getX());
+                pieces[i].setY(pieces[i].getY() + 2);
+            }
+            //invalid move because of moving two spaces sideways with pieces in the way
+            pieces[MainFrame.B_KING].move(pieces[MainFrame.B_KING].getX() - 2, pieces[MainFrame.B_KING].getY(), true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //Black King invalid 5
+    @Test
+    public void testMoveKingInvalidB5()
+    {
+        try
+        {
+            //move all pieces between black king and rooks out of the way
+            pieces[MainFrame.B_BISHOP1].setX(-1);
+            pieces[MainFrame.B_BISHOP1].setY(-1);
+            pieces[MainFrame.B_BISHOP2].setX(-1);
+            pieces[MainFrame.B_BISHOP2].setY(-1);
+            pieces[MainFrame.B_KNIGHT1].setX(-1);
+            pieces[MainFrame.B_KNIGHT1].setY(-1);
+            pieces[MainFrame.B_KNIGHT2].setX(-1);
+            pieces[MainFrame.B_KNIGHT2].setY(-1);
+            pieces[MainFrame.B_QUEEN].setX(-1);
+            pieces[MainFrame.B_QUEEN].setY(-1);
+            //set black king to moved
+            ((King)pieces[MainFrame.B_KING]).setNotMoved(false);
+
+            //invalid move because of moving two spaces sideways after already moving
+            pieces[MainFrame.B_KING].move(pieces[MainFrame.B_KING].getX() - 2, pieces[MainFrame.B_KING].getY(), true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //White King invalid 6
+    @Test
+    public void testMoveKingInvalidB6()
+    {
+        try
+        {
+            //move all pieces between black king and rooks out of the way
+            pieces[MainFrame.B_BISHOP1].setX(-1);
+            pieces[MainFrame.B_BISHOP1].setY(-1);
+            pieces[MainFrame.B_BISHOP2].setX(-1);
+            pieces[MainFrame.B_BISHOP2].setY(-1);
+            pieces[MainFrame.B_KNIGHT1].setX(-1);
+            pieces[MainFrame.B_KNIGHT1].setY(-1);
+            pieces[MainFrame.B_KNIGHT2].setX(-1);
+            pieces[MainFrame.B_KNIGHT2].setY(-1);
+            pieces[MainFrame.B_QUEEN].setX(-1);
+            pieces[MainFrame.B_QUEEN].setY(-1);
+            //set black king to moved
+            ((King)pieces[MainFrame.B_KING]).setNotMoved(false);
+
+            //invalid move because of moving two spaces sideways after already moving
+            pieces[MainFrame.B_KING].move(pieces[MainFrame.B_KING].getX() + 2, pieces[MainFrame.B_KING].getY(), true);
+            assertTrue(false);
+        }
+        catch(InvalidMoveException ime) {assertTrue(true);}
+    }
+    //Black King valid moves
+    @Test
+    public void testMoveKingValidB()
+    {
+        try
+        {
+            //move all pieces between black king and rooks out of the way
+            pieces[MainFrame.B_BISHOP1].setX(-1);
+            pieces[MainFrame.B_BISHOP1].setY(-1);
+            pieces[MainFrame.B_BISHOP2].setX(-1);
+            pieces[MainFrame.B_BISHOP2].setY(-1);
+            pieces[MainFrame.B_KNIGHT1].setX(-1);
+            pieces[MainFrame.B_KNIGHT1].setY(-1);
+            pieces[MainFrame.B_KNIGHT2].setX(-1);
+            pieces[MainFrame.B_KNIGHT2].setY(-1);
+            pieces[MainFrame.B_QUEEN].setX(-1);
+            pieces[MainFrame.B_QUEEN].setY(-1);
+
+            //perform move
+            pieces[MainFrame.B_KING].move(pieces[MainFrame.B_KING].getX() - 1, pieces[MainFrame.B_KING].getY(), true);
+
+            //perform castling
+            pieces[MainFrame.B_KING].move(pieces[MainFrame.B_KING].getX() - 2, pieces[MainFrame.B_KING].getY(), true);
+            pieces[MainFrame.B_KING].move(pieces[MainFrame.B_KING].getX() + 2, pieces[MainFrame.B_KING].getY(), true);
+            assertTrue(true);
+        }
+        catch(InvalidMoveException ime) {assertTrue(false);}
+    }
 }
