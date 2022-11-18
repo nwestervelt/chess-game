@@ -45,7 +45,23 @@ public class King extends PieceAbstract
         oldX = this.x;
         oldY = this.y;
         boolean notBetween = true;
-
+        int kingIndex = 0;
+        if(player == 'W')
+            kingIndex = MainFrame.B_KING;
+        else 
+            kingIndex = MainFrame.W_KING;
+        //if kings are next to each other throw exception
+        if((pieces[kingIndex].getX() + 1 == x && pieces[kingIndex].getY() == y) ||
+            (pieces[kingIndex].getX() + 1 == x && pieces[kingIndex].getY() + 1 == y) ||
+            (pieces[kingIndex].getX() == x && pieces[kingIndex].getY() + 1 == y) ||
+            (pieces[kingIndex].getX() - 1 == x && pieces[kingIndex].getY() + 1 == y) ||
+            (pieces[kingIndex].getX() - 1 == x && pieces[kingIndex].getY() == y) ||
+            (pieces[kingIndex].getX() - 1 == x && pieces[kingIndex].getY() - 1== y) ||
+            (pieces[kingIndex].getX() == x && pieces[kingIndex].getY() - 1 == y) ||
+            (pieces[kingIndex].getX() + 1 == x && pieces[kingIndex].getY() -1 == y))
+        {
+            throw new InvalidMoveException("Kings cannot be next to each other.");
+        }
         //if moving one space
         if(Math.abs(x - this.x) < 2 && Math.abs(y - this.y) < 2)
         {
