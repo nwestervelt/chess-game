@@ -45,20 +45,12 @@ public class King extends PieceAbstract
         oldX = this.x;
         oldY = this.y;
         boolean notBetween = true;
-        int kingIndex = 0;
-        if(player == 'W')
-            kingIndex = MainFrame.B_KING;
-        else 
-            kingIndex = MainFrame.W_KING;
+
         //if kings are next to each other throw exception
-        if((pieces[kingIndex].getX() + 1 == x && pieces[kingIndex].getY() == y) ||
-            (pieces[kingIndex].getX() + 1 == x && pieces[kingIndex].getY() + 1 == y) ||
-            (pieces[kingIndex].getX() == x && pieces[kingIndex].getY() + 1 == y) ||
-            (pieces[kingIndex].getX() - 1 == x && pieces[kingIndex].getY() + 1 == y) ||
-            (pieces[kingIndex].getX() - 1 == x && pieces[kingIndex].getY() == y) ||
-            (pieces[kingIndex].getX() - 1 == x && pieces[kingIndex].getY() - 1== y) ||
-            (pieces[kingIndex].getX() == x && pieces[kingIndex].getY() - 1 == y) ||
-            (pieces[kingIndex].getX() + 1 == x && pieces[kingIndex].getY() -1 == y))
+        if((player == 'W' && Math.abs(x - pieces[MainFrame.B_KING].getX()) < 2 &&
+            Math.abs(y - pieces[MainFrame.B_KING].getY()) < 2) ||
+            (player == 'B' && Math.abs(x - pieces[MainFrame.W_KING].getX()) < 2 &&
+            Math.abs(y - pieces[MainFrame.W_KING].getY()) < 2))
         {
             throw new InvalidMoveException("Kings cannot be next to each other.");
         }
