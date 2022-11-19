@@ -157,6 +157,12 @@ public class King extends PieceAbstract
         }
         else if (occupyingPiece >= 0 && pieces[occupyingPiece].getPlayer() != player)
         {
+            //set x and y if checking if this king is in check after it moves
+            if(performingCheck)
+            {
+                this.x = x;
+                this.y = y;
+            }
             //if not checking check status of other player's king
             if(!performingCheck)
             {
@@ -173,6 +179,13 @@ public class King extends PieceAbstract
             }
             //has to be here or it would not run correctly
             moveBack(oldX,oldY,occupyingPiece);
+
+            //set x and y back to original values if checking if this king is in check after it moves
+            if(performingCheck)
+            {
+                this.x = oldX;
+                this.y = oldY;
+            }
         }
         else
             throw new InvalidMoveException("Kings can only move one space at a time, in any direction.");
