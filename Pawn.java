@@ -73,7 +73,7 @@ public class Pawn extends PieceAbstract
                     occupyingPiece = i;
                 }
                 //if the piece is a pawn, en passant can be used, and position is behind move location
-                else if(pieces[i] instanceof Pawn && ((Pawn)pieces[i]).isEnPassant() && (pieces[i].getX() == x))
+                else if(pieces[i] instanceof Pawn && pieces[i].getPlayer() != player && ((Pawn)pieces[i]).isEnPassant() && (pieces[i].getX() == x))
                 {
                     if((pieces[i].getY() - y == -1 && player == 'B') ||
                         (pieces[i].getY() - y == 1 && player == 'W'))
