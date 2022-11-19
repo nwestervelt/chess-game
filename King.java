@@ -46,6 +46,14 @@ public class King extends PieceAbstract
         oldY = this.y;
         boolean notBetween = true;
 
+        //if kings are next to each other throw exception
+        if((player == 'W' && Math.abs(x - pieces[MainFrame.B_KING].getX()) < 2 &&
+            Math.abs(y - pieces[MainFrame.B_KING].getY()) < 2) ||
+            (player == 'B' && Math.abs(x - pieces[MainFrame.W_KING].getX()) < 2 &&
+            Math.abs(y - pieces[MainFrame.W_KING].getY()) < 2))
+        {
+            throw new InvalidMoveException("Kings cannot be next to each other.");
+        }
         //if moving one space
         if(Math.abs(x - this.x) < 2 && Math.abs(y - this.y) < 2)
         {
