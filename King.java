@@ -217,13 +217,15 @@ public class King extends PieceAbstract
         {
             try
             {
-                //check if a piece can move onto the King using the move method, true parameter needed to perform this
+                //if the queried piece is captured, skip it
                 if(pieces[searchIndex].isCaptured())
                 {
                     searchIndex++;
                     continue;
                 }
+                //check if a piece can move onto the King using the move method, true parameter needed to perform this
                 pieces[searchIndex].move(x, y, true);
+
                 //if a piece is captured and it can be the one that was checking the king
                 if(checkCaptured && checkerB)
                 {
