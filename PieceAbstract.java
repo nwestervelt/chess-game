@@ -202,6 +202,10 @@ public abstract class PieceAbstract
     {
         boolean notBetween = false;
 
+        //return false if piece hasn't moved to new location
+        if(x == this.x && y == this.y)
+            return notBetween;
+
         //if in the diagonal and a Queen or Bishop
         if(Math.abs(x - this.x) == Math.abs(y - this.y) && (this instanceof Queen || this instanceof Bishop))
         {
