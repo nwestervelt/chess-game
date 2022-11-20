@@ -15,6 +15,10 @@ public class BoardPanel extends JPanel
     private MainFrame mainFrame;
     private PieceAbstract[] pieces;
 
+    //variables for pawn promotion over network
+    private int promotionPiece;
+    public static final int NONE = 0, QUEEN = 1, ROOK = 2, BISHOP = 3, KNIGHT = 4;
+
     public BoardPanel(MainFrame mainFrame, PieceAbstract[] pieces)
     {
         this.mainFrame = mainFrame;
@@ -72,6 +76,7 @@ public class BoardPanel extends JPanel
     {
         public void mousePressed (MouseEvent e)
         {
+            if(!mainFrame.getYourTurn()) return;
             if (mainFrame.isGameover()) return;
             int x=e.getX();
             int y=e.getY();
@@ -89,95 +94,148 @@ public class BoardPanel extends JPanel
         }
         public void mouseReleased (MouseEvent e)
         {
-            try
-            {
-                if (selected==-1) return;
+            doMove(selected, currX, currY,promotionPiece);
+        }
+    }
+    //method that gets called by both the mouse released 
+    //and when the client or server recieves info
+    //does the move when the mouse is released
+    public void doMove(int newSelected, int newCurrX, int newCurrY, int newPromotionPiece)
+    {
+        selected = newSelected;
+        currX = newCurrX;
+        currY = newCurrY;
+        promotionPiece = newPromotionPiece;
+        
+        try
+        {
+            if (selected==-1) return;
 
-                //if new coordinates are inside the board's boundraries
-                if (currX <= 800 || currX >= 0 || currY <= 800 || currY >= 0)
+            //if new coordinates are inside the board's boundraries
+            if (currX <= 800 || currX >= 0 || currY <= 800 || currY >= 0)
+            {
+                //move the selected piece, include false because this is a regular move
+                pieces[selected].move((currX+50)/100, (currY+50)/100, false);
+                
+                //if a pawn is moved to the other side of the board
+                if(pieces[selected] instanceof Pawn &&
+                    (pieces[selected].getY() == 7 || (pieces[selected].getY() == 0)))
                 {
-                    //move the selected piece, include false because this is a regular move
-                    pieces[selected].move((currX+50)/100, (currY+50)/100, false);
-                    
-                    //if a pawn is moved to the other side of the board
-                    if(pieces[selected] instanceof Pawn &&
-                        (pieces[selected].getY() == 7 || (pieces[selected].getY() == 0)))
+                    //replace currently selected piece with selected piece type
+                    //if pawn is promoting while playing over network
+                    if(promotionPiece > 0 && !mainFrame.getYourTurn() && 
+                        mainFrame.getConnected())
+                    {
+                        if(promotionPiece == QUEEN)
+                        {
+                            pieces[selected] = new Queen(pieces[selected].getX(), pieces[selected].getY(),
+                                pieces[selected].getPlayer(), mainFrame, pieces);
+                            promotionPiece = NONE;
+                        }
+                        else if(promotionPiece == ROOK)
+                        {
+                            pieces[selected] = new Rook(pieces[selected].getX(), pieces[selected].getY(),
+                                pieces[selected].getPlayer(), mainFrame, pieces);
+                            promotionPiece = NONE;
+                        }
+                        else if(promotionPiece == BISHOP)
+                        {
+                            pieces[selected] = new Bishop(pieces[selected].getX(), pieces[selected].getY(),
+                                pieces[selected].getPlayer(), mainFrame, pieces);
+                            promotionPiece = NONE;
+                                
+                        }
+                        else if(promotionPiece == KNIGHT)
+                        {
+                            pieces[selected] = new Knight(pieces[selected].getX(), pieces[selected].getY(),
+                                pieces[selected].getPlayer(), mainFrame, pieces);
+                            promotionPiece = NONE;
+                        }
+                    }
+                    //local pawn promotion
+                    else
                     {
                         //create and make promotion dialog visible
                         PromotionDialog pd = new PromotionDialog(mainFrame);
                         pd.setVisible(true);
                         PieceAbstract newPiece;
-
-                        //replace currently selected piece with selected piece type
                         if(pd.getSelectedButton() == PromotionDialog.QUEEN)
                         {
                             newPiece = new Queen(pieces[selected].getX(), pieces[selected].getY(),
                                 pieces[selected].getPlayer(), mainFrame, pieces);
                             pieces[selected] = newPiece;
+                            promotionPiece = QUEEN;
                         }
                         else if(pd.getSelectedButton() == PromotionDialog.KNIGHT)
                         {
                             newPiece = new Knight(pieces[selected].getX(), pieces[selected].getY(),
                                 pieces[selected].getPlayer(), mainFrame, pieces);
                             pieces[selected] = newPiece;
+                            promotionPiece = KNIGHT;
                         }
                         else if(pd.getSelectedButton() == PromotionDialog.BISHOP)
                         {
                             newPiece = new Bishop(pieces[selected].getX(), pieces[selected].getY(),
                                 pieces[selected].getPlayer(), mainFrame, pieces);
                             pieces[selected] = newPiece;
+                            promotionPiece = BISHOP;
                         }
                         else if(pd.getSelectedButton() == PromotionDialog.ROOK)
                         {
                             newPiece = new Rook(pieces[selected].getX(), pieces[selected].getY(),
                                 pieces[selected].getPlayer(), mainFrame, pieces);
                             pieces[selected] = newPiece;
+                            promotionPiece = ROOK;
                         }
-                        //tell the mainFrame to update the history to include the promotion details
-                        mainFrame.addPromotion(pieces[selected]);
                     }
-                }
-                //update turn and menuPanel information
-                if(mainFrame.getTurn() == 'W')
-                    mainFrame.setTurn('B');
-                else
-                    mainFrame.setTurn('W');
-
-                mainFrame.updateMenu();
-
-                //set the value for piece moved/ the piece that put king in check
-                if (mainFrame.getTurn() == 'W')
-                    ((King)pieces[MainFrame.W_KING]).setChecker(selected);
-                else 
-                    ((King)pieces[MainFrame.B_KING]).setChecker(selected);
-
-                repaint();
-
-                //if player's king is in check mate, update status of game accordingly
-                if(mainFrame.getTurn() == 'W' && ((King)pieces[MainFrame.W_KING]).check())
-                {
-                    if(((King)pieces[MainFrame.W_KING]).checkMate())
-                    {
-                        mainFrame.setGameover(true);
-                        JOptionPane.showMessageDialog(mainFrame, "Black is the winner by checkmate", "Winner!", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                }
-                else if(mainFrame.getTurn() == 'B' && ((King)pieces[MainFrame.B_KING]).check())
-                {
-                    if(((King)pieces[MainFrame.B_KING]).checkMate())
-                    {
-                        mainFrame.setGameover(true);
-                        JOptionPane.showMessageDialog(mainFrame, "White is the winner by checkmate", "Winner!", JOptionPane.INFORMATION_MESSAGE);
-                    }
+                    //tell the mainFrame to update the history to include the promotion details
+                    mainFrame.addPromotion(pieces[selected]);
                 }
             }
-            catch(InvalidMoveException ime)
-            {
-                System.out.println(ime.getMessage());
-            }
+            //update turn and menuPanel information
+            if(mainFrame.getTurn() == 'W')
+                mainFrame.setTurn('B');
+            else
+                mainFrame.setTurn('W');
+
+            mainFrame.updateMenu();
+
+            //set the value for piece moved/ the piece that put king in check
+            if (mainFrame.getTurn() == 'W')
+                ((King)pieces[MainFrame.W_KING]).setChecker(selected);
+            else 
+                ((King)pieces[MainFrame.B_KING]).setChecker(selected);
+
             repaint();
-            selected = -1;
+
+            //send the necessary variables for move to other player
+            if(mainFrame.getYourTurn() && mainFrame.getConnected())
+                mainFrame.sendMove(selected,currX,currY,promotionPiece);
+
+            //if player's king is in check mate, update status of game accordingly
+            if(mainFrame.getTurn() == 'W' && ((King)pieces[MainFrame.W_KING]).check())
+            {
+                if(((King)pieces[MainFrame.W_KING]).checkMate())
+                {
+                    mainFrame.setGameover(true);
+                    JOptionPane.showMessageDialog(mainFrame, "Black is the winner by checkmate", "Winner!", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+            else if(mainFrame.getTurn() == 'B' && ((King)pieces[MainFrame.B_KING]).check())
+            {
+                if(((King)pieces[MainFrame.B_KING]).checkMate())
+                {
+                    mainFrame.setGameover(true);
+                    JOptionPane.showMessageDialog(mainFrame, "White is the winner by checkmate", "Winner!", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
         }
+        catch(InvalidMoveException ime)
+        {
+            System.out.println(ime.getMessage());
+        }
+        repaint();
+        selected = -1;
     }
     private class MouseMotionHandler extends MouseMotionAdapter
     {

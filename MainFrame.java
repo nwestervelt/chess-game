@@ -1,6 +1,9 @@
 //class for the frame containing all components of the application
 import java.awt.*;
 import javax.swing.*;
+import java.io.*;
+import java.awt.event.*;
+import java.net.*;
 
 public class MainFrame extends JFrame
 {
@@ -19,6 +22,20 @@ public class MainFrame extends JFrame
     private BoardPanel boardPanel;
     private HistoryPanel historyPanel;
     private MenuPanel menuPanel;
+
+    //network menu variables
+    private JMenuItem hostItem;
+    private JMenuItem joinItem;
+    private JMenuItem quitItem;
+    private JLabel statusLabel;
+
+    //network variables
+    private String host="localhost";
+    private int port=5000;
+    private PrintWriter out=null;
+    private boolean connected=false;
+    private boolean yourTurn=true;
+    private ServerSocket serverSocket;
 
     public MainFrame()
     {
@@ -45,12 +62,49 @@ public class MainFrame extends JFrame
         menuPanel = new MenuPanel(this);
         add(menuPanel,BorderLayout.WEST);
 
+        //create meanu, its items, and action handler
+        ActionHandler ah=new ActionHandler();
+
+        JMenuBar jmb=new JMenuBar();
+        setJMenuBar(jmb);
+    
+        JMenu networkMenu=new JMenu("Network");
+        jmb.add(networkMenu);
+    
+        hostItem=new JMenuItem("Host Game...");
+        hostItem.addActionListener(ah);
+        networkMenu.add(hostItem);
+    
+        joinItem=new JMenuItem("Join Game...");
+        joinItem.addActionListener(ah);
+        networkMenu.add(joinItem);
+    
+        quitItem=new JMenuItem("Quit Game");
+        quitItem.addActionListener(ah);
+        quitItem.setEnabled(false);
+        networkMenu.add(quitItem);
+
+        statusLabel=new JLabel(" ");
+        add(statusLabel,BorderLayout.SOUTH);
+
         //setup this frame's behavior/appearance
         setResizable(false);
+
+        //if someone closes window in network send quit
+        this.addWindowListener(new WindowAdapter() 
+        {
+            @Override
+            public void windowClosing(WindowEvent e) 
+            {
+                super.windowClosing(e); 
+                out.println("quit");
+            }
+        });
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         pack();
         setVisible(true);
     }
+
     private void initializePieces()
     {
         for(int i = 0; i < pieces.length; i++)
@@ -129,6 +183,189 @@ public class MainFrame extends JFrame
     public void addPromotion(PieceAbstract piece)
     {
         historyPanel.addPromotion(piece);
+    }
+    private class ActionHandler implements ActionListener
+    {
+        //actionhandler for each of the buttons in the network menu
+        public void actionPerformed(ActionEvent e)
+        {
+            //host
+            if(e.getSource()==hostItem)
+            {
+                String s=JOptionPane.showInputDialog(MainFrame.this
+                        ,"Enter the port to use",""+port);
+                if(s==null) return;
+                port=Integer.parseInt(s);
+                hostItem.setEnabled(false);
+                joinItem.setEnabled(false);
+                quitItem.setEnabled(true);
+                yourTurn = false;
+                new Server().start();
+            }
+            //join
+            else if(e.getSource()==joinItem)
+            {
+                String s=JOptionPane.showInputDialog(MainFrame.this
+                        ,"Enter the hostname",""+host);
+                if(s==null) return;
+                host=s;
+                s=JOptionPane.showInputDialog(MainFrame.this
+                        ,"Enter the port to use",""+port);
+                if(s==null) return;
+                port=Integer.parseInt(s);
+                hostItem.setEnabled(false);
+                joinItem.setEnabled(false);
+                quitItem.setEnabled(true);
+                new Client().start();
+            }
+            //quit
+            else if(e.getSource()==quitItem)
+            {
+                connected=false;
+                if(serverSocket!=null)
+                {
+                    try
+                    {
+                        serverSocket.close();
+                        serverSocket=null;
+                    }
+                    catch(IOException ioe)
+                    {
+                        System.out.println(ioe);
+                    }
+                }
+                hostItem.setEnabled(true);
+                joinItem.setEnabled(true);
+                quitItem.setEnabled(false);
+                if(out!=null) out.println("quit");
+            }
+        }
+    }
+    //sends move information to the other player on network
+    public void sendMove(int selected, int currX, int currY,int promotionPiece)
+    {
+        out.println(selected + "," + currX + "," + currY+ ","+promotionPiece);
+        yourTurn=false;
+        statusLabel.setText("Opponent's turn.");
+    }
+    //sends forfeit information to other player on network
+    public void sendForfeit()
+    {
+        out.println("Forfeit");
+    }
+    //send reset information to the other on network
+    public void sendReset()
+    {
+        out.println("Reset");
+    }
+    //accessor for other methods
+    public Boolean getYourTurn()
+    {
+        return yourTurn;
+    }
+    //accessor for other methods
+    public Boolean getConnected()
+    {
+        return connected;
+    }
+    //play who hosts a game runs the server
+    private class Server extends Thread
+    {
+        public void run()
+        {
+            try
+            {
+                serverSocket=new ServerSocket(port);
+                statusLabel.setText("Waiting for opponent to connect...");
+                Socket s=serverSocket.accept();
+                statusLabel.setText("Opponent's turn.");
+                connected=true;
+                BufferedReader in=new BufferedReader(new InputStreamReader(
+                          s.getInputStream()));
+                out=new PrintWriter(s.getOutputStream(),true);
+                String line;
+                while(connected&&(line=in.readLine())!=null)
+                {
+                    if(line.equals("quit")) break;
+                    if(line.equals("Forfeit"))
+                    {
+                        JOptionPane.showMessageDialog(null,"You Win","Forfeit!",JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                    if(line.equals("Reset"))
+                    {
+                        setGameover(true);
+                        reset();
+                        yourTurn = false;
+                        statusLabel.setText("Opponent's turn.");
+                        continue;
+                    }
+                    String[] sa=line.split(",");
+                    boardPanel.doMove(Integer.parseInt(sa[0]),Integer.parseInt(sa[1]),Integer.parseInt(sa[2]),Integer.parseInt(sa[3]));
+                    if(gameOver) break;
+                    yourTurn=true;
+                    statusLabel.setText("Your turn.");
+                }
+                connected=false;
+                statusLabel.setText("Game ended.");
+                if(serverSocket!=null) serverSocket.close();
+                serverSocket=null;
+                s.close();
+            }
+            catch(IOException ioe)
+            {}
+            hostItem.setEnabled(true);
+            joinItem.setEnabled(true);
+            quitItem.setEnabled(false);
+        }
+    }
+    //player that joins a game runs the client
+    private class Client extends Thread
+    {
+        public void run()
+        {
+            try
+            {
+                Socket s=new Socket(host,port);
+                yourTurn = true;
+                statusLabel.setText("Your turn.");
+                connected=true;
+                BufferedReader in=new BufferedReader(new InputStreamReader(
+                          s.getInputStream()));
+                out=new PrintWriter(s.getOutputStream(),true);
+                String line;
+                while(connected&&(line=in.readLine())!=null)
+                {
+                    if(line.equals("quit")) break;
+                    if(line.equals("Forfeit"))
+                    {
+                        JOptionPane.showMessageDialog(null,"You Win","Forfeit!",JOptionPane.INFORMATION_MESSAGE);
+                        break;
+                    }
+                    if(line.equals("Reset"))
+                    {
+                        setGameover(true);
+                        reset();
+                        yourTurn = true;
+                        statusLabel.setText("Your turn.");
+                        continue;
+                    }
+                    String[] sa=line.split(",");
+                    boardPanel.doMove(Integer.parseInt(sa[0]),Integer.parseInt(sa[1]),Integer.parseInt(sa[2]),Integer.parseInt(sa[3]));
+                    if(gameOver) connected = false;
+                    yourTurn=true;
+                    statusLabel.setText("Your turn.");
+                }
+                connected=false;
+                statusLabel.setText("Game ended.");
+                s.close();
+            }
+            catch(IOException ioe)
+            {}
+            hostItem.setEnabled(true);
+            joinItem.setEnabled(true);
+            quitItem.setEnabled(false);
+        }
     }
     //start the application
     public static void main(String[] args)

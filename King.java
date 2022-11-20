@@ -14,6 +14,8 @@ public class King extends PieceAbstract
     //index of piece doing the check on the king
     private int checker = 0;
 
+    private boolean canCapture = false;
+
     public King(int x, int y, char player, MainFrame mainFrame, PieceAbstract[] pieces)
     {
         super(x, y, player, mainFrame, pieces);
@@ -157,6 +159,26 @@ public class King extends PieceAbstract
         }
         else if (occupyingPiece >= 0 && pieces[occupyingPiece].getPlayer() != player)
         {
+            //checks if the king can get out of check by capturing
+            if(performingCheck)
+            {
+                this.x = x;
+                this.y = y;
+                capturePiece(occupyingPiece);
+                moveBack(oldX, oldY,occupyingPiece);
+                //if its made it here it was a valid move and 
+                //the capture needs to be reset along with the king restting
+                if(this.x != oldX || this.y != oldY)
+                {
+                    pieces[occupyingPiece].setX(this.x);
+                    pieces[occupyingPiece].setY(this.y);
+                    pieces[occupyingPiece].setCaptured(false);
+                    this.x = oldX;
+                    this.y = oldY;
+                    canCapture = true;
+                    return;
+                }
+            }
             //if not checking check status of other player's king
             if(!performingCheck)
             {
@@ -173,6 +195,13 @@ public class King extends PieceAbstract
             }
             //has to be here or it would not run correctly
             moveBack(oldX,oldY,occupyingPiece);
+
+            //set x and y back to original values if checking if this king is in check after it moves
+            if(performingCheck)
+            {
+                this.x = oldX;
+                this.y = oldY;
+            }
         }
         else
             throw new InvalidMoveException("Kings can only move one space at a time, in any direction.");
@@ -204,13 +233,15 @@ public class King extends PieceAbstract
         {
             try
             {
-                //check if a piece can move onto the King using the move method, true parameter needed to perform this
+                //if the queried piece is captured, skip it
                 if(pieces[searchIndex].isCaptured())
                 {
                     searchIndex++;
                     continue;
                 }
+                //check if a piece can move onto the King using the move method, true parameter needed to perform this
                 pieces[searchIndex].move(x, y, true);
+
                 //if a piece is captured and it can be the one that was checking the king
                 if(checkCaptured && checkerB)
                 {
@@ -255,6 +286,15 @@ public class King extends PieceAbstract
                         //actually set the x and y for when when the check method is called
                         pieces[n].setX(i);
                         pieces[n].setY(j);
+                        //if the king can capture to get out of check
+                        if(pieces[n] instanceof King && canCapture)
+                        {
+                            checkerB = false;
+                            canCapture = false;
+                            pieces[n].setX(oldX);
+                            pieces[n].setY(oldY);
+                            return false;
+                        }
                         //if not in check
                         if(!check())
                         {
