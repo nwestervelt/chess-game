@@ -15,10 +15,9 @@ public class BoardPanel extends JPanel
     private MainFrame mainFrame;
     private PieceAbstract[] pieces;
 
-    //variables for pawn promotion over network
+    //variable for pawn promotion over network
     private int promotionPiece;
-    public static final int NONE = 0, QUEEN = 1, ROOK = 2, BISHOP = 3, KNIGHT = 4;
-
+    
     public BoardPanel(MainFrame mainFrame, PieceAbstract[] pieces)
     {
         this.mainFrame = mainFrame;
@@ -126,30 +125,30 @@ public class BoardPanel extends JPanel
                     if(promotionPiece > 0 && !mainFrame.getYourTurn() && 
                         mainFrame.getConnected())
                     {
-                        if(promotionPiece == QUEEN)
+                        if(promotionPiece == PromotionDialog.QUEEN)
                         {
                             pieces[selected] = new Queen(pieces[selected].getX(), pieces[selected].getY(),
                                 pieces[selected].getPlayer(), mainFrame, pieces);
-                            promotionPiece = NONE;
+                            promotionPiece = 0;
                         }
-                        else if(promotionPiece == ROOK)
-                        {
-                            pieces[selected] = new Rook(pieces[selected].getX(), pieces[selected].getY(),
-                                pieces[selected].getPlayer(), mainFrame, pieces);
-                            promotionPiece = NONE;
-                        }
-                        else if(promotionPiece == BISHOP)
-                        {
-                            pieces[selected] = new Bishop(pieces[selected].getX(), pieces[selected].getY(),
-                                pieces[selected].getPlayer(), mainFrame, pieces);
-                            promotionPiece = NONE;
-                                
-                        }
-                        else if(promotionPiece == KNIGHT)
+                        else if(promotionPiece == PromotionDialog.KNIGHT)
                         {
                             pieces[selected] = new Knight(pieces[selected].getX(), pieces[selected].getY(),
                                 pieces[selected].getPlayer(), mainFrame, pieces);
-                            promotionPiece = NONE;
+                            promotionPiece = 0;
+                        }
+                        else if(promotionPiece == PromotionDialog.BISHOP)
+                        {
+                            pieces[selected] = new Bishop(pieces[selected].getX(), pieces[selected].getY(),
+                                pieces[selected].getPlayer(), mainFrame, pieces);
+                            promotionPiece = 0;
+                                
+                        }
+                        else if(promotionPiece == PromotionDialog.ROOK)
+                        {
+                            pieces[selected] = new Rook(pieces[selected].getX(), pieces[selected].getY(),
+                                pieces[selected].getPlayer(), mainFrame, pieces);
+                            promotionPiece = 0;
                         }
                     }
                     //local pawn promotion
@@ -164,28 +163,28 @@ public class BoardPanel extends JPanel
                             newPiece = new Queen(pieces[selected].getX(), pieces[selected].getY(),
                                 pieces[selected].getPlayer(), mainFrame, pieces);
                             pieces[selected] = newPiece;
-                            promotionPiece = QUEEN;
+                            promotionPiece = PromotionDialog.QUEEN;
                         }
                         else if(pd.getSelectedButton() == PromotionDialog.KNIGHT)
                         {
                             newPiece = new Knight(pieces[selected].getX(), pieces[selected].getY(),
                                 pieces[selected].getPlayer(), mainFrame, pieces);
                             pieces[selected] = newPiece;
-                            promotionPiece = KNIGHT;
+                            promotionPiece = PromotionDialog.KNIGHT;
                         }
                         else if(pd.getSelectedButton() == PromotionDialog.BISHOP)
                         {
                             newPiece = new Bishop(pieces[selected].getX(), pieces[selected].getY(),
                                 pieces[selected].getPlayer(), mainFrame, pieces);
                             pieces[selected] = newPiece;
-                            promotionPiece = BISHOP;
+                            promotionPiece = PromotionDialog.BISHOP;
                         }
                         else if(pd.getSelectedButton() == PromotionDialog.ROOK)
                         {
                             newPiece = new Rook(pieces[selected].getX(), pieces[selected].getY(),
                                 pieces[selected].getPlayer(), mainFrame, pieces);
                             pieces[selected] = newPiece;
-                            promotionPiece = ROOK;
+                            promotionPiece = PromotionDialog.ROOK;
                         }
                     }
                     //tell the mainFrame to update the history to include the promotion details

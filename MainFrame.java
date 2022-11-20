@@ -62,7 +62,7 @@ public class MainFrame extends JFrame
         menuPanel = new MenuPanel(this);
         add(menuPanel,BorderLayout.WEST);
 
-        //create meanu, its items, and action handler
+        //create menu, its items, and action handler
         ActionHandler ah=new ActionHandler();
 
         JMenuBar jmb=new JMenuBar();
@@ -201,6 +201,7 @@ public class MainFrame extends JFrame
                 quitItem.setEnabled(true);
                 yourTurn = false;
                 new Server().start();
+                reset();
             }
             //join
             else if(e.getSource()==joinItem)
@@ -217,6 +218,7 @@ public class MainFrame extends JFrame
                 joinItem.setEnabled(false);
                 quitItem.setEnabled(true);
                 new Client().start();
+                reset();
             }
             //quit
             else if(e.getSource()==quitItem)
