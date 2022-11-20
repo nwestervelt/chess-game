@@ -137,7 +137,18 @@ public class MenuPanel extends JPanel
             //new game button
             if(e.getSource() == newGameButton)
             {
-                if (JOptionPane.showConfirmDialog(mainFrame,"Are you sure you want to play a new game?") == JOptionPane.YES_OPTION)
+                //if playing over network
+                if(mainFrame.getConnected())
+                {
+                    if(JOptionPane.showConfirmDialog(mainFrame,"Are you sure you want to play a new game?") == JOptionPane.YES_OPTION)
+                    {
+                        mainFrame.sendReset();
+                        mainFrame.setGameover(true);
+                        mainFrame.reset();
+                    }
+                }
+                //not over network
+                else if (JOptionPane.showConfirmDialog(mainFrame,"Are you sure you want to play a new game?") == JOptionPane.YES_OPTION)
                 {   
                     mainFrame.setGameover(true);
                     mainFrame.reset();
@@ -146,23 +157,38 @@ public class MenuPanel extends JPanel
             //forfeit button
             if(e.getSource() == forfeitButton)
             {
-                int result=JOptionPane.showConfirmDialog(mainFrame,"Are you sure you want to forfeit?");
-                if (result == JOptionPane.YES_OPTION)
+                //if playing over network
+                if(mainFrame.getConnected())
                 {
-                    mainFrame.setGameover(true);
-
-                    //if its whites turn then white forfeits
-                    if (mainFrame.getTurn() == 'W')
-                        JOptionPane.showMessageDialog(mainFrame, "Black is the Winner by forfeit","Winner!",JOptionPane.INFORMATION_MESSAGE);
-
-                    //if its blacks turn then black forfeits
-                    else
-                        JOptionPane.showMessageDialog(mainFrame, "White is the Winner by forfeit","Winner!",JOptionPane.INFORMATION_MESSAGE);
-
-                    result=JOptionPane.showConfirmDialog(mainFrame,"Would you like to play a new game?");
-
+                    int result=JOptionPane.showConfirmDialog(mainFrame,"Are you sure you want to forfeit?");
+                    if(result == JOptionPane.YES_OPTION)
+                    {
+                        mainFrame.sendForfeit();
+                        mainFrame.setGameover(true);
+                        JOptionPane.showMessageDialog(mainFrame, "You Lose","Forfeit!",JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+                //not over network
+                else
+                {
+                    int result=JOptionPane.showConfirmDialog(mainFrame,"Are you sure you want to forfeit?");
                     if (result == JOptionPane.YES_OPTION)
-                        mainFrame.reset();
+                    {
+                        mainFrame.setGameover(true);
+
+                        //if its whites turn then white forfeits
+                        if (mainFrame.getTurn() == 'W')
+                            JOptionPane.showMessageDialog(mainFrame, "Black is the Winner by forfeit","Winner!",JOptionPane.INFORMATION_MESSAGE);
+
+                        //if its blacks turn then black forfeits
+                        else
+                            JOptionPane.showMessageDialog(mainFrame, "White is the Winner by forfeit","Winner!",JOptionPane.INFORMATION_MESSAGE);
+
+                        result=JOptionPane.showConfirmDialog(mainFrame,"Would you like to play a new game?");
+
+                        if (result == JOptionPane.YES_OPTION)
+                            mainFrame.reset();
+                    }
                 }
             }
         }
