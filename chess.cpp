@@ -5,9 +5,6 @@
 #include<string>
 #include<fstream>
 
-
-
-
 //******Function Definitions******
 void boardInit(std::string board[8][8]) //function for initializing the board
 {
