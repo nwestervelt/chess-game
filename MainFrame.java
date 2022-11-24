@@ -89,6 +89,9 @@ public class MainFrame extends JFrame
 
         //setup this frame's behavior/appearance
         setResizable(false);
+        pack();
+        setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         //if someone closes window in network send quit
         this.addWindowListener(new WindowAdapter() 
@@ -97,12 +100,11 @@ public class MainFrame extends JFrame
             public void windowClosing(WindowEvent e) 
             {
                 super.windowClosing(e); 
-                out.println("quit");
+
+                if(connected)
+                    out.println("quit");
             }
         });
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        pack();
-        setVisible(true);
     }
 
     private void initializePieces()
