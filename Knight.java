@@ -1,7 +1,4 @@
 //class file for Knight chess pieces
-import java.io.*;
-import javax.imageio.*;
-import java.awt.image.*;
 
 public class Knight extends PieceAbstract
 {
@@ -9,12 +6,6 @@ public class Knight extends PieceAbstract
     public Knight(int x, int y, char player, MainFrame mainFrame, PieceAbstract[] pieces)
     {
         super(x, y, player, mainFrame, pieces);
-    }
-    //return the image associated with this Knight
-    public BufferedImage getImage()
-        throws IOException
-    {
-        return ImageIO.read(new File("images/"+player+"Knight.png"));
     }
     //move this Knight according to the appropriate rules
     public void move(int x, int y, boolean performingCheck)

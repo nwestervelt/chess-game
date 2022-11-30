@@ -1,7 +1,4 @@
 // Class file for Rook chess pieces.
-import java.io.*;
-import javax.imageio.*;
-import java.awt.image.*;
 
 public class Rook extends PieceAbstract
 {
@@ -12,12 +9,6 @@ public class Rook extends PieceAbstract
     public Rook(int x, int y, char player, MainFrame mainFrame, PieceAbstract[] pieces)
     {
         super(x, y, player, mainFrame, pieces);
-    }
-    //return the image associated with this Rook
-    public BufferedImage getImage()
-        throws IOException
-    {
-        return ImageIO.read(new File("images/"+player+"Rook.png"));
     }
     //move this Rook according to the appropriate rules
     public void move(int x, int y, boolean check)

@@ -1,7 +1,4 @@
 //class file for Pawn chess pieces
-import java.io.*;
-import javax.imageio.*;
-import java.awt.image.*;
 
 public class Pawn extends PieceAbstract
 {
@@ -28,12 +25,6 @@ public class Pawn extends PieceAbstract
     public void setEnPassant(boolean enPassant)
     {
         this.enPassant = enPassant;
-    }
-    //return the image associated with this Pawn
-    public BufferedImage getImage()
-        throws IOException
-    {
-        return ImageIO.read(new File("images/"+player+"Pawn.png"));
     }
     //set notmoved variable
     public void setNotMoved(boolean notMoved)

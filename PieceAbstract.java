@@ -1,5 +1,6 @@
 //abstract class file providing default method implementations.
 import java.io.*;
+import javax.imageio.*;
 import java.awt.image.*;
 public abstract class PieceAbstract
 {
@@ -10,6 +11,7 @@ public abstract class PieceAbstract
     boolean captured;
     MainFrame mainFrame;
     PieceAbstract[] pieces;
+    BufferedImage picture;
 
     //counters for captured pieces
     private static int wPawnCap = 0, wRookCap = 0, wKnightCap = 0, wBishopCap = 0, wQueenCap = 0;
@@ -26,6 +28,37 @@ public abstract class PieceAbstract
         this.oldX = x;
         this.oldY = y;
         captured = false;
+
+        //read appropriate image
+        try
+        {
+            String imagePath = "images/" + player;
+
+            if(this instanceof King)
+                imagePath += "King.png";
+
+            else if(this instanceof Queen)
+                imagePath += "Queen.png";
+
+            else if(this instanceof Rook)
+                imagePath += "Rook.png";
+
+            else if(this instanceof Bishop)
+                imagePath += "Bishop.png";
+
+            else if(this instanceof Knight)
+                imagePath += "Knight.png";
+            
+            else if(this instanceof Pawn)
+                imagePath += "Pawn.png";
+            
+            picture = ImageIO.read(new File(imagePath));
+        }
+        catch(IOException ioe)
+        {
+            System.out.println(ioe);
+            System.exit(1);
+        }
     }
     //used to retrieve count of captured pieces
     public static int getCapturedCount(int pieceType)
@@ -126,8 +159,10 @@ public abstract class PieceAbstract
         return player;
     }
     //used to get the image associated with this piece
-    public abstract BufferedImage getImage()
-        throws IOException;
+    public BufferedImage getImage()
+    {
+        return picture;
+    }
 
     //used to get the x position of this piece
     public int getX()
