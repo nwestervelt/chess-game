@@ -29,35 +29,38 @@ public abstract class PieceAbstract
         this.oldY = y;
         captured = false;
 
-        //read appropriate image
-        try
+        //read appropriate image, if the mainFrame is present
+        if(mainFrame != null)
         {
-            String imagePath = "images/" + player;
+            try
+            {
+                String imagePath = "images/" + player;
 
-            if(this instanceof King)
-                imagePath += "King.png";
+                if(this instanceof King)
+                    imagePath += "King.png";
 
-            else if(this instanceof Queen)
-                imagePath += "Queen.png";
+                else if(this instanceof Queen)
+                    imagePath += "Queen.png";
 
-            else if(this instanceof Rook)
-                imagePath += "Rook.png";
+                else if(this instanceof Rook)
+                    imagePath += "Rook.png";
 
-            else if(this instanceof Bishop)
-                imagePath += "Bishop.png";
+                else if(this instanceof Bishop)
+                    imagePath += "Bishop.png";
 
-            else if(this instanceof Knight)
-                imagePath += "Knight.png";
-            
-            else if(this instanceof Pawn)
-                imagePath += "Pawn.png";
-            
-            picture = ImageIO.read(new File(imagePath));
-        }
-        catch(IOException ioe)
-        {
-            System.out.println(ioe);
-            System.exit(1);
+                else if(this instanceof Knight)
+                    imagePath += "Knight.png";
+                
+                else if(this instanceof Pawn)
+                    imagePath += "Pawn.png";
+                
+                picture = ImageIO.read(new File(imagePath));
+            }
+            catch(IOException ioe)
+            {
+                System.out.println(ioe);
+                System.exit(1);
+            }
         }
     }
     //used to retrieve count of captured pieces
