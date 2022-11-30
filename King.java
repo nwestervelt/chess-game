@@ -1,7 +1,4 @@
 //class file for King chess pieces.
-import java.io.*;
-import javax.imageio.*;
-import java.awt.image.*;
 
 public class King extends PieceAbstract
 {
@@ -19,11 +16,6 @@ public class King extends PieceAbstract
     public King(int x, int y, char player, MainFrame mainFrame, PieceAbstract[] pieces)
     {
         super(x, y, player, mainFrame, pieces);
-    }
-    public BufferedImage getImage()
-        throws IOException
-    {
-        return ImageIO.read(new File("images/"+player+"King.png"));
     }
     //allows other classes to change this variable
     public void setCheckCaptured(boolean checkCaptured)

@@ -1,7 +1,4 @@
 //class file for Bishop chess pieces.
-import java.io.*;
-import javax.imageio.*;
-import java.awt.image.*;
 
 public class Bishop extends PieceAbstract
 {
@@ -9,12 +6,6 @@ public class Bishop extends PieceAbstract
     public Bishop(int x, int y, char player, MainFrame mainFrame, PieceAbstract[] pieces)
     {
         super(x, y, player, mainFrame, pieces);
-    }
-    //return the image associated with this Bishop
-    public BufferedImage getImage()
-        throws IOException
-    {
-        return ImageIO.read(new File("images/"+player+"Bishop.png"));
     }
     //move this Bishop according to the appropriate rules
     public void move(int x, int y, boolean check)

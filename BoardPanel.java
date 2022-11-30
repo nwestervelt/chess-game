@@ -55,21 +55,13 @@ public class BoardPanel extends JPanel
            //character cast is using ascii values
            g.drawString("" + (char)(97 + i), ((i + 1) * 100) - 15, 795);
         }
-        try
+        for(int i = 0; i < pieces.length; i++)
         {
-            for(int i = 0; i < pieces.length; i++)
-            {
-                if(i != selected && !pieces[i].isCaptured())
-                    g.drawImage(pieces[i].getImage(), pieces[i].getX()*100, pieces[i].getY()*100, null);
-            }
-            if(selected != -1)
-                g.drawImage(pieces[selected].getImage(), currX, currY, null);
+            if(i != selected && !pieces[i].isCaptured())
+                g.drawImage(pieces[i].getImage(), pieces[i].getX()*100, pieces[i].getY()*100, null);
         }
-        catch(IOException ioe)
-        {
-            System.out.printf("%s%n%nTerminating.", ioe.getMessage());
-            System.exit(1);
-        }
+        if(selected != -1)
+            g.drawImage(pieces[selected].getImage(), currX, currY, null);
     }
     private class MouseHandler extends MouseAdapter
     {
