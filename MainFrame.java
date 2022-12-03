@@ -170,6 +170,7 @@ public class MainFrame extends JFrame
     public void setGameover(boolean gameOver)
     {
         this.gameOver = gameOver;
+        menuPanel.toggleNewGameButton();
     }
     //update the menus in the menu panel
     public void updateMenu()

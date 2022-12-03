@@ -28,6 +28,7 @@ public class MenuPanel extends JPanel
         //new game button 
         newGameButton = new JButton("New Game");
         newGameButton.addActionListener(bh);
+        newGameButton.setEnabled(false);
         add(newGameButton);
 
         //forfeit button
@@ -105,6 +106,10 @@ public class MenuPanel extends JPanel
 
         //update counts in this panel
         redrawInterface();
+    }
+    public void toggleNewGameButton()
+    {
+        newGameButton.setEnabled(!newGameButton.isEnabled());
     }
     private void redrawInterface()
     {
