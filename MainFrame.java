@@ -146,6 +146,7 @@ public class MainFrame extends JFrame
         initializePieces();
         turn = 'W';
         menuPanel.updateMenuLabels();
+        menuPanel.setNewGameEnabled(false);
         gameOver = false;
 
         historyPanel.clearHistory();
@@ -170,7 +171,7 @@ public class MainFrame extends JFrame
     public void setGameover(boolean gameOver)
     {
         this.gameOver = gameOver;
-        menuPanel.toggleNewGameButton();
+        menuPanel.setNewGameEnabled(true);
     }
     //update the menus in the menu panel
     public void updateMenu()
@@ -313,6 +314,7 @@ public class MainFrame extends JFrame
                 }
                 connected=false;
                 statusLabel.setText("Game ended.");
+                menuPanel.setNewGameEnabled(true);
                 if(serverSocket!=null) serverSocket.close();
                 serverSocket=null;
                 s.close();
@@ -363,6 +365,7 @@ public class MainFrame extends JFrame
                 }
                 connected=false;
                 statusLabel.setText("Game ended.");
+                menuPanel.setNewGameEnabled(true);
                 s.close();
             }
             catch(IOException ioe)

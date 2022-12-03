@@ -107,9 +107,10 @@ public class MenuPanel extends JPanel
         //update counts in this panel
         redrawInterface();
     }
-    public void toggleNewGameButton()
+    //change enabled state of newGameButton
+    public void setNewGameEnabled(boolean enabled)
     {
-        newGameButton.setEnabled(!newGameButton.isEnabled());
+        newGameButton.setEnabled(enabled);
     }
     private void redrawInterface()
     {
