@@ -1,10 +1,46 @@
-# chess-game
+# Let's Play Chess
+
 A chess game written by me and CalebStadler for our Washburn University Capstone Project.
 
-This project features a GUI and network connectivity.
+## Features
 
-The chess piece images were retrieved from [WikiMedia](https://commons.wikimedia.org/wiki/Category:PNG_chess_pieces/Standard_transparent) and scaled up to 100 x 100 pixels.
+ - Local Multiplayer
+ - Online Multiplayer (Peer-to-Peer)
+ - Captured Piece Relative Values
+ - Move History in Algebraic Notation
+ - Standard Chess Rules Apply (Stalemate Not Implemented)
 
-The move notation was implemented as described on [iChess.net](https://www.ichess.net/blog/chess-notation).
+## Compiling From Source
 
-The rules for play, as implemented in this chess program, are described on [Chess.com](https://www.chess.com/learn-how-to-play-chess).
+Install a JDK to use for compiling the source code. OpenJDK 17 was used during development, but most versions should work.
+
+Clone this repository, then compile the MainFrame class either from an IDE or from the commandline.  
+This will compile all the classes in the program necessary for running it.
+
+Commandline:
+
+    git clone https://github.com/nwestervelt/chess-game
+    cd chess-game
+    javac MainFrame.java
+
+After all the classes have compiled, run the MainFrame class to open the program.
+
+Commandline:
+
+    java MainFrame
+
+## Using A Released Version
+
+Install a JRE or JDK version 8 or higher.
+
+Download a release from the "Releases" section of this [repository](https://github.com/nwestervelt/chess-game),
+ seen on the right side of the page.
+
+After the download has completed, run the JAR file the same way you would any other program.  
+Depending on your platform, you may need to modify the permissions on the file to make it executable.
+
+## Information and Image Sources
+
+- Chess Piece Images From [WikiMedia](https://commons.wikimedia.org/wiki/Category:PNG_chess_pieces/Standard_transparent)
+- Move Notation Described On [iChess.net](https://www.ichess.net/blog/chess-notation)
+- Rules Described On [Chess.com](https://www.chess.com/learn-how-to-play-chess)
