@@ -1,6 +1,6 @@
 # Let's Play Chess
 
-A chess game written by me and CalebStadler for our Washburn University Capstone Project.
+A chess game written by Caleb Stadler and Noah Westervelt for our Washburn University Capstone Project.
 
 ## Features
 
